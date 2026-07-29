@@ -1,0 +1,35 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Tooling caches
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+
+# Secrets -- never commit; history keeps them even after deletion
+.env
+.env.*
+!.env.example
+
+# Run artifacts
+.konkord_cache/
+*.duckdb
+*.duckdb.wal
+results.json
+
+# Site build
+site/dist/
+site/node_modules/
+site/.astro/
+
+# macOS
+.DS_Store
