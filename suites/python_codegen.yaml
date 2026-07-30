@@ -1,0 +1,78 @@
+name: python_codegen
+
+context: >-
+  Target Python 3.12. Standard library only — no third-party dependencies.
+  Fully type-annotated. Return one self-contained module and nothing else.
+
+checks_default: [compiles, ruff_clean]
+
+tasks:
+  - id: retry-decorator-01
+    prompt: |
+      Write a `retry` decorator that re-invokes the wrapped callable when it
+      raises, using exponential backoff with full jitter and a maximum delay.
+
+      Requirements:
+        - Works on both sync and async functions, dispatching on what it wraps.
+        - Takes the retryable exception types, the attempt limit and the delay
+          cap as arguments.
+        - Preserves the wrapped function's name, docstring and signature.
+        - Re-raises the final exception unchanged once attempts are exhausted.
+        - Does not sleep after the last attempt.
+
+  - id: bounded-gather-01
+    checks: [mypy_clean]
+    prompt: |
+      Write `bounded_map(fn, items, *, limit)`, an async function that applies
+      the async callable `fn` to every item with at most `limit` coroutines in
+      flight at once.
+
+      Requirements:
+        - Results are returned in the order of `items`, not completion order.
+        - The first exception raised propagates to the caller, and outstanding
+          work is cancelled and awaited before returning.
+        - Generic over the item and result types: a type checker must infer the
+          element type of the returned list from `fn`.
+
+  - id: dataclass-slots-01
+    prompt: |
+      Convert this hierarchy to dataclasses using `slots=True` and
+      `frozen=True`, preserving the existing behaviour and call signatures:
+
+          class Shape:
+              def __init__(self, name, visible=True):
+                  self.name = name
+                  self.visible = visible
+
+          class Circle(Shape):
+              def __init__(self, name, radius, visible=True):
+                  super().__init__(name, visible)
+                  self.radius = radius
+
+      `Circle("target", 2.0)` must keep working, and instances must be hashable
+      and usable as dict keys.
+
+  - id: sqlite-savepoint-01
+    prompt: |
+      Write a `transaction(conn)` context manager over a `sqlite3.Connection`
+      that supports nesting.
+
+      Requirements:
+        - The outermost use begins a real transaction and commits on clean exit.
+        - Nested uses issue a `SAVEPOINT` and release it on clean exit.
+        - Any exception rolls back only to the level that failed, then re-raises.
+        - Nesting depth is tracked per connection, so two connections in the
+          same process do not interfere.
+
+  - id: ndjson-stream-01
+    prompt: |
+      Write `iter_records(lines)`, a generator that parses an iterable of
+      newline-delimited JSON strings.
+
+      Requirements:
+        - Yields each successfully parsed object as it is read; memory use must
+          not grow with the length of the input.
+        - A malformed line does not end iteration: it is reported with its
+          1-based line number and parsing continues.
+        - The caller can retrieve every malformed line after the generator is
+          exhausted, without the errors having been printed anywhere.

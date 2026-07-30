@@ -17,7 +17,11 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Typing :: Typed",
 ]
-dependencies = ["typer>=0.16"]
+dependencies = [
+    "pydantic>=2.13.4",
+    "pyyaml>=6.0.3",
+    "typer>=0.16",
+]
 
 [project.urls]
 Homepage = "https://github.com/rouzbeh-abadi/konkord"
@@ -27,7 +31,12 @@ Issues = "https://github.com/rouzbeh-abadi/konkord/issues"
 konkord = "konkord.cli:app"
 
 [dependency-groups]
-dev = ["mypy>=1.17", "pytest>=8.4", "ruff>=0.12"]
+dev = [
+    "mypy>=1.17",
+    "pytest>=8.4",
+    "ruff>=0.12",
+    "types-pyyaml>=6.0.12.20260724",
+]
 
 [build-system]
 requires = ["hatchling"]
