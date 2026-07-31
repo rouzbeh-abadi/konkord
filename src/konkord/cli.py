@@ -68,9 +68,96 @@ def run(
         str,
         typer.Option("--models", help="Comma-separated model identifiers to generate with."),
     ],
+    db: Annotated[
+        Path,
+        typer.Option("--db", help="DuckDB results file."),
+    ] = Path("konkord.duckdb"),
+    cache_dir: Annotated[
+        Path,
+        typer.Option("--cache", help="Directory for the response cache."),
+    ] = Path(".konkord_cache"),
+    concurrency: Annotated[
+        int,
+        typer.Option("--concurrency", min=1, help="Maximum model calls in flight."),
+    ] = 8,
+    max_attempts: Annotated[
+        int,
+        typer.Option("--max-attempts", min=1, help="Attempts per call before giving up."),
+    ] = 4,
+    max_tokens: Annotated[
+        int,
+        typer.Option("--max-tokens", min=1, help="Output token cap per call."),
+    ] = 4096,
 ) -> None:
     """Generate one output per (task x model), concurrently and resumably."""
-    _not_implemented("run", phase=3)
+    # Imported here so `konkord --help` does not pay for litellm's import.
+    import asyncio
+
+    from konkord.cache import ResponseCache
+    from konkord.litellm_provider import LiteLLMCompleter
+    from konkord.runner import Outcome, RunConfig, run_suite
+    from konkord.store import ResultStore
+    from konkord.suites import SuiteError, load_suite
+
+    model_list = _parse_models(models)
+    try:
+        loaded = load_suite(suite)
+    except SuiteError as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(
+        f"{loaded.name}: {len(loaded.tasks)} tasks x {len(model_list)} models "
+        f"= {len(loaded.tasks) * len(model_list)} generations"
+    )
+
+    def report(generation: object, outcome: Outcome) -> None:
+        marker = {"generated": "+", "cached": "=", "failed": "!"}[str(outcome)]
+        task_id = getattr(generation, "task_id", "?")
+        model = getattr(generation, "model", "?")
+        typer.echo(f"  {marker} {task_id} / {model}")
+
+    with ResponseCache(cache_dir) as cache, ResultStore(db) as store:
+        summary = asyncio.run(
+            run_suite(
+                suite=loaded,
+                models=model_list,
+                completer=LiteLLMCompleter(),
+                cache=cache,
+                store=store,
+                config=RunConfig(
+                    concurrency=concurrency,
+                    max_attempts=max_attempts,
+                    max_tokens=max_tokens,
+                ),
+                on_result=report,
+            )
+        )
+
+    typer.echo(
+        f"\ngenerated {summary.generated}, cached {summary.cached}, "
+        f"failed {summary.failed}, already present {summary.skipped}"
+    )
+    typer.echo(f"cost ${summary.cost_usd:.4f}")
+    if summary.models_without_pricing:
+        typer.secho(
+            "warning: no pricing data for "
+            f"{', '.join(summary.models_without_pricing)} — their cost is reported as 0",
+            err=True,
+            fg=typer.colors.YELLOW,
+        )
+    if summary.failed:
+        raise typer.Exit(code=1)
+
+
+def _parse_models(raw: str) -> list[str]:
+    """Split --models, dropping blanks and duplicates but keeping order."""
+    seen = [name.strip() for name in raw.split(",") if name.strip()]
+    unique = list(dict.fromkeys(seen))
+    if not unique:
+        typer.secho("--models requires at least one model name", err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1)
+    return unique
 
 
 @app.command()

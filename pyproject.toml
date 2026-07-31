@@ -18,8 +18,12 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
+    "diskcache>=5.6.3",
+    "duckdb>=1.5.5",
+    "litellm>=1.94.1",
     "pydantic>=2.13.4",
     "pyyaml>=6.0.3",
+    "tenacity>=9.1.4",
     "typer>=0.16",
 ]
 
@@ -34,6 +38,7 @@ konkord = "konkord.cli:app"
 dev = [
     "mypy>=1.17",
     "pytest>=8.4",
+    "pytest-asyncio>=1.4.0",
     "ruff>=0.12",
     "types-pyyaml>=6.0.12.20260724",
 ]
@@ -76,13 +81,26 @@ select = [
 # ARG001: command handlers receive their arguments from typer, and phase-1 stubs
 #         do not consume them yet.
 "src/konkord/cli.py" = ["ARG001", "B008"]
-"tests/**" = ["ANN"]
+# litellm returns untyped response objects; the helpers that unpack them are the
+# one place `Any` is unavoidable, and they exist to contain it.
+"src/konkord/litellm_provider.py" = ["ANN401"]
+"tests/**" = ["ANN", "SLF001"]
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
 files = ["src", "tests"]
 
+[[tool.mypy.overrides]]
+module = ["diskcache.*"]
+ignore_missing_imports = true
+
+# litellm ships py.typed but does not re-export its exception classes.
+[[tool.mypy.overrides]]
+module = ["litellm", "litellm.*"]
+implicit_reexport = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q --strict-markers --strict-config"
+asyncio_mode = "auto"
