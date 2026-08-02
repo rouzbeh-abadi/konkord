@@ -34,6 +34,11 @@ Issues = "https://github.com/rouzbeh-abadi/konkord/issues"
 [project.scripts]
 konkord = "konkord.cli:app"
 
+[project.optional-dependencies]
+label = [
+    "streamlit>=1.40",
+]
+
 [dependency-groups]
 dev = [
     "mypy>=1.17",

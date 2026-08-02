@@ -10,13 +10,21 @@ than accumulating duplicates, which is what makes `konkord run` safe to repeat.
 
 from pathlib import Path
 from types import TracebackType
-from typing import Self
+from typing import Self, cast
 
 import duckdb
 
-from konkord.models import Generation
+from konkord.models import (
+    Comparison,
+    Generation,
+    JudgeFailure,
+    Order,
+    Source,
+    Verdict,
+)
 
-_SCHEMA = """
+_SCHEMA = (
+    """
 CREATE TABLE IF NOT EXISTS generations (
     suite      VARCHAR NOT NULL,
     task_id    VARCHAR NOT NULL,
@@ -29,7 +37,38 @@ CREATE TABLE IF NOT EXISTS generations (
     error      VARCHAR,
     PRIMARY KEY (suite, task_id, model)
 )
-"""
+""",
+    # One row per presentation order, not per pair: the flip-rate diagnostic
+    # needs both orderings kept apart, and collapsing them here would destroy
+    # the evidence that the judge is position-biased.
+    """
+CREATE TABLE IF NOT EXISTS comparisons (
+    suite       VARCHAR NOT NULL,
+    task_id     VARCHAR NOT NULL,
+    model_a     VARCHAR NOT NULL,
+    model_b     VARCHAR NOT NULL,
+    "order"     VARCHAR NOT NULL,
+    winner      VARCHAR NOT NULL,
+    source      VARCHAR NOT NULL,
+    rationale   VARCHAR,
+    judge_model VARCHAR,
+    PRIMARY KEY (suite, task_id, model_a, model_b, "order", source)
+)
+""",
+    """
+CREATE TABLE IF NOT EXISTS judge_failures (
+    suite       VARCHAR NOT NULL,
+    task_id     VARCHAR NOT NULL,
+    model_a     VARCHAR NOT NULL,
+    model_b     VARCHAR NOT NULL,
+    "order"     VARCHAR NOT NULL,
+    judge_model VARCHAR NOT NULL,
+    reason      VARCHAR NOT NULL,
+    raw         VARCHAR NOT NULL,
+    PRIMARY KEY (suite, task_id, model_a, model_b, "order")
+)
+""",
+)
 
 
 class ResultStore:
@@ -38,7 +77,8 @@ class ResultStore:
     def __init__(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         self._connection = duckdb.connect(str(path))
-        self._connection.execute(_SCHEMA)
+        for statement in _SCHEMA:
+            self._connection.execute(statement)
 
     def record(self, suite: str, generation: Generation) -> None:
         """Insert or replace one generation."""
@@ -94,6 +134,106 @@ class ResultStore:
                 cost_usd=float(row[5]),
                 latency_ms=int(row[6]),
                 error=None if row[7] is None else str(row[7]),
+            )
+            for row in rows
+        ]
+
+    def record_comparison(self, suite: str, comparison: Comparison) -> None:
+        """Insert or replace one comparison, in one presentation order."""
+        self._connection.execute(
+            """
+            INSERT OR REPLACE INTO comparisons
+                (suite, task_id, model_a, model_b, "order", winner,
+                 source, rationale, judge_model)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                suite,
+                comparison.task_id,
+                comparison.model_a,
+                comparison.model_b,
+                comparison.order,
+                comparison.winner,
+                comparison.source,
+                comparison.rationale,
+                comparison.judge_model,
+            ],
+        )
+
+    def comparisons(self, suite: str, source: Source | None = None) -> list[Comparison]:
+        """Recorded comparisons, optionally narrowed to judge or human."""
+        clause = "" if source is None else " AND source = ?"
+        params: list[str] = [suite] if source is None else [suite, source]
+        rows = self._connection.execute(
+            f"""
+            SELECT task_id, model_a, model_b, "order", winner, source,
+                   rationale, judge_model
+            FROM comparisons WHERE suite = ?{clause}
+            ORDER BY task_id, model_a, model_b, "order"
+            """,
+            params,
+        ).fetchall()
+        return [
+            Comparison(
+                task_id=str(row[0]),
+                model_a=str(row[1]),
+                model_b=str(row[2]),
+                order=cast("Order", str(row[3])),
+                winner=cast("Verdict", str(row[4])),
+                source=cast("Source", str(row[5])),
+                rationale=None if row[6] is None else str(row[6]),
+                judge_model=None if row[7] is None else str(row[7]),
+            )
+            for row in rows
+        ]
+
+    def compared(self, suite: str, source: Source) -> set[tuple[str, str, str, str]]:
+        """The (task_id, model_a, model_b, order) tuples already recorded."""
+        rows = self._connection.execute(
+            'SELECT task_id, model_a, model_b, "order" FROM comparisons '
+            "WHERE suite = ? AND source = ?",
+            [suite, source],
+        ).fetchall()
+        return {(str(a), str(b), str(c), str(d)) for a, b, c, d in rows}
+
+    def record_judge_failure(self, suite: str, item: JudgeFailure) -> None:
+        """Keep an unparseable judge response as evidence."""
+        self._connection.execute(
+            """
+            INSERT OR REPLACE INTO judge_failures
+                (suite, task_id, model_a, model_b, "order", judge_model, reason, raw)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                suite,
+                item.task_id,
+                item.model_a,
+                item.model_b,
+                item.order,
+                item.judge_model,
+                item.reason,
+                item.raw,
+            ],
+        )
+
+    def judge_failures(self, suite: str) -> list[JudgeFailure]:
+        rows = self._connection.execute(
+            """
+            SELECT task_id, model_a, model_b, "order", judge_model, reason, raw
+            FROM judge_failures WHERE suite = ?
+            ORDER BY task_id, model_a, model_b, "order"
+            """,
+            [suite],
+        ).fetchall()
+        return [
+            JudgeFailure(
+                task_id=str(row[0]),
+                model_a=str(row[1]),
+                model_b=str(row[2]),
+                order=cast("Order", str(row[3])),
+                judge_model=str(row[4]),
+                reason=str(row[5]),
+                raw=str(row[6]),
             )
             for row in rows
         ]

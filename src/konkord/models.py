@@ -136,3 +136,20 @@ class Comparison(Frozen):
         if self.winner == "tie":
             return None
         return self.model_a if self.winner == "a" else self.model_b
+
+
+class JudgeFailure(Frozen):
+    """A judge response that could not be parsed, kept rather than discarded.
+
+    An unparseable verdict is never coerced into a winner. It is recorded here
+    with the raw response so the failure is auditable — a judge that produces
+    many of these is itself a finding.
+    """
+
+    task_id: str
+    model_a: str
+    model_b: str
+    order: Order
+    judge_model: str
+    reason: str
+    raw: str

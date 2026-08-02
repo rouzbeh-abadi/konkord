@@ -16,13 +16,6 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 
-from tenacity import (
-    AsyncRetrying,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_exponential_jitter,
-)
-
 from konkord.cache import ResponseCache, cache_key
 from konkord.models import Generation, Suite, Task
 from konkord.providers import (
@@ -30,8 +23,8 @@ from konkord.providers import (
     CompletionError,
     CompletionRequest,
     CompletionResponse,
-    TransientError,
 )
+from konkord.retrying import RetryPolicy, call_with_retry
 from konkord.store import ResultStore
 
 
@@ -50,6 +43,14 @@ class RunConfig:
     max_tokens: int = 4096
     initial_backoff_s: float = 1.0
     max_backoff_s: float = 30.0
+
+    @property
+    def retry_policy(self) -> RetryPolicy:
+        return RetryPolicy(
+            max_attempts=self.max_attempts,
+            initial_backoff_s=self.initial_backoff_s,
+            max_backoff_s=self.max_backoff_s,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -144,7 +145,7 @@ async def _generate(
 
     async with semaphore:
         try:
-            response = await _call_with_retry(completer, request, config)
+            response = await call_with_retry(completer, request, config.retry_policy)
         except CompletionError as exc:
             failure = Generation(
                 task_id=task.id,
@@ -163,23 +164,6 @@ async def _generate(
 
     cache.set(key, response)
     return _finish(suite, task, model, response, Outcome.GENERATED, store, on_result)
-
-
-async def _call_with_retry(
-    completer: Completer,
-    request: CompletionRequest,
-    config: RunConfig,
-) -> CompletionResponse:
-    """Call the model, retrying only what is worth retrying."""
-    async for attempt in AsyncRetrying(
-        stop=stop_after_attempt(config.max_attempts),
-        wait=wait_exponential_jitter(initial=config.initial_backoff_s, max=config.max_backoff_s),
-        retry=retry_if_exception_type(TransientError),
-        reraise=True,
-    ):
-        with attempt:
-            return await completer.complete(request)
-    raise AssertionError("tenacity always either returns or reraises")  # pragma: no cover
 
 
 def _finish(
