@@ -1,7 +1,7 @@
 """The local blind labeller.
 
 Run through `konkord label`, which sets the environment variables below and
-starts Streamlit. Not imported by anything else — Streamlit executes this file
+starts Streamlit. Not imported by anything else, since Streamlit executes this file
 top to bottom on every interaction.
 
 Two invariants make the labels worth anything, and both live in `_render`:
@@ -12,7 +12,7 @@ Two invariants make the labels worth anything, and both live in `_render`:
   deliberately never read here. Seeing it first would anchor the human, and the
   agreement rate would then measure suggestibility rather than agreement.
 
-The task prompt *is* shown — you cannot grade an answer without the question.
+The task prompt *is* shown, because you cannot grade an answer without the question.
 
 Every label is written the moment it is submitted, so closing the tab loses
 nothing.
@@ -82,7 +82,7 @@ def _render(suite: Suite, store: ResultStore, total: int, seed: int) -> None:
     queue = queue_for(store, suite.name, total, seed)
     labelled = len(store.comparisons(suite.name, "human"))
 
-    st.caption(f"{suite.name} — {labelled} labelled, {len(queue)} left in this sample")
+    st.caption(f"{suite.name}: {labelled} labelled, {len(queue)} left in this sample")
     if not queue:
         st.success("Nothing left to label in this sample.")
         return
@@ -90,7 +90,7 @@ def _render(suite: Suite, store: ResultStore, total: int, seed: int) -> None:
     item = queue[0]
     st.progress(labelled / max(labelled + len(queue), 1))
 
-    with st.expander(f"Task — {item.task_id}", expanded=True):
+    with st.expander(f"Task: {item.task_id}", expanded=True):
         st.write(suite.task(item.task_id).prompt)
 
     answers = {
@@ -106,11 +106,11 @@ def _render(suite: Suite, store: ResultStore, total: int, seed: int) -> None:
 
     one, two, three = st.columns(3)
     choice: str | None = None
-    if one.button("1 — Answer 1 is better", use_container_width=True):
+    if one.button("1. Answer 1 is better", use_container_width=True):
         choice = "first"
-    if two.button("2 — Answer 2 is better", use_container_width=True):
+    if two.button("2. Answer 2 is better", use_container_width=True):
         choice = "second"
-    if three.button("3 — Tie", use_container_width=True):
+    if three.button("3. Tie", use_container_width=True):
         choice = "tie"
 
     st.components.v1.html(_SHORTCUTS, height=0)
@@ -122,7 +122,7 @@ def _render(suite: Suite, store: ResultStore, total: int, seed: int) -> None:
 
 
 def main() -> None:
-    st.set_page_config(page_title="Konkord — blind labelling", layout="wide")
+    st.set_page_config(page_title="Konkord blind labelling", layout="wide")
     suite = load_suite(Path(os.environ[ENV_SUITE_PATH]))
     with ResultStore(Path(os.environ.get(ENV_DB, "konkord.duckdb"))) as store:
         _render(

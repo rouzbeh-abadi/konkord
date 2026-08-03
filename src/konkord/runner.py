@@ -6,7 +6,7 @@ Three properties hold this together:
   so an interrupted run resumes where it stopped instead of starting over.
   A pair already in the store is not regenerated.
 * **Bounded.** At most `concurrency` calls are in flight. A cache hit does not
-  consume a slot — it costs no quota, so it should not queue behind one.
+  consume a slot, since it costs no quota and should not queue behind one.
 * **Non-fatal.** A model that fails permanently produces a `Generation` with
   `error` set. The run continues; nothing is raised past this module.
 """

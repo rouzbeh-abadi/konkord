@@ -1,0 +1,204 @@
+"""Assembling results.json, the single artefact the site reads.
+
+The calibration block is not an appendix. It ships in the same file as the
+ranking, at the top level, because a ranking without it is a claim with no
+evidence behind it. Anything consuming this file can therefore see how much the
+ordering is worth before it renders a single row.
+
+Models whose confidence intervals overlap share a `rank_group`. A renderer must
+show them as tied, and the field exists so that rule is data rather than a note
+in a style guide.
+"""
+
+import json
+from collections.abc import Sequence
+from pathlib import Path
+from statistics import median
+
+from pydantic import BaseModel, ConfigDict
+
+from konkord.calibrate import Breakdown, Calibration
+from konkord.judge import resolve
+from konkord.models import Comparison, Generation
+from konkord.stats import (
+    PairOutcome,
+    bootstrap_win_rate_intervals,
+    bradley_terry,
+    tie_groups,
+    win_rates,
+)
+
+
+class Frozen(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+
+class ModelReport(Frozen):
+    model: str
+    rating: float
+    win_rate: float
+    ci_low: float
+    ci_high: float
+    rank_group: int
+    comparisons: int
+    generations: int
+    failed_generations: int
+    cost_usd: float
+    median_latency_ms: int
+
+
+class BreakdownReport(Frozen):
+    key: str
+    labelled: int
+    agreed: int
+    rate: float
+
+
+class DisagreementReport(Frozen):
+    """One entry in the failure gallery, with the judge's own reasoning."""
+
+    task_id: str
+    model_a: str
+    model_b: str
+    judge_winner: str | None
+    human_winner: str | None
+    judge_rationale: str | None
+
+
+class CalibrationReport(Frozen):
+    judge_models: tuple[str, ...]
+    human_labels: int
+    agreement: float
+    kappa: float
+    order_flip_rate: float
+    by_task: tuple[BreakdownReport, ...]
+    by_model_pair: tuple[BreakdownReport, ...]
+    by_length_quartile: tuple[BreakdownReport, ...]
+    failure_gallery: tuple[DisagreementReport, ...]
+
+
+class Report(Frozen):
+    suite: str
+    models: tuple[ModelReport, ...]
+    calibration: CalibrationReport
+    bootstrap_resamples: int
+    bootstrap_seed: int
+
+
+def resolved_outcomes(judge_rows: Sequence[Comparison]) -> list[PairOutcome]:
+    """Collapse each pair's two orderings into one outcome for the ranking.
+
+    A pair the judge flipped on becomes a tie, so position bias reduces the
+    separation between models instead of silently picking a winner.
+    """
+    grouped: dict[tuple[str, str, str], list[Comparison]] = {}
+    for row in judge_rows:
+        grouped.setdefault(row.pair_key, []).append(row)
+
+    outcomes: list[PairOutcome] = []
+    for group in grouped.values():
+        first = group[0]
+        verdict = resolve(group)
+        winner = None if verdict == "tie" else (first.model_a if verdict == "a" else first.model_b)
+        outcomes.append(PairOutcome(model_a=first.model_a, model_b=first.model_b, winner=winner))
+    return outcomes
+
+
+def flip_rate(judge_rows: Sequence[Comparison]) -> float:
+    """Share of pairs where the two presentation orders disagreed."""
+    grouped: dict[tuple[str, str, str], list[Comparison]] = {}
+    for row in judge_rows:
+        grouped.setdefault(row.pair_key, []).append(row)
+    if not grouped:
+        return 0.0
+    flipped = sum(1 for group in grouped.values() if len({c.winner_model for c in group}) != 1)
+    return flipped / len(grouped)
+
+
+def build(
+    *,
+    suite: str,
+    generations: Sequence[Generation],
+    judge_rows: Sequence[Comparison],
+    calibration: Calibration,
+    resamples: int = 1000,
+    seed: int = 0,
+) -> Report:
+    """Aggregate everything into one report."""
+    outcomes = resolved_outcomes(judge_rows)
+    ratings = bradley_terry(outcomes)
+    rates = win_rates(outcomes)
+    intervals = bootstrap_win_rate_intervals(outcomes, resamples=resamples, seed=seed)
+    groups = tie_groups(ratings, intervals)
+
+    faced: dict[str, int] = {}
+    for outcome in outcomes:
+        for name in (outcome.model_a, outcome.model_b):
+            faced[name] = faced.get(name, 0) + 1
+
+    models = []
+    for name in sorted(ratings, key=lambda n: (groups[n], -ratings[n], n)):
+        mine = [g for g in generations if g.model == name]
+        succeeded = [g for g in mine if g.error is None]
+        low, high = intervals.get(name, (0.0, 0.0))
+        models.append(
+            ModelReport(
+                model=name,
+                rating=ratings[name],
+                win_rate=rates.get(name, 0.0),
+                ci_low=low,
+                ci_high=high,
+                rank_group=groups[name],
+                comparisons=faced.get(name, 0),
+                generations=len(mine),
+                failed_generations=len(mine) - len(succeeded),
+                cost_usd=sum(g.cost_usd for g in mine),
+                median_latency_ms=int(median([g.latency_ms for g in succeeded]))
+                if succeeded
+                else 0,
+            )
+        )
+
+    return Report(
+        suite=suite,
+        models=tuple(models),
+        calibration=CalibrationReport(
+            judge_models=calibration.judge_models,
+            human_labels=calibration.labelled,
+            agreement=calibration.agreement,
+            kappa=calibration.kappa,
+            order_flip_rate=flip_rate(judge_rows),
+            by_task=_breakdowns(calibration.by_task),
+            by_model_pair=_breakdowns(calibration.by_model_pair),
+            by_length_quartile=_breakdowns(calibration.by_length_quartile),
+            failure_gallery=tuple(
+                DisagreementReport(
+                    task_id=d.task_id,
+                    model_a=d.model_a,
+                    model_b=d.model_b,
+                    judge_winner=d.judge_winner,
+                    human_winner=d.human_winner,
+                    judge_rationale=d.judge_rationale,
+                )
+                for d in calibration.disagreements
+            ),
+        ),
+        bootstrap_resamples=resamples,
+        bootstrap_seed=seed,
+    )
+
+
+def write(report: Report, path: Path) -> None:
+    path.write_text(json.dumps(report.model_dump(), indent=2) + "\n", encoding="utf-8")
+
+
+def _breakdowns(items: Sequence[Breakdown]) -> tuple[BreakdownReport, ...]:
+    return tuple(
+        BreakdownReport(
+            key=item.key,
+            labelled=item.labelled,
+            agreed=item.agreed,
+            rate=item.rate,
+        )
+        for item in items
+    )

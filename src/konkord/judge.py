@@ -225,7 +225,7 @@ def resolve(comparisons: Sequence[Comparison]) -> Verdict:
 
 
 def flipped(comparisons: Sequence[Comparison]) -> bool:
-    """True when the two orderings disagreed — the position-bias diagnostic."""
+    """True when the two orderings disagreed. This is the position-bias diagnostic."""
     if len(comparisons) < 2:
         return False
     return len({c.winner_model for c in comparisons}) != 1

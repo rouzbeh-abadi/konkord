@@ -34,6 +34,6 @@ def test_no_args_shows_help_without_crashing() -> None:
 
 def test_unimplemented_commands_fail_loudly() -> None:
     """A stub must exit non-zero, never pretend to succeed."""
-    result = runner.invoke(app, ["calibrate"])
+    result = runner.invoke(app, ["check", "--suite", "suites/python_codegen.yaml"])
     assert result.exit_code == 1
     assert "not implemented" in result.stderr

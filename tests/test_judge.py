@@ -159,7 +159,7 @@ class TestPositionToIdentity:
         )
 
     def test_reversed_ordering(self) -> None:
-        """In a `ba` matchup, Answer 1 was model_b — the trap this guards."""
+        """In a `ba` matchup, Answer 1 was model_b. That is the trap this guards."""
         assert (
             to_comparison(matchup("ba"), "first", judge_model="referee", rationale="").winner_model
             == "beta"

@@ -21,6 +21,7 @@ dependencies = [
     "diskcache>=5.6.3",
     "duckdb>=1.5.5",
     "litellm>=1.94.1",
+    "numpy>=2.5.1",
     "pydantic>=2.13.4",
     "pyyaml>=6.0.3",
     "tenacity>=9.1.4",

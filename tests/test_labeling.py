@@ -2,7 +2,7 @@
 
 The sample decides what the calibration number describes, so the properties that
 matter are spread, determinism (which is what makes a session resumable), and the
-positional-to-identity mapping — inverting that would flip half the human labels
+positional-to-identity mapping. Inverting that would flip half the human labels
 and look like judge disagreement rather than a bug.
 """
 

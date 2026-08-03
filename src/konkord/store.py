@@ -1,4 +1,4 @@
-"""DuckDB result store — one file, no server.
+"""DuckDB result store: one file, no server.
 
 Rows are keyed by (suite, task_id, model). Task ids are only unique within a
 suite, so the suite name is part of the key here even though it is not part of

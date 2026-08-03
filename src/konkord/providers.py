@@ -6,7 +6,7 @@ implementation lives in `litellm_provider`.
 
 Failures are classified at this boundary, not at the call site. `TransientError`
 is worth retrying; `PermanentError` is not and gets recorded on the generation.
-Anything a provider raises that we do not recognise is treated as permanent — an
+Anything a provider raises that we do not recognise is treated as permanent. An
 unknown failure is not something to hammer with retries.
 """
 
@@ -45,7 +45,7 @@ class CompletionResponse:
     than the microseconds a cache hit took.
 
     `cost_known` is false when the provider could not price the call. The cost is
-    then reported as 0.0, which would silently understate a leaderboard — the
+    then reported as 0.0, which would silently understate a leaderboard, so the
     runner surfaces the affected models instead of letting that pass quietly.
     """
 

@@ -1,4 +1,4 @@
-"""Runner behaviour, with a fake completer — these tests never touch a network.
+"""Runner behaviour, with a fake completer. These tests never touch a network.
 
 The properties under test are the ones that make `konkord run` safe to repeat:
 resumability, bounded concurrency, retry only where retrying helps, and failures

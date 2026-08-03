@@ -1,4 +1,4 @@
-"""Konkord — LLM eval harness with judge calibration."""
+"""Konkord: LLM eval harness with judge calibration."""
 
 from importlib.metadata import PackageNotFoundError, version
 

@@ -7,7 +7,7 @@ this one has to know that defaults ever existed.
 
 Check resolution is a **union**: a task receives the suite defaults plus
 whatever it names itself. A task cannot opt out of a default. That is the point
-— if some tasks could silently skip the compile check, models would be compared
+if some tasks could silently skip the compile check, models would be compared
 on unequal terms and the leaderboard would be quietly wrong.
 """
 

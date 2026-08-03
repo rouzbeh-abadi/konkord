@@ -27,7 +27,7 @@ class LabelItem:
 
     @property
     def first_model(self) -> str:
-        """Shown as Answer 1. Never displayed — only used to fetch the text."""
+        """Shown as Answer 1. Never displayed, only used to fetch the text."""
         return self.model_a if self.order == "ab" else self.model_b
 
     @property
@@ -42,7 +42,7 @@ class LabelItem:
 def candidates(comparisons: Iterable[Comparison]) -> list[tuple[str, str, str]]:
     """Distinct (task, model_a, model_b) triples the judge has an opinion on.
 
-    Sorted, so the sample depends only on the seed and the set — not on the order
+    Sorted, so the sample depends only on the seed and the set, not on the order
     rows happened to come back from the database.
     """
     return sorted({c.pair_key for c in comparisons})

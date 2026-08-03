@@ -1,6 +1,6 @@
 """Typed contracts shared by every stage of the pipeline.
 
-Only these models cross a module boundary — no bare dicts, no tuples standing in
+Only these models cross a module boundary: no bare dicts, no tuples standing in
 for records. Every model is frozen and rejects unknown fields, so a typo in a
 suite file or a renamed column fails at construction rather than silently
 producing a wrong leaderboard.
@@ -23,7 +23,7 @@ Verdict = Literal["a", "b", "tie"]
 """Which of the two presented answers won. Positional, not a model name."""
 
 Order = Literal["ab", "ba"]
-"""Which answer was shown first — the position-bias control."""
+"""Which answer was shown first. This is the position-bias control."""
 
 Source = Literal["judge", "human"]
 """Who produced a verdict."""
@@ -142,7 +142,7 @@ class JudgeFailure(Frozen):
     """A judge response that could not be parsed, kept rather than discarded.
 
     An unparseable verdict is never coerced into a winner. It is recorded here
-    with the raw response so the failure is auditable — a judge that produces
+    with the raw response so the failure is auditable. A judge that produces
     many of these is itself a finding.
     """
 

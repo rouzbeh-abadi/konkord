@@ -59,7 +59,7 @@ def main(
         ),
     ] = False,
 ) -> None:
-    """Konkord — LLM eval harness with judge calibration."""
+    """Konkord: LLM eval harness with judge calibration."""
 
 
 @app.command()
@@ -143,7 +143,7 @@ def run(
     if summary.models_without_pricing:
         typer.secho(
             "warning: no pricing data for "
-            f"{', '.join(summary.models_without_pricing)} — their cost is reported as 0",
+            f"{', '.join(summary.models_without_pricing)}; their cost is reported as 0",
             err=True,
             fg=typer.colors.YELLOW,
         )
@@ -234,7 +234,7 @@ def judge(
     if summary.parse_failures or summary.call_failures:
         typer.secho(
             f"{summary.parse_failures} unparseable verdicts, "
-            f"{summary.call_failures} failed calls — see the judge_failures table",
+            f"{summary.call_failures} failed calls; see the judge_failures table",
             err=True,
             fg=typer.colors.YELLOW,
         )
@@ -288,17 +288,136 @@ def label(
         "--server.headless",
         "true",
     ]
-    typer.echo(f"labelling {suite.name} on http://localhost:{port} — Ctrl-C to stop")
+    typer.echo(f"labelling {suite.name} on http://localhost:{port}, Ctrl-C to stop")
     raise typer.Exit(code=subprocess.call(command, env=environment))
 
 
 @app.command()
-def calibrate() -> None:
+def calibrate(
+    suite: SuiteOption,
+    db: Annotated[Path, typer.Option("--db", help="DuckDB results file.")] = Path("konkord.duckdb"),
+    gallery: Annotated[
+        int, typer.Option("--gallery", min=0, help="Disagreements to print in full.")
+    ] = 10,
+) -> None:
     """Compare human labels against judge verdicts."""
-    _not_implemented("calibrate", phase=7)
+    from konkord.calibrate import calibrate as run_calibration
+    from konkord.store import ResultStore
+    from konkord.suites import SuiteError, load_suite
+
+    try:
+        loaded = load_suite(suite)
+    except SuiteError as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    with ResultStore(db) as store:
+        result = run_calibration(
+            store.comparisons(loaded.name, "judge"),
+            store.comparisons(loaded.name, "human"),
+            store.generations(loaded.name),
+        )
+
+    if not result.labelled:
+        typer.secho(
+            "no human labels yet, so there is nothing to calibrate against. "
+            "Run `konkord label` first.",
+            err=True,
+            fg=typer.colors.YELLOW,
+        )
+        raise typer.Exit(code=1)
+
+    typer.echo(f"judge: {', '.join(result.judge_models) or 'unknown'}")
+    typer.echo(f"human labels: {result.labelled}")
+    typer.echo(f"agreement: {result.agreement:.1%} ({result.agreed}/{result.labelled})")
+    typer.echo(f"Cohen's kappa: {result.kappa:.3f}")
+
+    for title, rows in (
+        ("by task", result.by_task),
+        ("by model pair", result.by_model_pair),
+        ("by answer-length quartile", result.by_length_quartile),
+    ):
+        typer.echo(f"\n{title}:")
+        for row in rows:
+            typer.echo(f"  {row.key:<40} {row.rate:>6.1%}  (n={row.labelled})")
+
+    if result.disagreements and gallery:
+        typer.echo(f"\nfailure gallery ({len(result.disagreements)} disagreements):")
+        for item in result.disagreements[:gallery]:
+            typer.echo(
+                f"\n  {item.task_id}: {item.model_a} vs {item.model_b}\n"
+                f"    judge said {item.judge_winner or 'tie'}, "
+                f"human said {item.human_winner or 'tie'}\n"
+                f"    judge rationale: {(item.judge_rationale or '').strip()[:400]}"
+            )
 
 
 @app.command()
-def report() -> None:
+def report(
+    suite: SuiteOption,
+    db: Annotated[Path, typer.Option("--db", help="DuckDB results file.")] = Path("konkord.duckdb"),
+    out: Annotated[Path, typer.Option("--out", help="Where to write the report.")] = Path(
+        "results.json"
+    ),
+    resamples: Annotated[
+        int, typer.Option("--resamples", min=1000, help="Bootstrap resamples.")
+    ] = 1000,
+    seed: Annotated[int, typer.Option("--seed", help="Bootstrap seed.")] = 0,
+) -> None:
     """Aggregate everything into results.json."""
-    _not_implemented("report", phase=7)
+    from konkord import report as reporting
+    from konkord.calibrate import calibrate as run_calibration
+    from konkord.store import ResultStore
+    from konkord.suites import SuiteError, load_suite
+
+    try:
+        loaded = load_suite(suite)
+    except SuiteError as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
+
+    with ResultStore(db) as store:
+        generations = store.generations(loaded.name)
+        judge_rows = store.comparisons(loaded.name, "judge")
+        human_rows = store.comparisons(loaded.name, "human")
+
+    if not judge_rows:
+        typer.secho(
+            "no judge comparisons yet, so there is nothing to rank. Run `konkord judge` first.",
+            err=True,
+            fg=typer.colors.YELLOW,
+        )
+        raise typer.Exit(code=1)
+
+    built = reporting.build(
+        suite=loaded.name,
+        generations=generations,
+        judge_rows=judge_rows,
+        calibration=run_calibration(judge_rows, human_rows, generations),
+        resamples=resamples,
+        seed=seed,
+    )
+    reporting.write(built, out)
+
+    typer.echo(f"wrote {out}")
+    for entry in built.models:
+        typer.echo(
+            f"  [{entry.rank_group}] {entry.model:<28} rating {entry.rating:>6.3f}  "
+            f"win {entry.win_rate:>5.1%} "
+            f"[{entry.ci_low:.1%}, {entry.ci_high:.1%}]"
+        )
+    typer.echo("  models sharing a bracket number are tied; do not order them")
+
+    block = built.calibration
+    if block.human_labels:
+        typer.echo(
+            f"\ncalibration: {block.agreement:.1%} agreement, "
+            f"kappa {block.kappa:.3f}, over {block.human_labels} human labels"
+        )
+    else:
+        typer.secho(
+            "\nwarning: no human labels, so this ranking ships uncalibrated "
+            "and should not be published",
+            err=True,
+            fg=typer.colors.YELLOW,
+        )

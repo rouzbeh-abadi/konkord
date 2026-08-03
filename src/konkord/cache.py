@@ -1,7 +1,7 @@
 """Disk cache for model responses, so a run is cheap to repeat.
 
-The key is a hash of everything that determines the output — model, prompt,
-context, token cap — plus a version tag. Bump `CACHE_VERSION` whenever the
+The key is a hash of everything that determines the output (model, prompt,
+context, token cap) plus a version tag. Bump `CACHE_VERSION` whenever the
 meaning of a cached entry changes; that retires every old entry without anyone
 having to remember to delete a directory.
 
