@@ -1,7 +1,7 @@
 name: python_codegen
 
 context: >-
-  Target Python 3.12. Standard library only — no third-party dependencies.
+  Target Python 3.12. Standard library only, no third-party dependencies.
   Fully type-annotated. Return one self-contained module and nothing else.
 
 checks_default: [compiles, ruff_clean]
@@ -76,3 +76,254 @@ tasks:
           1-based line number and parsing continues.
         - The caller can retrieve every malformed line after the generator is
           exhausted, without the errors having been printed anywhere.
+  - id: async-timeout-cleanup-01
+    checks: [mypy_clean]
+    prompt: |
+      Write `async def with_deadline(coro, seconds, on_cancel)`, which runs
+      `coro` under a deadline and guarantees cleanup.
+
+      Requirements:
+        - On timeout, cancel the coroutine, await `on_cancel()` to release
+          resources, then raise `TimeoutError`.
+        - If the caller cancels the outer task, cleanup still runs and
+          `asyncio.CancelledError` propagates unchanged. Do not convert it into
+          a `TimeoutError` and do not swallow it.
+        - Cleanup runs exactly once on every path, including the success path.
+
+  - id: queue-shutdown-01
+    prompt: |
+      Write an async producer and consumer pair over an `asyncio.Queue` with a
+      bounded size, plus a `shutdown()` that stops them cleanly.
+
+      Requirements:
+        - Every item a producer put on the queue is processed before shutdown
+          returns. No item is dropped.
+        - Consumers waiting on an empty queue wake up and exit rather than
+          hanging forever.
+        - Shutdown is idempotent and safe to call while producers are blocked
+          on a full queue.
+
+  - id: ttl-cache-threadsafe-01
+    prompt: |
+      Write a `TTLCache` mapping with a maximum size and a per-entry time to
+      live, safe for concurrent use from multiple threads.
+
+      Requirements:
+        - `get` returns a miss for an entry past its TTL rather than the stale
+          value, and does not resurrect it.
+        - When the cache is full, evict the least recently used live entry.
+        - No lost update when two threads set the same key at once, and no
+          deadlock when eviction happens during a set.
+        - Expiry is driven by a monotonic clock, not the wall clock.
+
+  - id: overload-literal-01
+    checks: [mypy_clean]
+    prompt: |
+      Write `read_config(path, *, parsed)` whose return type depends on the
+      `parsed` argument: `str` when it is `False`, `dict[str, object]` when it
+      is `True`.
+
+      Requirements:
+        - A type checker infers the concrete return type at each call site
+          without a cast, for both literal `True` and literal `False`.
+        - A caller passing a runtime `bool` variable still type checks, with the
+          union as the inferred type.
+        - The implementation signature is not exposed as an overload.
+
+  - id: result-type-01
+    checks: [mypy_clean]
+    prompt: |
+      Write a generic `Result` type with `Ok` and `Err` variants, plus `map` and
+      `unwrap_or`.
+
+      Requirements:
+        - Generic over both the success and error types.
+        - `match` on a `Result` is exhaustive: a type checker reports a missing
+          case if one variant is not handled.
+        - `map` transforms only the success value and leaves an error untouched,
+          with the transformed type inferred.
+
+  - id: csv-quirks-01
+    prompt: |
+      Write `read_rows(path)`, returning a list of dictionaries from a CSV file
+      written by a spreadsheet.
+
+      Requirements:
+        - Handle a UTF-8 byte order mark at the start of the file without it
+          appearing in the first column name.
+        - Handle quoted fields containing commas, embedded newlines, and
+          doubled quote characters.
+        - Rows with more or fewer fields than the header are reported with their
+          line number rather than silently padded or truncated.
+
+  - id: semver-compare-01
+    prompt: |
+      Write a `Version` type that parses a semantic version string and orders
+      correctly.
+
+      Requirements:
+        - Sorting follows the semver precedence rules, so `1.0.0-alpha` is
+          before `1.0.0-alpha.1`, which is before `1.0.0-beta`, which is before
+          `1.0.0`.
+        - Numeric prerelease identifiers compare numerically, alphanumeric ones
+          compare as text.
+        - Build metadata does not affect ordering, but survives a round trip
+          through `str()`.
+        - A malformed string raises a `ValueError` naming what was wrong.
+
+  - id: config-merge-01
+    prompt: |
+      Write `merge(base, override, *, list_strategy)` that deeply merges two
+      nested configuration dictionaries.
+
+      Requirements:
+        - Nested dictionaries merge recursively rather than replacing wholesale.
+        - `list_strategy` selects between replacing a list, appending to it, and
+          appending only values not already present.
+        - Neither input is mutated.
+        - A key whose value is a dictionary in one input and a scalar in the
+          other raises rather than picking one silently.
+
+  - id: atomic-write-01
+    prompt: |
+      Write `atomic_write(path, data)` that either fully replaces the file or
+      leaves the previous contents intact.
+
+      Requirements:
+        - Write to a temporary file in the same directory as the target, so the
+          final rename cannot cross a filesystem boundary.
+        - Flush and fsync the file before renaming.
+        - Remove the temporary file if anything fails partway through.
+        - Preserve the existing file's permission bits when replacing it.
+
+  - id: subprocess-stream-01
+    prompt: |
+      Write `run(command)` that executes a subprocess and returns its exit code
+      along with its captured stdout and stderr.
+
+      Requirements:
+        - Read both streams concurrently. A child that writes a large amount to
+          stderr must not deadlock.
+        - Enforce a timeout, killing the whole process group rather than only
+          the direct child.
+        - Decode output as UTF-8, replacing undecodable bytes rather than
+          raising.
+
+  - id: graceful-shutdown-01
+    prompt: |
+      Write a `Supervisor` that runs worker callables and shuts down cleanly on
+      SIGTERM or SIGINT.
+
+      Requirements:
+        - The first signal stops accepting new work and lets in-flight work
+          finish, up to a grace period.
+        - A second signal during the grace period aborts immediately.
+        - The exit code distinguishes a clean shutdown from an aborted one.
+        - Signal handlers do no real work themselves.
+
+  - id: interval-merge-01
+    prompt: |
+      Write `merge_intervals(intervals)` that collapses overlapping half-open
+      intervals `[start, end)`.
+
+      Requirements:
+        - Intervals that merely touch, such as `[1, 3)` and `[3, 5)`, merge into
+          one.
+        - Intervals that only share an endpoint under closed semantics must not
+          be treated as overlapping. Half open is the rule.
+        - Empty intervals where `start == end` are dropped.
+        - The result is sorted and non overlapping. The input is not mutated.
+
+  - id: topo-sort-01
+    prompt: |
+      Write `topological_sort(graph)` over a dependency mapping.
+
+      Requirements:
+        - The result is deterministic for a given input, not dependent on set or
+          dictionary iteration order.
+        - A cycle raises an error whose message names the nodes forming the
+          cycle, not just that a cycle exists.
+        - A node that appears only as a dependency, never as a key, is still
+          included in the output.
+
+  - id: lru-from-scratch-01
+    prompt: |
+      Implement an `LRU` cache with `get` and `put`, both O(1), without using
+      `OrderedDict`, `functools.lru_cache`, or relying on dictionary insertion
+      order.
+
+      Requirements:
+        - A `get` counts as a use and moves the entry to most recently used.
+        - Overwriting an existing key updates the value and its recency without
+          changing the size.
+        - Capacity of zero is valid and stores nothing.
+
+  - id: utf8-truncate-01
+    prompt: |
+      Write `truncate_utf8(text, max_bytes)` that shortens a string so its UTF-8
+      encoding fits within `max_bytes`.
+
+      Requirements:
+        - Never emit a partial multi-byte character.
+        - Never split a combining sequence, so a base character keeps its
+          accents.
+        - Never split an emoji made of several code points joined by zero width
+          joiners.
+        - Returns the whole string unchanged when it already fits.
+
+  - id: ansi-strip-01
+    prompt: |
+      Write `strip_ansi(text)` that removes terminal escape sequences.
+
+      Requirements:
+        - Remove colour and cursor sequences of the CSI form.
+        - Remove operating system command sequences, including hyperlinks, which
+          end with a bell or a string terminator rather than a letter.
+        - Leave a lone escape character that starts no valid sequence in place
+          rather than eating the rest of the string.
+
+  - id: deprecation-decorator-01
+    prompt: |
+      Write a `@deprecated(reason)` decorator that warns when the wrapped
+      callable is used.
+
+      Requirements:
+        - Warn once per distinct call site rather than once per call or once
+          globally.
+        - The warning points at the caller's line, not at the decorator.
+        - Works on plain functions, methods, classmethods and staticmethods,
+          preserving the name, docstring and signature in each case.
+
+  - id: cached-property-invalidate-01
+    prompt: |
+      Write a `cached_property` variant that supports explicit invalidation.
+
+      Requirements:
+        - The value is computed once and reused until invalidated.
+        - Invalidating one instance does not affect any other instance.
+        - Works on a class defining `__slots__`, where the usual instance
+          dictionary is unavailable.
+        - Deleting the attribute is equivalent to invalidating it.
+
+  - id: exception-group-01
+    prompt: |
+      Write `async def run_all(operations)` that runs every operation and
+      reports all failures rather than only the first.
+
+      Requirements:
+        - Every operation runs even when an earlier one fails.
+        - Failures are raised together as an `ExceptionGroup`.
+        - The caller can handle one failure category with `except*` while the
+          rest continue to propagate.
+        - When nothing fails, return the results in the order given.
+
+  - id: exit-suppression-01
+    prompt: |
+      Write a `resource` context manager whose cleanup can itself fail.
+
+      Requirements:
+        - If the body raised and cleanup also fails, the body's exception is
+          what the caller sees, with the cleanup failure attached as context.
+        - `__exit__` never returns a truthy value by accident, so an exception
+          from the body is not silently suppressed.
+        - Cleanup runs whether the body succeeded, raised, or returned early.

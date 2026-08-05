@@ -39,7 +39,7 @@ class TestLoading:
         """Guards against the shipped suite drifting out of sync with the schema."""
         suite = load_suite(REPO_SUITE)
         assert suite.name == "python_codegen"
-        assert len(suite.tasks) == 5
+        assert len(suite.tasks) == 25
 
 
 class TestDefaults:
