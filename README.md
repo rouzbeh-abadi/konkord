@@ -10,7 +10,45 @@ If the judge agrees with the human 85% of the time, the leaderboard is credible.
 of the time, that is itself the finding.
 
 > **Status: pre-alpha.** Everything except `check` works. `check` exits non-zero and says which
-> build phase it belongs to.
+> build phase it belongs to. No leaderboard has been published from this yet; the numbers below
+> are the ones the tool produces, not results.
+
+## Quickstart
+
+Not on PyPI yet, so clone it:
+
+```bash
+git clone https://github.com/rouzbeh-abadi/konkord
+cd konkord
+uv sync --all-extras
+```
+
+Set credentials for whichever providers you are ranking. Konkord calls models through
+[litellm](https://docs.litellm.ai/docs/providers), so the usual environment variables apply:
+
+```bash
+export OPENAI_API_KEY=...
+export ANTHROPIC_API_KEY=...
+export GEMINI_API_KEY=...
+```
+
+Then the whole pipeline. Substitute your own models; the judge must come from a provider family
+that is not being ranked:
+
+```bash
+SUITE=suites/python_codegen.yaml
+MODELS=gpt-5,claude-opus-5,gemini-2.5-pro
+
+uv run konkord run       --suite $SUITE --models $MODELS
+uv run konkord judge     --suite $SUITE --models $MODELS --judge mistral/mistral-large-latest
+uv run konkord label     --suite $SUITE --n 100
+uv run konkord calibrate --suite $SUITE
+uv run konkord report    --suite $SUITE --out results.json
+```
+
+`run` and `judge` cost money and take a few minutes. Both are resumable and cache every response,
+so re-running them is free. `label` opens a local app and is the part that needs you: budget a
+couple of hours for 100 comparisons. `calibrate` has nothing to say until those labels exist.
 
 ## Commands
 
@@ -97,4 +135,4 @@ uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pyt
 
 ## License
 
-MIT
+MIT. Built by [Rouzbeh Abadi](https://github.com/rouzbeh-abadi).
