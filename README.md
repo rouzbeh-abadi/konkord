@@ -9,9 +9,12 @@ every published ranking ships with the judge-versus-human agreement rate attache
 If the judge agrees with the human 85% of the time, the leaderboard is credible. If it agrees 55%
 of the time, that is itself the finding.
 
+**[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)** publishes whatever this
+produces: the ranking, the exact judge prompt, and every model's answer to every task.
+
 > **Status: pre-alpha.** Everything except `check` works. `check` exits non-zero and says which
-> build phase it belongs to. No leaderboard has been published from this yet; the numbers below
-> are the ones the tool produces, not results.
+> build phase it belongs to. No run has been published yet, so the site currently states plainly
+> that it is uncalibrated rather than showing a ranking nothing supports.
 
 ## Quickstart
 
@@ -122,9 +125,10 @@ A report produced before any labelling still runs, and says plainly that it is u
 
 ## Site
 
-`site/` is a static page set: a leaderboard, a methodology page, and a per-task browser. It reads
-`results.json` from its own directory and computes nothing at load time, so there is no build step
-and no server.
+`site/` is a static page set: a leaderboard, a methodology page, and a per-task browser, published
+at [konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io). It reads `results.json` from
+its own directory and computes nothing at load time, so there is no build step and no server.
+`wrangler.jsonc` holds the deployment config; every push to `main` redeploys.
 
 ```bash
 konkord report --suite suites/python_codegen.yaml --out site/results.json
