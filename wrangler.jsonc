@@ -1,0 +1,15 @@
+// Cloudflare deployment for the static site.
+//
+// Checked in so the deployment is reviewable and reproducible rather than a
+// setting someone has to remember in a dashboard. There is no `main` entry
+// point: this Worker serves files and runs no code.
+//
+// `directory` is the output of `konkord report --out site/results.json`, plus
+// the three pages that read it.
+{
+  "name": "konkord",
+  "compatibility_date": "2026-08-01",
+  "assets": {
+    "directory": "./site"
+  }
+}
