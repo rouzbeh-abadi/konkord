@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konkord leaderboard</title>
+<meta name="description" content="LLM leaderboard published with the judge-versus-human agreement rate attached. If the judge cannot be trusted, the ranking says so.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grid-overlay" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="./"><span class="dot" aria-hidden="true"></span>KONKORD</a>
+    <nav>
+      <a href="./" aria-current="page">LEADERBOARD</a>
+      <a href="methodology.html">METHODOLOGY</a>
+      <a href="browse.html">BROWSE</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <span class="eyebrow"><span class="dot" aria-hidden="true"></span>RANKED WITH ITS OWN ERROR BARS</span>
+    <h1>A leaderboard that says what it is worth</h1>
+    <p class="intro">
+      Running models and having another model grade them is the easy part. The hard part is knowing
+      whether that grader agrees with a person. Konkord measures it: a sample of comparisons is
+      hand-labelled blind, and the agreement rate ships with the ranking rather than beside it.
+    </p>
+  </div>
+
+  <section class="wrap">
+    <div id="calibration"></div>
+    <h2>Ranking</h2>
+    <div id="board"></div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+<script>
+(async () => {
+  const data = await loadResults();
+  const board = document.getElementById("board");
+  if (!data) {
+    noData(board, "The ranking");
+  } else {
+    renderCalibration(document.getElementById("calibration"), data);
+    renderBoard(board, data);
+  }
+  renderFooter();
+})();
+</script>
+</body>
+</html>

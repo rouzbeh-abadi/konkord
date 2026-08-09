@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology | Konkord</title>
+<meta name="description" content="How the tasks were written, the exact judge prompt, the bias controls, and what the calibration number means.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grid-overlay" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="./"><span class="dot" aria-hidden="true"></span>KONKORD</a>
+    <nav>
+      <a href="./">LEADERBOARD</a>
+      <a href="methodology.html" aria-current="page">METHODOLOGY</a>
+      <a href="browse.html">BROWSE</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <span class="eyebrow"><span class="dot" aria-hidden="true"></span>HOW THE NUMBER WAS MADE</span>
+    <h1>Methodology</h1>
+    <p class="intro">
+      Every choice below exists to stop one specific way the ranking could come out wrong. Where a
+      control could not be applied, this page says so rather than leaving it out.
+    </p>
+  </div>
+
+  <section class="wrap">
+    <div id="calibration"></div>
+
+    <div class="prose">
+      <h3>What the agreement rate means</h3>
+      <p>
+        A sample of comparisons is put in front of a person with the model names removed and the
+        judge's own verdict hidden. They pick a winner. The agreement rate is how often that choice
+        matched the judge's. Cohen's kappa is the same figure corrected for chance: on a suite where
+        one model dominates, always naming the favourite scores well on raw agreement while carrying
+        no information, and kappa removes that.
+      </p>
+      <p>
+        A high number means the ranking is worth reading. A low one is not a failure of the
+        experiment. It is the result.
+      </p>
+
+      <h3>The tasks</h3>
+      <p>
+        Twenty-five Python code generation tasks, hand-written. Each targets a specific way a
+        plausible-looking answer goes wrong rather than testing whether a model can write Python:
+        cancellation that must not be swallowed, half-open interval semantics, truncating UTF-8
+        without splitting a grapheme cluster, a context manager whose cleanup must not mask the
+        original exception. Tasks every model passes tell you nothing, so they were written to
+        separate rather than to be fair.
+      </p>
+
+      <h3>Generation</h3>
+      <p>
+        One output per task and model, all through the same interface with the same token cap and
+        the same suite-level context. Every response is cached on disk keyed by a hash of the model,
+        prompt, context and parameters, so a repeat run reproduces the exact inputs the ranking was
+        built from. A model that fails permanently has the failure recorded against it rather than
+        being quietly dropped from the comparison.
+      </p>
+
+      <h3>The judge, and its four controls</h3>
+      <ul>
+        <li>
+          <strong>Blind.</strong> The judge sees "Answer 1" and "Answer 2". No model name reaches
+          the prompt, so it cannot prefer a brand.
+        </li>
+        <li>
+          <strong>Both orderings.</strong> Every pair is judged twice, once each way round, as two
+          separate calls. If the two disagree, that is position bias rather than an opinion, and the
+          pair is recorded as a tie. The share of pairs that flipped is published as the order-flip
+          rate; a high one means the judge is deciding on position rather than content.
+        </li>
+        <li>
+          <strong>Different provider family.</strong> A judge drawn from the same family as any
+          ranked model is refused outright. Self-preference is not a bias this tool can correct for,
+          so it is excluded rather than adjusted.
+        </li>
+        <li>
+          <strong>Strict parsing.</strong> A response without a well-formed verdict token is retried
+          once, then recorded as a failure with the raw text kept. It is never coerced into a winner.
+        </li>
+      </ul>
+
+      <h3>The exact judge prompt</h3>
+      <p>
+        Published in full, because a leaderboard whose grading instructions are private is not
+        reproducible. This is the system prompt verbatim; a test in the repository fails if this copy
+        drifts from the one the tool actually sends.
+      </p>
+      <pre class="judge-prompt" id="judge-prompt">You are grading two candidate answers to the same programming task.
+
+Judge in this order:
+1. Correctness. Does the answer actually do what the task asked, including the
+   edge cases the task names? A subtly wrong answer loses to a plainly correct
+   one, however well written.
+2. Idiomatic quality. Given equal correctness, prefer the answer a competent
+   reviewer would rather maintain.
+
+Explicitly ignore: answer length, formatting, and how many comments there are.
+A longer answer is not a better answer. Do not reward verbosity.
+
+Respond with at most three sentences of rationale, then a final line in exactly
+this form and nothing after it:
+
+VERDICT: 1
+VERDICT: 2
+VERDICT: TIE
+
+Use TIE only when the answers are genuinely of equal merit.</pre>
+
+      <h3>Labelling</h3>
+      <p>
+        The sample is stratified across tasks and model pairs, so the agreement rate describes the
+        suite rather than whichever corner was convenient. Which answer appears first is randomised
+        per item: a labeller who always saw the same model on the left would acquire the very
+        position bias the judge is being measured for. The judge's verdict is never shown, because
+        an agreement rate measured against a visible answer would record suggestibility.
+      </p>
+
+      <h3>From comparisons to a ranking</h3>
+      <p>
+        Ratings are fitted with Bradley-Terry over all pairwise results rather than counting wins.
+        Raw win counts reward an easy schedule: a model that only faced weak opponents can outscore
+        a better one that faced strong ones. Ties count as half a win to each side, and a small prior
+        keeps the fit finite when a model wins every one of its matchups.
+      </p>
+      <p>
+        Win rates carry 95% percentile bootstrap intervals over at least 1,000 resamples with a
+        recorded seed, so any published interval can be reproduced exactly. Models whose intervals
+        overlap share a rank number and are shown as tied. Ordering within a tie would assert a
+        difference the evidence does not support, which is the most common way a leaderboard
+        misleads.
+      </p>
+
+      <h3>What is not measured</h3>
+      <p>
+        Deterministic checks such as compilation and linting inside a sandbox are specified but not
+        yet implemented, so no answer here has been executed. Every judgement on this site is a
+        reading of the code, not a test of it. Cost figures come from the provider's published
+        pricing; where a model could not be priced, it is flagged rather than reported as free.
+      </p>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+<script>
+(async () => {
+  const data = await loadResults();
+  if (data) renderCalibration(document.getElementById("calibration"), data);
+  renderFooter();
+})();
+</script>
+</body>
+</html>

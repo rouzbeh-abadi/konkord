@@ -120,6 +120,22 @@ rendered as tied; presenting an order within a group asserts a difference the da
 
 A report produced before any labelling still runs, and says plainly that it is uncalibrated.
 
+## Site
+
+`site/` is a static page set: a leaderboard, a methodology page, and a per-task browser. It reads
+`results.json` from its own directory and computes nothing at load time, so there is no build step
+and no server.
+
+```bash
+konkord report --suite suites/python_codegen.yaml --out site/results.json
+python3 -m http.server 8787 --directory site
+```
+
+Without that file the pages render an empty state rather than a broken one. With a report that has
+no human labels, the leaderboard states plainly that it is uncalibrated instead of quietly showing a
+ranking. The methodology page publishes the judge prompt verbatim, and a test fails if that copy
+drifts from the prompt the tool actually sends.
+
 ## Development
 
 ```bash

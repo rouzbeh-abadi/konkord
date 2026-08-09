@@ -24,12 +24,15 @@ wheels/
 .konkord_cache/
 *.duckdb
 *.duckdb.wal
-results.json
+/results.json
 
 # Site build
 site/dist/
 site/node_modules/
 site/.astro/
+
+# Machine-local Claude Code settings; launch.json is shared deliberately
+.claude/settings.local.json
 
 # macOS
 .DS_Store

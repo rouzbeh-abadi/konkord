@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse | Konkord</title>
+<meta name="description" content="Every model's answer to every task, side by side, with the judge's rationale for each pair.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grid-overlay" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="./"><span class="dot" aria-hidden="true"></span>KONKORD</a>
+    <nav>
+      <a href="./">LEADERBOARD</a>
+      <a href="methodology.html">METHODOLOGY</a>
+      <a href="browse.html" aria-current="page">BROWSE</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <span class="eyebrow"><span class="dot" aria-hidden="true"></span>THE RAW MATERIAL</span>
+    <h1>Read the answers yourself</h1>
+    <p class="intro">
+      A rating is a summary of these. Every task, every model's answer, and what the judge said about
+      each pair, including both halves of any comparison where it changed its mind when the answers
+      were swapped.
+    </p>
+  </div>
+
+  <section class="wrap">
+    <div id="picker" class="task-picker"></div>
+    <div id="detail"></div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+<script>
+(async () => {
+  const data = await loadResults();
+  const detail = document.getElementById("detail");
+  const picker = document.getElementById("picker");
+
+  if (!data || !data.tasks || data.tasks.length === 0) {
+    noData(detail, "The per-task view");
+    renderFooter();
+    return;
+  }
+
+  const render = (task) => {
+    detail.replaceChildren();
+
+    const heading = el("h2", "", task.task_id);
+    detail.append(heading);
+    detail.append(el("div", "prompt-block", task.prompt.trim()));
+
+    if (task.answers.length) {
+      const answers = el("div", "answers");
+      for (const answer of task.answers) {
+        const card = el("div", "answer");
+        const meta = el("div", "meta");
+        meta.append(el("span", "name", answer.model));
+        meta.append(
+          el("span", "stats", `${answer.tokens_out} tok · ${answer.latency_ms} ms · $${answer.cost_usd.toFixed(4)}`)
+        );
+        card.append(meta);
+        if (answer.error) {
+          card.append(el("div", "failed", `failed: ${answer.error}`));
+        } else {
+          const pre = el("pre");
+          pre.append(el("code", "", answer.output));
+          card.append(pre);
+        }
+        answers.append(card);
+      }
+      detail.append(answers);
+    }
+
+    if (task.judgements.length) {
+      detail.append(el("h2", "", "What the judge said"));
+      for (const judgement of task.judgements) {
+        const box = el("div", "judgement");
+        const verdict = el("div", "verdict");
+        const pair = `${judgement.model_a} vs ${judgement.model_b}`;
+        if (judgement.flipped) {
+          verdict.append(`${pair} — `);
+          verdict.append(
+            Object.assign(el("span", "flag"), {
+              textContent: "TIE, the judge reversed itself when the answers were swapped",
+            })
+          );
+        } else {
+          verdict.append(`${pair} — ${judgement.winner ? `${judgement.winner} won` : "tie"}`);
+        }
+        box.append(verdict);
+        judgement.rationales.forEach((text, index) => {
+          if (!text.trim()) return;
+          const label = judgement.rationales.length > 1 ? `Ordering ${index + 1}: ` : "";
+          box.append(el("p", "rationale", label + text.trim()));
+        });
+        detail.append(box);
+      }
+    }
+  };
+
+  data.tasks.forEach((task, index) => {
+    const button = el("button", "", task.task_id);
+    button.type = "button";
+    button.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+    button.addEventListener("click", () => {
+      for (const other of picker.children) other.setAttribute("aria-pressed", "false");
+      button.setAttribute("aria-pressed", "true");
+      render(task);
+    });
+    picker.append(button);
+  });
+
+  render(data.tasks[0]);
+  renderFooter();
+})();
+</script>
+</body>
+</html>
