@@ -9,8 +9,8 @@ import json
 from pathlib import Path
 
 from konkord.calibrate import calibrate
-from konkord.models import Comparison, Generation
-from konkord.report import Report, build, flip_rate, resolved_outcomes, write
+from konkord.models import Comparison, Generation, Suite, Task
+from konkord.report import Report, build, flip_rate, per_task, resolved_outcomes, write
 
 
 def judge(task: str, winner: str, order: str, a: str = "alpha", b: str = "beta") -> Comparison:
@@ -28,6 +28,16 @@ def judge(task: str, winner: str, order: str, a: str = "alpha", b: str = "beta")
 
 def agreed(task: str, winner: str, a: str = "alpha", b: str = "beta") -> list[Comparison]:
     return [judge(task, winner, "ab", a, b), judge(task, winner, "ba", a, b)]
+
+
+SUITE = Suite(
+    name="demo",
+    tasks=(
+        Task(id="t1", prompt="First prompt."),
+        Task(id="t2", prompt="Second prompt."),
+        Task(id="t3", prompt="Third prompt."),
+    ),
+)
 
 
 def generation(task: str, model: str, latency: int = 100, cost: float = 0.01) -> Generation:
@@ -80,7 +90,7 @@ def sample_report(resamples: int = 1000) -> Report:
         generation("t2", "beta", latency=400),
     ]
     return build(
-        suite="demo",
+        suite=SUITE,
         generations=generations,
         judge_rows=judge_rows,
         calibration=calibrate(judge_rows, human_rows, generations),
@@ -118,7 +128,7 @@ class TestReport:
     def test_tied_models_share_a_rank_group(self) -> None:
         rows = [*agreed("t1", "a"), judge("t2", "b", "ab"), judge("t2", "b", "ba")]
         report = build(
-            suite="demo",
+            suite=SUITE,
             generations=[],
             judge_rows=rows,
             calibration=calibrate(rows, [], []),
@@ -139,10 +149,66 @@ class TestReport:
         """Report must run before labelling; it just reports zero labels."""
         rows = agreed("t1", "a")
         report = build(
-            suite="demo",
+            suite=SUITE,
             generations=[],
             judge_rows=rows,
             calibration=calibrate(rows, [], []),
         )
         assert report.calibration.human_labels == 0
         assert report.calibration.failure_gallery == ()
+
+
+class TestPerTask:
+    def test_every_suite_task_appears(self) -> None:
+        """Including tasks nothing was generated for, so gaps are visible."""
+        reports = per_task(SUITE, [], [])
+        assert [t.task_id for t in reports] == ["t1", "t2", "t3"]
+
+    def test_carries_the_prompt(self) -> None:
+        """The browse page cannot show an answer without showing the question."""
+        assert per_task(SUITE, [], [])[0].prompt == "First prompt."
+
+    def test_answers_are_sorted_by_model(self) -> None:
+        generations = [generation("t1", "beta"), generation("t1", "alpha")]
+        assert [a.model for a in per_task(SUITE, generations, [])[0].answers] == [
+            "alpha",
+            "beta",
+        ]
+
+    def test_failed_generations_are_included_with_their_error(self) -> None:
+        broken = Generation(
+            task_id="t1",
+            model="alpha",
+            output="",
+            tokens_in=0,
+            tokens_out=0,
+            cost_usd=0.0,
+            latency_ms=0,
+            error="rate limited",
+        )
+        answer = per_task(SUITE, [broken], [])[0].answers[0]
+        assert answer.error == "rate limited"
+        assert answer.output == ""
+
+    def test_judgements_are_scoped_to_their_task(self) -> None:
+        rows = agreed("t1", "a") + agreed("t2", "b")
+        reports = {t.task_id: t for t in per_task(SUITE, [], rows)}
+        assert len(reports["t1"].judgements) == 1
+        assert len(reports["t2"].judgements) == 1
+        assert reports["t3"].judgements == ()
+
+    def test_judgement_carries_both_rationales(self) -> None:
+        """A reader can see both halves rather than a summary that hides a flip."""
+        judgement = per_task(SUITE, [], agreed("t1", "a"))[0].judgements[0]
+        assert judgement.winner == "alpha"
+        assert not judgement.flipped
+        assert judgement.rationales == ("reasons", "reasons")
+
+    def test_flipped_judgement_is_marked_and_has_no_winner(self) -> None:
+        rows = [judge("t1", "a", "ab"), judge("t1", "b", "ba")]
+        judgement = per_task(SUITE, [], rows)[0].judgements[0]
+        assert judgement.flipped
+        assert judgement.winner is None
+
+    def test_report_includes_the_task_block(self) -> None:
+        assert len(sample_report().tasks) == 3

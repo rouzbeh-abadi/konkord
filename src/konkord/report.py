@@ -19,7 +19,7 @@ from pydantic import BaseModel, ConfigDict
 
 from konkord.calibrate import Breakdown, Calibration
 from konkord.judge import resolve
-from konkord.models import Comparison, Generation
+from konkord.models import Comparison, Generation, Suite
 from konkord.stats import (
     PairOutcome,
     bootstrap_win_rate_intervals,
@@ -77,10 +77,43 @@ class CalibrationReport(Frozen):
     failure_gallery: tuple[DisagreementReport, ...]
 
 
+class AnswerReport(Frozen):
+    """One model's answer to one task, as shown on the browse page."""
+
+    model: str
+    output: str
+    error: str | None
+    tokens_out: int
+    cost_usd: float
+    latency_ms: int
+
+
+class JudgementReport(Frozen):
+    """What the judge concluded about one pair on one task, and why.
+
+    `rationales` holds one entry per presentation order, so a reader can see
+    both halves of a flipped pair rather than a summary that hides the flip.
+    """
+
+    model_a: str
+    model_b: str
+    winner: str | None
+    flipped: bool
+    rationales: tuple[str, ...]
+
+
+class TaskReport(Frozen):
+    task_id: str
+    prompt: str
+    answers: tuple[AnswerReport, ...]
+    judgements: tuple[JudgementReport, ...]
+
+
 class Report(Frozen):
     suite: str
     models: tuple[ModelReport, ...]
     calibration: CalibrationReport
+    tasks: tuple[TaskReport, ...]
     bootstrap_resamples: int
     bootstrap_seed: int
 
@@ -115,9 +148,70 @@ def flip_rate(judge_rows: Sequence[Comparison]) -> float:
     return flipped / len(grouped)
 
 
+def per_task(
+    suite: Suite,
+    generations: Sequence[Generation],
+    judge_rows: Sequence[Comparison],
+) -> list[TaskReport]:
+    """The per-task detail the browse page renders.
+
+    Aggregates alone cannot answer "what did this model actually write", which
+    is the question the browse page exists to answer and the reason anyone
+    shares a leaderboard rather than just reading the top line.
+    """
+    by_task: dict[str, list[Generation]] = {}
+    for generation in generations:
+        by_task.setdefault(generation.task_id, []).append(generation)
+
+    pairs: dict[tuple[str, str, str], list[Comparison]] = {}
+    for row in judge_rows:
+        pairs.setdefault(row.pair_key, []).append(row)
+
+    reports: list[TaskReport] = []
+    for task in suite.tasks:
+        answers = tuple(
+            AnswerReport(
+                model=g.model,
+                output=g.output,
+                error=g.error,
+                tokens_out=g.tokens_out,
+                cost_usd=g.cost_usd,
+                latency_ms=g.latency_ms,
+            )
+            for g in sorted(by_task.get(task.id, []), key=lambda g: g.model)
+        )
+        judgements = []
+        for key, group in sorted(pairs.items()):
+            if key[0] != task.id:
+                continue
+            verdict = resolve(group)
+            first = group[0]
+            winner = (
+                None if verdict == "tie" else (first.model_a if verdict == "a" else first.model_b)
+            )
+            judgements.append(
+                JudgementReport(
+                    model_a=first.model_a,
+                    model_b=first.model_b,
+                    winner=winner,
+                    flipped=len({c.winner_model for c in group}) != 1,
+                    rationales=tuple(c.rationale or "" for c in group),
+                )
+            )
+        reports.append(
+            TaskReport(
+                task_id=task.id,
+                prompt=task.prompt,
+                answers=answers,
+                judgements=tuple(judgements),
+            )
+        )
+    return reports
+
+
 def build(
     *,
-    suite: str,
+    suite: Suite,
     generations: Sequence[Generation],
     judge_rows: Sequence[Comparison],
     calibration: Calibration,
@@ -160,7 +254,7 @@ def build(
         )
 
     return Report(
-        suite=suite,
+        suite=suite.name,
         models=tuple(models),
         calibration=CalibrationReport(
             judge_models=calibration.judge_models,
@@ -183,6 +277,7 @@ def build(
                 for d in calibration.disagreements
             ),
         ),
+        tasks=tuple(per_task(suite, generations, judge_rows)),
         bootstrap_resamples=resamples,
         bootstrap_seed=seed,
     )

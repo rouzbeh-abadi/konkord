@@ -390,7 +390,7 @@ def report(
         raise typer.Exit(code=1)
 
     built = reporting.build(
-        suite=loaded.name,
+        suite=loaded,
         generations=generations,
         judge_rows=judge_rows,
         calibration=run_calibration(judge_rows, human_rows, generations),
