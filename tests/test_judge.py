@@ -294,10 +294,16 @@ class TestSelection:
 class FakeJudge:
     """Returns scripted verdict text, keyed by presentation order."""
 
-    def __init__(self, by_order: dict[str, str] | None = None, fail: bool = False) -> None:
+    def __init__(
+        self,
+        by_order: dict[str, str] | None = None,
+        fail: bool = False,
+        truncated: bool = False,
+    ) -> None:
         self.requests: list[CompletionRequest] = []
         self._by_order = by_order or {"ab": "VERDICT: 1", "ba": "VERDICT: 2"}
         self._fail = fail
+        self._truncated = truncated
 
     async def complete(self, request: CompletionRequest) -> CompletionResponse:
         self.requests.append(request)
@@ -314,6 +320,7 @@ class FakeJudge:
             tokens_out=5,
             cost_usd=0.01,
             latency_ms=3,
+            truncated=self._truncated,
         )
 
 
@@ -426,6 +433,45 @@ class TestJudgeSuite:
             assert store.comparisons(SUITE.name, "judge") == []
             failures = store.judge_failures(SUITE.name)
         assert len(failures) == 4
+        assert all("no verdict token" in f.reason for f in failures)
+
+    async def test_truncated_response_names_the_token_cap(self, tmp_path: Path) -> None:
+        """A starved reasoning judge returns nothing, which looks like a refusal.
+
+        Recording that as "no verdict token" sends you hunting the prompt when
+        the fix is one flag. This cost a real run before it was caught.
+        """
+        with ResponseCache(tmp_path / "c") as cache, ResultStore(tmp_path / "r") as store:
+            await seed(store)
+            await judge_suite(
+                suite=SUITE,
+                models=["alpha", "beta"],
+                judge_model="referee",
+                completer=FakeJudge({"ab": "", "ba": ""}, truncated=True),
+                cache=cache,
+                store=store,
+                config=FAST,
+            )
+            failures = store.judge_failures(SUITE.name)
+        assert failures
+        assert all("token cap" in f.reason for f in failures)
+        assert all("max-tokens" in f.reason for f in failures)
+
+    async def test_untruncated_empty_response_keeps_the_generic_reason(
+        self, tmp_path: Path
+    ) -> None:
+        with ResponseCache(tmp_path / "c") as cache, ResultStore(tmp_path / "r") as store:
+            await seed(store)
+            await judge_suite(
+                suite=SUITE,
+                models=["alpha", "beta"],
+                judge_model="referee",
+                completer=FakeJudge({"ab": "no verdict", "ba": "none"}),
+                cache=cache,
+                store=store,
+                config=FAST,
+            )
+            failures = store.judge_failures(SUITE.name)
         assert all("no verdict token" in f.reason for f in failures)
 
     async def test_call_failure_is_recorded_not_raised(self, tmp_path: Path) -> None:

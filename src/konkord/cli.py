@@ -212,6 +212,14 @@ def judge(
     max_attempts: Annotated[
         int, typer.Option("--max-attempts", min=1, help="Attempts per call before giving up.")
     ] = 4,
+    max_tokens: Annotated[
+        int,
+        typer.Option(
+            "--max-tokens",
+            min=1,
+            help="Output token cap per judge call. A reasoning judge needs room to think.",
+        ),
+    ] = 8192,
 ) -> None:
     """Score every model pair with an LLM judge, in both orderings."""
     import asyncio
@@ -239,7 +247,11 @@ def judge(
                     completer=LiteLLMCompleter(),
                     cache=cache,
                     store=store,
-                    config=JudgeConfig(concurrency=concurrency, max_attempts=max_attempts),
+                    config=JudgeConfig(
+                        concurrency=concurrency,
+                        max_attempts=max_attempts,
+                        max_tokens=max_tokens,
+                    ),
                 )
             )
         except JudgeError as exc:

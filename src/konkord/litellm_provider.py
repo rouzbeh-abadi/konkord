@@ -74,6 +74,7 @@ class LiteLLMCompleter:
             cost_usd=cost,
             latency_ms=latency_ms,
             cost_known=cost_known,
+            truncated=_truncated(raw),
         )
 
 
@@ -84,6 +85,14 @@ def _text(raw: Any) -> str:
         return ""
     content = getattr(choices[0].message, "content", None)
     return content if isinstance(content, str) else ""
+
+
+def _truncated(raw: Any) -> bool:
+    """Whether the provider stopped at the token cap rather than finishing."""
+    choices = getattr(raw, "choices", None)
+    if not choices:
+        return False
+    return getattr(choices[0], "finish_reason", None) == "length"
 
 
 def _usage(raw: Any, field: str) -> int:

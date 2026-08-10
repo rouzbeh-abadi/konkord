@@ -320,7 +320,10 @@ def failure(matchup: Matchup, judge_model: str, reason: str, raw: str) -> JudgeF
 class JudgeConfig:
     concurrency: int = 8
     max_attempts: int = 4
-    max_tokens: int = 1024
+    #: Generous on purpose. A reasoning judge spends most of its budget before
+    #: emitting any visible text, and a cap that starves it returns an empty
+    #: response that looks like a refusal. 1024 lost 72% of verdicts in testing.
+    max_tokens: int = 8192
     initial_backoff_s: float = 1.0
     max_backoff_s: float = 30.0
 
@@ -461,6 +464,7 @@ async def _judge_one(
         cost += spent
         raw = response.text
 
+        truncated = response.truncated
         position = parse_verdict(raw)
         if position is not None:
             store.record_comparison(
@@ -474,9 +478,12 @@ async def _judge_one(
             )
             return "judged", cost
 
-    store.record_judge_failure(
-        suite_name, failure(matchup, judge_model, "no verdict token in response", raw)
+    reason = (
+        "response hit the token cap before a verdict; raise --max-tokens"
+        if truncated
+        else "no verdict token in response"
     )
+    store.record_judge_failure(suite_name, failure(matchup, judge_model, reason, raw))
     return "unparseable", cost
 
 

@@ -55,6 +55,10 @@ class CompletionResponse:
     cost_usd: float
     latency_ms: int
     cost_known: bool = True
+    #: The provider stopped because it hit the token cap. A reasoning model can
+    #: burn the whole budget before emitting any visible text, which looks
+    #: identical to a refusal unless this is recorded.
+    truncated: bool = False
 
 
 class Completer(Protocol):

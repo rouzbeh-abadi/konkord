@@ -63,6 +63,7 @@ class ResponseCache:
                 "cost_usd": response.cost_usd,
                 "latency_ms": response.latency_ms,
                 "cost_known": response.cost_known,
+                "truncated": response.truncated,
             },
         )
 
