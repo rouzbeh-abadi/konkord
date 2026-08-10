@@ -81,16 +81,46 @@ _BARE_MODEL_FAMILIES: tuple[tuple[str, str], ...] = (
     ("o3", "openai"),
     ("o4", "openai"),
     ("chatgpt", "openai"),
+    ("openai", "openai"),
     ("claude", "anthropic"),
+    ("anthropic", "anthropic"),
     ("gemini", "google"),
+    ("google", "google"),
     ("command", "cohere"),
+    ("cohere", "cohere"),
     ("mistral", "mistral"),
     ("codestral", "mistral"),
     ("llama", "meta"),
+    ("meta", "meta"),
     ("deepseek", "deepseek"),
     ("qwen", "alibaba"),
     ("grok", "xai"),
 )
+
+#: Prefixes that route to somebody else's model rather than serving their own.
+#:
+#: The family is whatever they route *to*. `openrouter/anthropic/claude-opus-5`
+#: and a direct `anthropic/claude-opus-5` are the same model from the same
+#: vendor, and treating the router as a family of its own would let a judge
+#: rank its own family through an aggregator. That is a silent hole in the
+#: self-preference control rather than a cosmetic naming issue.
+_ROUTERS: frozenset[str] = frozenset(
+    {"openrouter", "litellm_proxy", "bedrock", "vertex_ai", "azure", "azure_ai"}
+)
+
+#: Vendor slugs that differ between routers and litellm's own prefixes.
+_FAMILY_ALIASES: dict[str, str] = {
+    "mistralai": "mistral",
+    "meta-llama": "meta",
+    "meta_llama": "meta",
+    "x-ai": "xai",
+    "qwen": "alibaba",
+    "alibaba": "alibaba",
+    "google-vertex": "google",
+    # litellm reaches Google AI Studio as `gemini/`, routers list it as `google/`.
+    "gemini": "google",
+    "googleai": "google",
+}
 
 
 class JudgeError(Exception):
@@ -100,17 +130,32 @@ class JudgeError(Exception):
 def provider_family(model: str) -> str:
     """Best-effort provider family for a litellm model string.
 
-    `anthropic/claude-opus-5` and a bare `claude-opus-5` are the same family.
-    An unrecognised bare name falls back to the name itself, which is
-    conservative: it will not silently look like a different family.
+    Routing prefixes are peeled off first, so `openrouter/anthropic/claude-opus-5`,
+    `vertex_ai/claude-opus-5` and a bare `claude-opus-5` all resolve to
+    `anthropic`. Without that, a judge reached through an aggregator would look
+    like a different family from the same model reached directly, and the
+    self-preference check would pass something it exists to refuse.
+
+    An unrecognised name falls back to itself, which is the conservative
+    direction: it may refuse a judge unnecessarily, but it will not wave one
+    through by pretending two vendors are different.
     """
     name = model.strip().lower()
-    if "/" in name:
-        return name.split("/", 1)[0]
+
+    # Peel routers, bounded so a pathological name cannot loop.
+    for _ in range(4):
+        head, separator, rest = name.partition("/")
+        if not separator or head not in _ROUTERS:
+            break
+        name = rest
+
+    head, separator, _ = name.partition("/")
+    if separator:
+        return _FAMILY_ALIASES.get(head, head)
     for prefix, family in _BARE_MODEL_FAMILIES:
         if name.startswith(prefix):
             return family
-    return name
+    return _FAMILY_ALIASES.get(name, name)
 
 
 def check_judge_independence(judge_model: str, ranked: Iterable[str]) -> None:

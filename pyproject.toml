@@ -23,6 +23,7 @@ dependencies = [
     "litellm>=1.94.1",
     "numpy>=2.5.1",
     "pydantic>=2.13.4",
+    "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "tenacity>=9.1.4",
     "typer>=0.16",

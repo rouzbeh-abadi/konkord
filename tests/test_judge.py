@@ -73,6 +73,53 @@ class TestProviderFamily:
         assert provider_family("some-new-model") == "some-new-model"
 
 
+class TestRoutedModels:
+    """A router is not a family. Treating it as one is a hole, not a cosmetic bug.
+
+    Reaching a model through OpenRouter must resolve to the vendor behind it,
+    or a judge could rank its own family simply by being routed differently.
+    """
+
+    def test_openrouter_resolves_to_the_vendor_behind_it(self) -> None:
+        assert provider_family("openrouter/anthropic/claude-opus-5") == "anthropic"
+        assert provider_family("openrouter/openai/gpt-5") == "openai"
+        assert provider_family("openrouter/google/gemini-2.5-pro") == "google"
+
+    def test_routed_and_direct_are_the_same_family(self) -> None:
+        assert provider_family("openrouter/anthropic/claude-opus-5") == provider_family(
+            "anthropic/claude-opus-5"
+        )
+        assert provider_family("openrouter/openai/gpt-5") == provider_family("gpt-5")
+
+    def test_vendor_slugs_are_normalised(self) -> None:
+        assert provider_family("openrouter/meta-llama/llama-3.3-70b") == "meta"
+        assert provider_family("openrouter/mistralai/mistral-large") == "mistral"
+        assert provider_family("openrouter/x-ai/grok-4") == "xai"
+
+    def test_gemini_and_google_prefixes_agree(self) -> None:
+        assert provider_family("gemini/gemini-2.5-pro") == provider_family(
+            "openrouter/google/gemini-2.5-pro"
+        )
+
+    def test_other_hosts_are_peeled_too(self) -> None:
+        assert provider_family("vertex_ai/claude-opus-5") == "anthropic"
+        assert provider_family("bedrock/anthropic.claude-3") == "anthropic"
+        assert provider_family("azure/gpt-5") == "openai"
+
+    def test_a_routed_judge_cannot_rank_its_own_family(self) -> None:
+        """The hole this fix closes."""
+        with pytest.raises(JudgeError, match="self-preference"):
+            check_judge_independence(
+                "openrouter/anthropic/claude-opus-5", ["anthropic/claude-haiku-4-5"]
+            )
+
+    def test_a_routed_judge_from_a_different_family_is_allowed(self) -> None:
+        check_judge_independence(
+            "openrouter/mistralai/mistral-large",
+            ["anthropic/claude-opus-5", "openai/gpt-5"],
+        )
+
+
 class TestJudgeIndependence:
     def test_different_family_is_allowed(self) -> None:
         check_judge_independence("gpt-5", ["claude-opus-5", "gemini-2.5-pro"])

@@ -15,7 +15,9 @@ wheels/
 .pytest_cache/
 .coverage
 
-# Secrets -- never commit; history keeps them even after deletion
+# Secrets. Never commit these: git history keeps them even after deletion.
+# `.env` holds provider API keys and is read by the CLI at startup.
+# `.env.example` is the committed template and must stay free of real values.
 .env
 .env.*
 !.env.example

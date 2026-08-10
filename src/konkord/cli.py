@@ -47,6 +47,18 @@ def _version_callback(value: bool) -> None:
         raise typer.Exit
 
 
+def _load_env() -> None:
+    """Read `.env` from the working directory, if there is one.
+
+    Values already exported win, so a shell export overrides the file rather
+    than the other way round. That keeps a one-off `OPENAI_API_KEY=... konkord
+    run` doing what it looks like it does.
+    """
+    from dotenv import load_dotenv
+
+    load_dotenv(Path.cwd() / ".env", override=False)
+
+
 @app.callback()
 def main(
     version: Annotated[
@@ -60,6 +72,7 @@ def main(
     ] = False,
 ) -> None:
     """Konkord: LLM eval harness with judge calibration."""
+    _load_env()
 
 
 @app.command()

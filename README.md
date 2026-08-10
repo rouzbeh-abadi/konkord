@@ -26,14 +26,24 @@ cd konkord
 uv sync --all-extras
 ```
 
-Set credentials for whichever providers you are ranking. Konkord calls models through
-[litellm](https://docs.litellm.ai/docs/providers), so the usual environment variables apply:
+Set credentials for whichever providers you are ranking. Copy the template and fill in the keys
+you actually have:
 
 ```bash
-export OPENAI_API_KEY=...
-export ANTHROPIC_API_KEY=...
-export GEMINI_API_KEY=...
+cp .env.example .env
 ```
+
+`.env` is gitignored and read at startup. Anything already exported in your shell wins over it, so
+a one-off `OPENAI_API_KEY=... konkord run` still does what it looks like. Plain exports work too if
+you would rather not keep a file.
+
+**[OpenRouter](https://openrouter.ai) reaches many vendors with one key.** Set `OPENROUTER_API_KEY`
+and name models as `openrouter/anthropic/claude-opus-5`. Konkord resolves the vendor *behind* the
+router, so an OpenRouter judge is still refused when it shares a provider family with a model being
+ranked. Reaching the same model through a router does not make it a different family.
+
+Set a spending cap on each key in the provider's dashboard. Storage hygiene stops a key leaking; a
+cap stops a leak or a runaway loop from being expensive.
 
 Then the whole pipeline. Substitute your own models; the judge must come from a provider family
 that is not being ranked:
@@ -89,8 +99,10 @@ is recorded as a tie, and the **order-flip rate** is printed: a high flip rate m
 deciding on position rather than content, and the ranking built on it is not worth much.
 
 A judge from the same provider family as any ranked model is refused outright, because self-preference
-bias is not something this tool can correct for. Verdicts that cannot be parsed are retried once and
-then recorded in a `judge_failures` table, never coerced into a winner.
+bias is not something this tool can correct for. Routing prefixes are peeled off first, so
+`openrouter/anthropic/claude-opus-5`, `vertex_ai/claude-opus-5` and a bare `claude-opus-5` all count
+as the same family. Verdicts that cannot be parsed are retried once and then recorded in a
+`judge_failures` table, never coerced into a winner.
 
 ## Labelling
 
