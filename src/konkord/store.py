@@ -216,6 +216,22 @@ class ResultStore:
             ],
         )
 
+    def clear_judge_failure(
+        self, suite: str, task_id: str, model_a: str, model_b: str, order: str
+    ) -> None:
+        """Drop a recorded failure for a matchup that has since been judged.
+
+        Without this the table only ever grows, so a matchup that failed once
+        and succeeded on a later pass stays listed as broken forever. The
+        failures are evidence about the judge, and evidence that is stale is
+        worse than none.
+        """
+        self._connection.execute(
+            "DELETE FROM judge_failures WHERE suite = ? AND task_id = ? "
+            'AND model_a = ? AND model_b = ? AND "order" = ?',
+            [suite, task_id, model_a, model_b, order],
+        )
+
     def judge_failures(self, suite: str) -> list[JudgeFailure]:
         rows = self._connection.execute(
             """

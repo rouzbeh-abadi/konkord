@@ -467,6 +467,9 @@ async def _judge_one(
         truncated = response.truncated
         position = parse_verdict(raw)
         if position is not None:
+            store.clear_judge_failure(
+                suite_name, matchup.task.id, matchup.model_a, matchup.model_b, matchup.order
+            )
             store.record_comparison(
                 suite_name,
                 to_comparison(

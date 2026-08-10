@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from konkord.models import Generation
+from konkord.models import Generation, JudgeFailure
 from konkord.store import ResultStore
 
 
@@ -80,3 +80,37 @@ class TestScoping:
         with ResultStore(tmp_path / "r.duckdb") as store:
             store.record("suite", generation(error="denied", output=""))
             assert store.completed("suite") == {("t1", "alpha")}
+
+
+class TestJudgeFailures:
+    def failure(self, task: str = "t1", order: str = "ab") -> JudgeFailure:
+        return JudgeFailure(
+            task_id=task,
+            model_a="alpha",
+            model_b="beta",
+            order=order,  # type: ignore[arg-type]
+            judge_model="referee",
+            reason="no verdict token in response",
+            raw="",
+        )
+
+    def test_recorded_and_read_back(self, tmp_path: Path) -> None:
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.record_judge_failure("suite", self.failure())
+            assert len(store.judge_failures("suite")) == 1
+
+    def test_clearing_removes_only_the_matching_matchup(self, tmp_path: Path) -> None:
+        """A matchup judged on a later pass must stop being listed as broken."""
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.record_judge_failure("suite", self.failure(order="ab"))
+            store.record_judge_failure("suite", self.failure(order="ba"))
+            store.record_judge_failure("suite", self.failure(task="t2"))
+            store.clear_judge_failure("suite", "t1", "alpha", "beta", "ab")
+            left = store.judge_failures("suite")
+        assert len(left) == 2
+        assert ("t1", "ab") not in {(f.task_id, f.order) for f in left}
+
+    def test_clearing_something_absent_is_harmless(self, tmp_path: Path) -> None:
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.clear_judge_failure("suite", "nope", "a", "b", "ab")
+            assert store.judge_failures("suite") == []
