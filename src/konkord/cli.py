@@ -152,7 +152,7 @@ def run(
         f"\ngenerated {summary.generated}, cached {summary.cached}, "
         f"failed {summary.failed}, already present {summary.skipped}"
     )
-    typer.echo(f"cost ${summary.cost_usd:.4f}")
+    typer.echo(f"cost {_money(summary.cost_usd)}")
     if summary.models_without_pricing:
         typer.secho(
             "warning: no pricing data for "
@@ -162,6 +162,17 @@ def run(
         )
     if summary.failed:
         raise typer.Exit(code=1)
+
+
+def _money(amount: float) -> str:
+    """Render a cost without letting a real charge display as free.
+
+    Four decimals turns a genuine $0.0000033 into `$0.0000`, which reads as
+    free. A project that argues about honest numbers should not round one away.
+    """
+    if amount and abs(amount) < 0.0001:
+        return f"${amount:.8f}".rstrip("0")
+    return f"${amount:.4f}"
 
 
 def _parse_models(raw: str) -> list[str]:
@@ -239,7 +250,7 @@ def judge(
         f"judged {summary.judged}, already present {summary.skipped}, "
         f"unjudgeable {summary.unjudgeable}"
     )
-    typer.echo(f"cost ${summary.cost_usd:.4f}")
+    typer.echo(f"cost {_money(summary.cost_usd)}")
     typer.echo(
         f"order-flip rate {summary.flip_rate:.1%} "
         f"({summary.flips} of {summary.pairs} pairs disagreed between orderings)"

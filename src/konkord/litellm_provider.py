@@ -93,7 +93,26 @@ def _usage(raw: Any, field: str) -> int:
 
 
 def _price(raw: Any) -> tuple[float, bool]:
-    """Cost in USD, and whether litellm actually knew how to price this model."""
+    """Cost in USD, and whether it is actually known.
+
+    Two sources, in order of trustworthiness:
+
+    1. `_hidden_params["response_cost"]`, which litellm attaches during the call
+       using the provider's own figure where one is returned. That is exact.
+    2. `completion_cost()`, a lookup against litellm's price table. An
+       approximation, and not populated for every model string: routed names
+       like `openrouter/openai/gpt-4o-mini` are missing from it even when the
+       call itself priced fine.
+
+    Preferring the attached value is what stops a whole leaderboard of routed
+    models reporting as free.
+    """
+    hidden = getattr(raw, "_hidden_params", None)
+    if isinstance(hidden, dict):
+        attached = hidden.get("response_cost")
+        if isinstance(attached, (int, float)) and not isinstance(attached, bool) and attached >= 0:
+            return float(attached), True
+
     try:
         cost = litellm.completion_cost(completion_response=raw)
     except Exception:  # noqa: BLE001 - litellm raises assorted types for unknown models

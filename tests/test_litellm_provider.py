@@ -50,9 +50,12 @@ class Response:
         content: object = "an answer",
         prompt_tokens: object = 11,
         completion_tokens: object = 7,
+        hidden: dict[str, object] | None = None,
     ) -> None:
         self.choices = [Choice(content)]
         self.usage = Usage(prompt_tokens, completion_tokens)
+        # litellm attaches the cost it computed during the call here.
+        self._hidden_params: dict[str, object] = {} if hidden is None else hidden
 
 
 class Bare:
@@ -130,6 +133,44 @@ class TestPrice:
     def test_non_numeric_cost_is_flagged(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(litellm, "completion_cost", lambda **_: None)
         assert _price(Response()) == (0.0, False)
+
+
+class TestAttachedCost:
+    """litellm attaches an exact cost during the call; the table lookup is a fallback.
+
+    Routed model names such as `openrouter/openai/gpt-4o-mini` are absent from
+    the price table even when the call itself priced fine, so preferring the
+    attached value is what stops routed models reporting as free.
+    """
+
+    def test_attached_cost_is_preferred(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(litellm, "completion_cost", lambda **_: 999.0)
+        assert _price(Response(hidden={"response_cost": 3.3e-06})) == (3.3e-06, True)
+
+    def test_falls_back_when_nothing_is_attached(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(litellm, "completion_cost", lambda **_: 0.5)
+        assert _price(Response(hidden={})) == (0.5, True)
+
+    def test_unmapped_routed_model_still_prices_from_the_attached_value(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """The exact case seen live: the table raises, the attached value stands."""
+
+        def unmapped(**_: object) -> float:
+            raise ValueError("This model isn't mapped yet")
+
+        monkeypatch.setattr(litellm, "completion_cost", unmapped)
+        assert _price(Response(hidden={"response_cost": 1.2e-05})) == (1.2e-05, True)
+
+    def test_a_genuinely_free_call_is_known_not_unknown(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(litellm, "completion_cost", lambda **_: 0.5)
+        assert _price(Response(hidden={"response_cost": 0.0})) == (0.0, True)
+
+    def test_null_attached_cost_falls_through(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(litellm, "completion_cost", lambda **_: 0.25)
+        assert _price(Response(hidden={"response_cost": None})) == (0.25, True)
 
 
 class TestClassification:
