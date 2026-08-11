@@ -170,7 +170,9 @@ A report produced before any labelling still runs, and says plainly that it is u
 `site/` is a static page set: a leaderboard, a methodology page, and a per-task browser, published
 at [konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io). It reads `results.json` from
 its own directory and computes nothing at load time, so there is no build step and no server.
-`wrangler.jsonc` holds the deployment config; every push to `main` redeploys.
+`wrangler.jsonc` holds the deployment config, and `.github/workflows/deploy.yml` uploads the
+directory whenever a push to `main` touches it. Regenerating `results.json` is therefore the whole
+publishing step; there is nothing to rebuild.
 
 ```bash
 konkord report --suite suites/python_codegen.yaml --out site/results.json
