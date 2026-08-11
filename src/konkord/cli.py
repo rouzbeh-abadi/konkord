@@ -1,7 +1,8 @@
 """Typer entrypoint.
 
-The command surface is fixed here in phase 1 so it stops moving; each later phase
-replaces one stub with a real implementation.
+Every command here does the thing it names. A command that is planned but not
+built does not get a stub: a stub in `--help` advertises capability the tool does
+not have, which is the failure mode this project exists to argue against.
 """
 
 import sys
@@ -31,16 +32,6 @@ SuiteOption = Annotated[
 ]
 
 
-def _not_implemented(command: str, phase: int) -> None:
-    """Fail loudly for a command whose phase has not landed yet."""
-    typer.secho(
-        f"konkord {command}: not implemented yet (build phase {phase}).",
-        err=True,
-        fg=typer.colors.YELLOW,
-    )
-    raise typer.Exit(code=1)
-
-
 def _version_callback(value: bool) -> None:
     if value:
         typer.echo(f"konkord {__version__}")
@@ -61,7 +52,9 @@ def _load_env() -> None:
 
 @app.callback()
 def main(
-    version: Annotated[
+    # Consumed by its own eager callback before the body runs, so the body never
+    # reads it. That is typer's idiom for a flag that short-circuits.
+    version: Annotated[  # noqa: ARG001
         bool,
         typer.Option(
             "--version",
@@ -183,12 +176,6 @@ def _parse_models(raw: str) -> list[str]:
         typer.secho("--models requires at least one model name", err=True, fg=typer.colors.RED)
         raise typer.Exit(code=1)
     return unique
-
-
-@app.command()
-def check(suite: SuiteOption) -> None:
-    """Run the suite's deterministic checks against each generation."""
-    _not_implemented("check", phase=4)
 
 
 @app.command()

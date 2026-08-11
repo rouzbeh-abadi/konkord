@@ -1,7 +1,7 @@
 """Smoke tests for the command surface.
 
-These assert the CLI is wired up, not that any phase works. Real behaviour is
-tested in the phase that introduces it.
+These assert the CLI is wired up. Each command's real behaviour is tested in the
+module that implements it.
 """
 
 from typer.testing import CliRunner
@@ -11,7 +11,7 @@ from konkord.cli import app
 
 runner = CliRunner()
 
-COMMANDS = ["run", "check", "judge", "label", "calibrate", "report"]
+COMMANDS = ["run", "judge", "label", "calibrate", "report"]
 
 
 def test_version_flag() -> None:
@@ -32,8 +32,13 @@ def test_no_args_shows_help_without_crashing() -> None:
     assert "Usage:" in result.stdout
 
 
-def test_unimplemented_commands_fail_loudly() -> None:
-    """A stub must exit non-zero, never pretend to succeed."""
-    result = runner.invoke(app, ["check", "--suite", "suites/python_codegen.yaml"])
-    assert result.exit_code == 1
-    assert "not implemented" in result.stderr
+def test_nothing_advertised_is_a_stub() -> None:
+    """`--help` must not list a command that only exists to say it does not work.
+
+    A stub in the help text advertises capability the tool does not have, which
+    is the failure mode this project exists to argue against.
+    """
+    for command in COMMANDS:
+        result = runner.invoke(app, [command, "--help"])
+        assert result.exit_code == 0, command
+        assert "not implemented" not in result.stdout.lower(), command

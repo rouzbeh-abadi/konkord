@@ -2,19 +2,43 @@
 
 Rank LLMs on a task suite, and measure whether the automated judge can be trusted.
 
-The usual pipeline (run models, have an LLM grade the outputs, publish a leaderboard) is
-commodity. Konkord adds one step: the operator hand-labels a sample of comparisons **blind**, and
-every published ranking ships with the judge-versus-human agreement rate attached.
+The usual pipeline (run models, have an LLM grade the outputs, publish a leaderboard) is commodity.
+Konkord adds one step: the operator hand-labels a sample of comparisons **blind**, and every
+published ranking ships with the judge-versus-human agreement rate attached.
 
-If the judge agrees with the human 85% of the time, the leaderboard is credible. If it agrees 55%
-of the time, that is itself the finding.
+## What the first run found
 
-**[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)** publishes whatever this
-produces: the ranking, the exact judge prompt, and every model's answer to every task.
+Three models answered 25 hand-written Python tasks. A fourth model judged every pair blind, in both
+presentation orders. Then a human labelled 75 of those comparisons blind, seeing neither the model
+names nor the judge's opinion.
 
-> **Status: pre-alpha.** Everything except `check` works. `check` exits non-zero and says which
-> build phase it belongs to. No run has been published yet, so the site currently states plainly
-> that it is uncalibrated rather than showing a ranking nothing supports.
+**The judge agreed with the human on 61.3% of them.** That is 46 of 75, 95% CI 50.0% to 71.5%.
+Cohen's kappa was 0.370, where 0 is chance and 1 is perfect.
+
+Split by matchup, the number moves a long way:
+
+| Matchup | Agreement |
+|---|---|
+| gpt-5.4 vs gemini-2.5-flash-lite | 76.0% (19/25) |
+| claude-haiku-4.5 vs gemini-2.5-flash-lite | 56.0% (14/25) |
+| gpt-5.4 vs claude-haiku-4.5 | 52.0% (13/25) |
+
+The judge could tell a strong model from a weak one. Between the two strong models it was at chance:
+52% on a two-way call is a coin flip.
+
+None of that is visible on the leaderboard itself. The ranking separates all three models with
+non-overlapping bootstrap intervals, and it is drawn correctly. But a confidence interval only
+measures how much the judge's verdicts would wobble under resampling. It says nothing about whether
+those verdicts are right. Judging more pairs would have tightened the interval around the same
+error.
+
+Two tasks reached 0% agreement, meaning the judge and the human disagreed on every labelled
+comparison for them. The judge also changed its answer on 20% of pairs when the two answers were
+swapped, deciding on position rather than content. Answer length showed no clean gradient, so this
+run gives no evidence of verbosity bias either way.
+
+The ranking, the judge prompt, every model's answer, and all 150 judged pairs with rationales:
+**[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)**.
 
 ## Quickstart
 
@@ -59,20 +83,20 @@ uv run konkord calibrate --suite $SUITE
 uv run konkord report    --suite $SUITE --out results.json
 ```
 
-`run` and `judge` cost money and take a few minutes. Both are resumable and cache every response,
-so re-running them is free. `label` opens a local app and is the part that needs you: budget a
-couple of hours for 100 comparisons. `calibrate` has nothing to say until those labels exist.
+`run` and `judge` cost money and take a few minutes. The run above came to well under a dollar for
+75 answers and 150 judgements. Both stages are resumable and cache every response, so re-running
+them is free. `label` opens a local app and is the part that needs you: budget an hour or two for
+75 to 100 comparisons. `calibrate` has nothing to say until those labels exist.
 
 ## Commands
 
-| Command | Does | Status |
-|---|---|---|
-| `konkord run` | Generate one output per (task × model) | ✅ |
-| `konkord judge` | Pairwise LLM-as-judge, both orderings | ✅ |
-| `konkord label` | Local blind labeller | ✅ |
-| `konkord calibrate` | Judge-versus-human agreement and kappa | ✅ |
-| `konkord report` | Aggregate into `results.json` | ✅ |
-| `konkord check` | Deterministic graders in a sandbox | phase 4 |
+| Command | Does |
+|---|---|
+| `konkord run` | Generate one output per (task x model) |
+| `konkord judge` | Pairwise LLM-as-judge, both orderings |
+| `konkord label` | Local blind labeller |
+| `konkord calibrate` | Judge-versus-human agreement and kappa |
+| `konkord report` | Aggregate into `results.json` |
 
 ## Running a suite
 
@@ -98,16 +122,19 @@ judge sees "Answer 1" and "Answer 2" and never a model name. If the two ordering
 is recorded as a tie, and the **order-flip rate** is printed: a high flip rate means the judge is
 deciding on position rather than content, and the ranking built on it is not worth much.
 
-A judge from the same provider family as any ranked model is refused outright, because self-preference
-bias is not something this tool can correct for. Routing prefixes are peeled off first, so
-`openrouter/anthropic/claude-opus-5`, `vertex_ai/claude-opus-5` and a bare `claude-opus-5` all count
-as the same family. Verdicts that cannot be parsed are retried once and then recorded in a
-`judge_failures` table, never coerced into a winner.
+A judge from the same provider family as any ranked model is refused outright, because
+self-preference bias is not something this tool can correct for. Routing prefixes are peeled off
+first, so `openrouter/anthropic/claude-opus-5`, `vertex_ai/claude-opus-5` and a bare
+`claude-opus-5` all count as the same family. Verdicts that cannot be parsed are retried once and
+then recorded in a `judge_failures` table, never coerced into a winner.
+
+Give the judge room to answer. The default output cap is 8192 tokens because a reasoning judge on a
+tight cap spends the whole budget thinking and returns nothing: at 1024 tokens, a test run lost 72%
+of its verdicts to truncation. A verdict lost that way is recorded with the cap named as the reason.
 
 ## Labelling
 
 ```bash
-pip install 'konkord[label]'
 konkord label --suite suites/python_codegen.yaml --n 100
 ```
 
@@ -115,6 +142,9 @@ Opens a local Streamlit app showing sampled comparisons side by side, with no mo
 judge verdict visible. Seeing the judge's opinion first would measure suggestibility rather than
 agreement. The sample is stratified across tasks and model pairs, orientation is randomised per
 item, and every label is written immediately, so the session is resumable with the same `--seed`.
+
+This is the slow part and there is no way around it. The whole claim rests on these labels being
+yours.
 
 ## Calibrating and reporting
 
@@ -152,6 +182,12 @@ no human labels, the leaderboard states plainly that it is uncalibrated instead 
 ranking. The methodology page publishes the judge prompt verbatim, and a test fails if that copy
 drifts from the prompt the tool actually sends.
 
+## What this does not do
+
+Nothing here is executed. There is no sandbox, so no answer is compiled, linted or run, and every
+judgement on a published page is a reading of the code rather than a test of it. Suites can declare
+deterministic checks and the loader validates them, but no runner consumes them yet.
+
 ## Development
 
 ```bash
@@ -165,6 +201,10 @@ Lint, type-check and test, the same four commands CI runs:
 uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pytest
 ```
 
+[CONTRIBUTING.md](CONTRIBUTING.md) covers the bar for a change and how to add a task to a suite.
+
 ## License
 
 MIT. Built by [Rouzbeh Abadi](https://github.com/rouzbeh-abadi).
+</content>
+</invoke>

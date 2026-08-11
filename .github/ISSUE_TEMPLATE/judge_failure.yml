@@ -1,0 +1,47 @@
+name: Judge failure
+description: The judge returned something Konkord could not turn into a verdict
+labels: [judge]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Konkord keeps unparseable judge responses rather than guessing a winner from them. The row
+        is already in the `judge_failures` table of your results database, with the raw response
+        attached:
+
+        ```sql
+        SELECT * FROM judge_failures;
+        ```
+
+  - type: input
+    id: judge
+    attributes:
+      label: Judge model
+      placeholder: mistral/mistral-large-latest
+    validations:
+      required: true
+
+  - type: textarea
+    id: rows
+    attributes:
+      label: The failure rows
+      description: Paste them, including the reason and the raw response.
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: rate
+    attributes:
+      label: How often
+      description: How many of the attempted judgements failed this way.
+      placeholder: 12 of 150
+
+  - type: checkboxes
+    id: keys
+    attributes:
+      label: Before you post
+      options:
+        - label: I have checked that the pasted output contains no API keys.
+          required: true
+</content>

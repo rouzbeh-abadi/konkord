@@ -1,0 +1,51 @@
+name: Bug report
+description: Something Konkord did that it should not have
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran and what it did. Paste the output.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `konkord --version`.
+      placeholder: konkord 1.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: models
+    attributes:
+      label: Models involved
+      description: The ranked models and the judge, if the bug involves a call.
+      placeholder: gpt-5, claude-opus-5, judge mistral/mistral-large-latest
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version and operating system.
+      placeholder: Python 3.12.7, macOS 15.2
+
+  - type: checkboxes
+    id: keys
+    attributes:
+      label: Before you post
+      options:
+        - label: I have checked that the pasted output contains no API keys.
+          required: true
+</content>

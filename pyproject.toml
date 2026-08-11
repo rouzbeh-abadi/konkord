@@ -1,6 +1,6 @@
 [project]
 name = "konkord"
-version = "0.1.0"
+version = "1.0.0"
 description = "Rank LLMs on a task suite, and measure whether the automated judge can be trusted."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -9,7 +9,7 @@ license-files = ["LICENSE"]
 authors = [{ name = "Rouzbeh Abadi", email = "rouzbeh.abadi@me.com" }]
 keywords = ["llm", "eval", "benchmark", "judge", "calibration"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
@@ -85,9 +85,7 @@ select = [
 
 [tool.ruff.lint.per-file-ignores]
 # B008: typer's idiom is function defaults holding Option()/Argument() objects.
-# ARG001: command handlers receive their arguments from typer, and phase-1 stubs
-#         do not consume them yet.
-"src/konkord/cli.py" = ["ARG001", "B008"]
+"src/konkord/cli.py" = ["B008"]
 # litellm returns untyped response objects; the helpers that unpack them are the
 # one place `Any` is unavoidable, and they exist to contain it.
 "src/konkord/litellm_provider.py" = ["ANN401"]
