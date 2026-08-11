@@ -33,8 +33,11 @@ site/dist/
 site/node_modules/
 site/.astro/
 
-# Machine-local Claude Code settings; launch.json is shared deliberately
-.claude/settings.local.json
+# Wrangler's local state, written by `wrangler deploy`
+.wrangler/
+
+# Editor and agent tooling: local to whoever is working, not part of the project
+.claude/
 
 # macOS
 .DS_Store

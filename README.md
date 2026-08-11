@@ -6,39 +6,24 @@ The usual pipeline (run models, have an LLM grade the outputs, publish a leaderb
 Konkord adds one step: the operator hand-labels a sample of comparisons **blind**, and every
 published ranking ships with the judge-versus-human agreement rate attached.
 
-## What the first run found
+Why it is worth the extra step: on the first published run the judge separated a strong model from
+a weak one, and was at chance between the two strong ones. A leaderboard shows none of that. Its
+confidence intervals measure how much the judge's verdicts wobble under resampling, not whether
+those verdicts are right, so judging more pairs only tightens the interval around the same error.
 
-Three models answered 25 hand-written Python tasks. A fourth model judged every pair blind, in both
-presentation orders. Then a human labelled 75 of those comparisons blind, seeing neither the model
-names nor the judge's opinion.
-
-**The judge agreed with the human on 61.3% of them.** That is 46 of 75, 95% CI 50.0% to 71.5%.
-Cohen's kappa was 0.370, where 0 is chance and 1 is perfect.
-
-Split by matchup, the number moves a long way:
-
-| Matchup | Agreement |
-|---|---|
-| gpt-5.4 vs gemini-2.5-flash-lite | 76.0% (19/25) |
-| claude-haiku-4.5 vs gemini-2.5-flash-lite | 56.0% (14/25) |
-| gpt-5.4 vs claude-haiku-4.5 | 52.0% (13/25) |
-
-The judge could tell a strong model from a weak one. Between the two strong models it was at chance:
-52% on a two-way call is a coin flip.
-
-None of that is visible on the leaderboard itself. The ranking separates all three models with
-non-overlapping bootstrap intervals, and it is drawn correctly. But a confidence interval only
-measures how much the judge's verdicts would wobble under resampling. It says nothing about whether
-those verdicts are right. Judging more pairs would have tightened the interval around the same
-error.
-
-Two tasks reached 0% agreement, meaning the judge and the human disagreed on every labelled
-comparison for them. The judge also changed its answer on 20% of pairs when the two answers were
-swapped, deciding on position rather than content. Answer length showed no clean gradient, so this
-run gives no evidence of verbosity bias either way.
-
-The ranking, the judge prompt, every model's answer, and all 150 judged pairs with rationales:
+The current run, the judge prompt, every answer and every verdict:
 **[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)**.
+
+## Scope
+
+**1.0.0 judges programming tasks.** The suite format itself is domain-neutral, and the store,
+runner, labeller and calibration have no idea what a task is about, so a suite of SQL, shell or
+any other code works today. But the judge grades on correctness first and idiomatic quality
+second, and that rubric is a constant in the source rather than something a suite carries.
+
+Pointing it at summarisation, translation or extraction means editing `JUDGE_SYSTEM` in
+[judge.py](src/konkord/judge.py). Making the rubric part of the suite, so a domain brings its own,
+is the next release.
 
 ## Quickstart
 
@@ -188,7 +173,10 @@ drifts from the prompt the tool actually sends.
 
 Nothing here is executed. There is no sandbox, so no answer is compiled, linted or run, and every
 judgement on a published page is a reading of the code rather than a test of it. Suites can declare
-deterministic checks and the loader validates them, but no runner consumes them yet.
+deterministic checks and the loader carries them through, but nothing yet checks that a check name
+means anything, and no runner consumes them.
+
+The judge's rubric is also fixed to code; see [Scope](#scope).
 
 ## Development
 
