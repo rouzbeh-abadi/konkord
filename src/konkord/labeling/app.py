@@ -133,4 +133,7 @@ def main() -> None:
         )
 
 
-main()
+# Guarded so importing this module is side-effect free. Streamlit executes the
+# script as `__main__`, so the app still starts when run properly.
+if __name__ == "__main__":
+    main()

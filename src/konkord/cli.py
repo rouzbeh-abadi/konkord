@@ -302,7 +302,10 @@ def label(
         )
         raise typer.Exit(code=1)
 
-    from konkord.labeling import app as labeler
+    # Resolved as a path, never imported: app.py runs the Streamlit app at module
+    # scope, so importing it here would execute the labeller inside this process
+    # before the environment below is set.
+    labeller = Path(__file__).parent / "labeling" / "app.py"
 
     environment = dict(os.environ)
     environment.update(
@@ -318,7 +321,7 @@ def label(
         "-m",
         "streamlit",
         "run",
-        str(Path(labeler.__file__).resolve()),
+        str(labeller.resolve()),
         "--server.port",
         str(port),
         "--server.headless",

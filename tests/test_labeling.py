@@ -125,3 +125,26 @@ class TestVerdictMapping:
         for order in ("ab", "ba"):
             item = LabelItem(task_id="t1", model_a="alpha", model_b="beta", order=order)
             assert to_verdict(item, "tie") == "tie"
+
+
+class TestAppIsImportSafe:
+    """The labeller module must not do anything when imported.
+
+    `konkord label` resolves the app by path precisely so it never imports it,
+    but a module that runs a Streamlit app at import time is a trap for anything
+    else that touches it. This failed for real: the CLI imported the module to
+    read `__file__`, which executed the app before its environment was set.
+    """
+
+    def test_importing_the_app_does_not_run_it(self) -> None:
+        import importlib
+
+        module = importlib.import_module("konkord.labeling.app")
+        assert hasattr(module, "main")
+
+    def test_the_cli_never_imports_the_app(self) -> None:
+        from pathlib import Path
+
+        source = (Path(__file__).resolve().parents[1] / "src/konkord/cli.py").read_text()
+        assert "from konkord.labeling import app" not in source
+        assert "import konkord.labeling.app" not in source
