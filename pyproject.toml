@@ -1,6 +1,6 @@
 [project]
 name = "konkord"
-version = "1.0.0"
+version = "1.1.0"
 description = "Rank LLMs on a task suite, and measure whether the automated judge can be trusted."
 readme = "README.md"
 requires-python = ">=3.12"

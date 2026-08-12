@@ -4,6 +4,19 @@ context: >-
   Target Python 3.12. Standard library only, no third-party dependencies.
   Fully type-annotated. Return one self-contained module and nothing else.
 
+# What "better" means here, dropped into the judge's fixed frame. The frame owns
+# the response format and the instruction to ignore length; this owns the
+# criteria. Both the judge and the human labeller are shown this text, so they
+# are grading against the same stated standard.
+rubric: |
+  1. Correctness. Does the answer actually do what the task asked, including the
+     edge cases the task names? A subtly wrong answer loses to a plainly correct
+     one, however well written.
+  2. Idiomatic quality. Given equal correctness, prefer the answer a competent
+     reviewer would rather maintain.
+
+answer_language: python
+
 checks_default: [compiles, ruff_clean]
 
 tasks:

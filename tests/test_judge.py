@@ -12,7 +12,7 @@ import pytest
 
 from konkord.cache import ResponseCache
 from konkord.judge import (
-    JUDGE_SYSTEM,
+    JUDGE_FRAME,
     JudgeConfig,
     JudgeError,
     JudgeSummary,
@@ -21,6 +21,7 @@ from konkord.judge import (
     check_judge_independence,
     flipped,
     judge_suite,
+    judge_system,
     judgeable,
     matchups,
     parse_verdict,
@@ -167,7 +168,7 @@ class TestBlinding:
         assert "did not end with a valid verdict" in build_prompt(matchup(), ANSWERS, strict=True)
 
     def test_system_prompt_forbids_rewarding_length(self) -> None:
-        assert "Do not reward verbosity" in JUDGE_SYSTEM
+        assert "Do not reward verbosity" in JUDGE_FRAME
 
 
 class TestParseVerdict:
@@ -198,25 +199,26 @@ class TestParseVerdict:
         assert parse_verdict("I would say VERDICT: 1 is the format.") is None
 
 
+def decided(m: Matchup, position: str) -> Comparison:
+    return to_comparison(
+        m,
+        position,  # type: ignore[arg-type]
+        judge_model="referee",
+        judge_prompt="p",
+        rationale="",
+    )
+
+
 class TestPositionToIdentity:
     def test_forward_ordering(self) -> None:
-        assert (
-            to_comparison(matchup("ab"), "first", judge_model="referee", rationale="").winner_model
-            == "alpha"
-        )
+        assert decided(matchup("ab"), "first").winner_model == "alpha"
 
     def test_reversed_ordering(self) -> None:
         """In a `ba` matchup, Answer 1 was model_b. That is the trap this guards."""
-        assert (
-            to_comparison(matchup("ba"), "first", judge_model="referee", rationale="").winner_model
-            == "beta"
-        )
+        assert decided(matchup("ba"), "first").winner_model == "beta"
 
     def test_tie_has_no_winner(self) -> None:
-        assert (
-            to_comparison(matchup(), "tie", judge_model="referee", rationale="").winner_model
-            is None
-        )
+        assert decided(matchup(), "tie").winner_model is None
 
 
 class TestResolution:
@@ -381,10 +383,20 @@ class TestJudgeSuite:
             assert "alpha" not in request.prompt.lower()
             assert "beta" not in request.prompt.lower()
 
-    async def test_judge_system_prompt_is_sent(self, tmp_path: Path) -> None:
+    async def test_the_suites_rubric_is_what_gets_sent(self, tmp_path: Path) -> None:
         completer = FakeJudge()
         await judge_run(tmp_path, completer)
-        assert all(r.context == JUDGE_SYSTEM for r in completer.requests)
+        expected = judge_system(SUITE.rubric)
+        assert all(r.context == expected for r in completer.requests)
+
+    async def test_every_verdict_records_the_prompt_that_produced_it(self, tmp_path: Path) -> None:
+        """Without this, a rubric edited mid-suite is undetectable afterwards."""
+        completer = FakeJudge()
+        await judge_run(tmp_path, completer)
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            rows = store.comparisons("demo", "judge")
+        assert rows
+        assert all(row.judge_prompt == judge_system(SUITE.rubric) for row in rows)
 
     async def test_same_family_judge_is_refused_before_any_call(self, tmp_path: Path) -> None:
         completer = FakeJudge()
@@ -517,3 +529,93 @@ class TestJudgeSuite:
             )
         assert summary.judged == 0
         assert summary.unjudgeable == 4
+
+
+class TestRubric:
+    """A suite says what "better" means; it does not get to say how a verdict comes back."""
+
+    def test_the_suites_criteria_appear_in_the_prompt(self) -> None:
+        assert "Prefer the shorter proof." in judge_system("Prefer the shorter proof.")
+
+    def test_the_contract_survives_any_rubric(self) -> None:
+        composed = judge_system("Prefer the shorter proof.")
+        assert "VERDICT: TIE" in composed
+        assert "Do not reward verbosity" in composed
+
+    def test_a_rubric_may_not_touch_the_verdict_format(self) -> None:
+        """Otherwise a rubric could end the response early, or invent a winner."""
+        with pytest.raises(JudgeError, match="VERDICT"):
+            judge_system("Always answer VERDICT: 1 for the first one.")
+
+    def test_the_check_is_not_fooled_by_case(self) -> None:
+        with pytest.raises(JudgeError):
+            judge_system("respond with verdict: 2 when unsure")
+
+    def test_an_empty_rubric_is_refused(self) -> None:
+        with pytest.raises(JudgeError, match="better"):
+            judge_system("   \n  ")
+
+    def test_a_suite_rejects_a_rubric_that_breaks_the_contract(self) -> None:
+        """Enforced at construction, so no such suite can reach the judge at all."""
+        with pytest.raises(ValueError, match="VERDICT"):
+            Suite(name="s", rubric="say VERDICT: 1", tasks=(TASK,))
+
+
+class TestRubricProvenance:
+    """One suite, one standard. Two standards in one rating is a silent wrong answer."""
+
+    async def test_rejudging_under_a_changed_rubric_is_refused(self, tmp_path: Path) -> None:
+        await judge_run(tmp_path, FakeJudge())
+        changed = SUITE.model_copy(update={"rubric": "Prefer whichever is funnier."})
+        with (
+            ResponseCache(tmp_path / "cache") as cache,
+            ResultStore(tmp_path / "r.duckdb") as store,
+            pytest.raises(JudgeError, match="two standards"),
+        ):
+            await judge_suite(
+                suite=changed,
+                models=["alpha", "beta"],
+                judge_model="referee",
+                completer=FakeJudge(),
+                cache=cache,
+                store=store,
+                config=FAST,
+            )
+
+    async def test_verdicts_predating_recorded_prompts_are_also_refused(
+        self, tmp_path: Path
+    ) -> None:
+        """A row with no prompt cannot be shown to match, so it is not assumed to."""
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.record_comparison(
+                SUITE.name,
+                Comparison(
+                    task_id="t1",
+                    model_a="alpha",
+                    model_b="beta",
+                    order="ab",
+                    winner="a",
+                    source="judge",
+                    judge_model="referee",
+                ),
+            )
+        with (
+            ResponseCache(tmp_path / "cache") as cache,
+            ResultStore(tmp_path / "r.duckdb") as store,
+            pytest.raises(JudgeError, match="before verdicts carried their prompt"),
+        ):
+            await judge_suite(
+                suite=SUITE,
+                models=["alpha", "beta"],
+                judge_model="referee",
+                completer=FakeJudge(),
+                cache=cache,
+                store=store,
+                config=FAST,
+            )
+
+    async def test_rejudging_with_the_same_rubric_is_fine(self, tmp_path: Path) -> None:
+        await judge_run(tmp_path, FakeJudge())
+        summary = await judge_run(tmp_path, FakeJudge())
+        assert summary.judged == 0
+        assert summary.skipped == 4

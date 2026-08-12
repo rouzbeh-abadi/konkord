@@ -1,15 +1,16 @@
 """The site is a static file set, so what can be tested is that it stays honest.
 
-The methodology page publishes the judge prompt verbatim, and a published prompt
-that has quietly drifted from the one the tool sends is worse than no prompt at
-all. That is the drift this module fails on.
+The methodology page publishes the judge prompt, and a published prompt that has
+quietly drifted from the one the tool sends is worse than no prompt at all. The
+page therefore holds no copy of its own: it renders whatever the run recorded.
+These tests fail if a copy reappears.
 """
 
 from pathlib import Path
 
 import pytest
 
-from konkord.judge import JUDGE_SYSTEM
+from konkord.judge import JUDGE_FRAME
 
 SITE = Path(__file__).resolve().parents[1] / "site"
 PAGES = ("index.html", "methodology.html", "browse.html")
@@ -34,14 +35,31 @@ class TestPages:
 
 
 class TestPublishedPrompt:
-    def test_methodology_publishes_the_exact_judge_prompt(self) -> None:
-        """A published prompt that has drifted is worse than none at all."""
+    def test_methodology_reserves_a_slot_for_the_prompt(self) -> None:
         html = (SITE / "methodology.html").read_text(encoding="utf-8")
-        assert JUDGE_SYSTEM.strip() in html
+        assert 'id="judge-prompt"' in html
 
-    def test_the_prompt_needs_no_html_escaping(self) -> None:
-        """Guards the test above: escaping would make it silently pass or fail."""
-        assert not set("<>&") & set(JUDGE_SYSTEM)
+    def test_the_page_keeps_no_copy_of_the_prompt(self) -> None:
+        """A second copy is a copy that can drift. The run is the only source."""
+        html = (SITE / "methodology.html").read_text(encoding="utf-8")
+        for line in JUDGE_FRAME.splitlines():
+            stripped = line.strip()
+            if len(stripped) > 20 and "{rubric}" not in stripped:
+                assert stripped not in html, f"methodology.html has its own copy of: {stripped!r}"
+
+    def test_the_prompt_is_rendered_from_the_run(self) -> None:
+        html = (SITE / "methodology.html").read_text(encoding="utf-8")
+        app = (SITE / "app.js").read_text(encoding="utf-8")
+        assert "renderJudgePrompt" in html
+        assert "data.judge_prompt" in app
+
+    def test_the_prompt_is_never_rendered_as_markup(self) -> None:
+        """A published prompt is the wrong place to start interpreting HTML."""
+        app = (SITE / "app.js").read_text(encoding="utf-8")
+        body = app[app.index("function renderJudgePrompt") :]
+        body = body[: body.index("\nfunction ")]
+        assert "textContent" in body
+        assert "innerHTML" not in body
 
 
 class TestHonesty:

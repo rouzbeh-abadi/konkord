@@ -96,29 +96,12 @@
       <h3>The exact judge prompt</h3>
       <p>
         Published in full, because a leaderboard whose grading instructions are private is not
-        reproducible. This is the system prompt verbatim; a test in the repository fails if this copy
-        drifts from the one the tool actually sends.
+        reproducible. This is not a copy kept in step with the tool: it is stored alongside every
+        verdict and read back out of the run below, so what appears here is the prompt those
+        verdicts were actually produced under. A suite says what "better" means; the response format
+        and the instruction to ignore length belong to the tool and no suite can change them.
       </p>
-      <pre class="judge-prompt" id="judge-prompt">You are grading two candidate answers to the same programming task.
-
-Judge in this order:
-1. Correctness. Does the answer actually do what the task asked, including the
-   edge cases the task names? A subtly wrong answer loses to a plainly correct
-   one, however well written.
-2. Idiomatic quality. Given equal correctness, prefer the answer a competent
-   reviewer would rather maintain.
-
-Explicitly ignore: answer length, formatting, and how many comments there are.
-A longer answer is not a better answer. Do not reward verbosity.
-
-Respond with at most three sentences of rationale, then a final line in exactly
-this form and nothing after it:
-
-VERDICT: 1
-VERDICT: 2
-VERDICT: TIE
-
-Use TIE only when the answers are genuinely of equal merit.</pre>
+      <pre class="judge-prompt" id="judge-prompt"></pre>
 
       <h3>Labelling</h3>
       <p>
@@ -160,6 +143,7 @@ Use TIE only when the answers are genuinely of equal merit.</pre>
 (async () => {
   const data = await loadResults();
   if (data) renderCalibration(document.getElementById("calibration"), data);
+  renderJudgePrompt(document.getElementById("judge-prompt"), data);
   renderFooter();
 })();
 </script>

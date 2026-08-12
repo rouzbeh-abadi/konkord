@@ -29,6 +29,10 @@ from konkord.stats import (
 )
 
 
+class ReportError(Exception):
+    """The stored results cannot be aggregated into one honest report."""
+
+
 class Frozen(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -116,6 +120,12 @@ class Report(Frozen):
     tasks: tuple[TaskReport, ...]
     bootstrap_resamples: int
     bootstrap_seed: int
+    #: The judge's system prompt, taken from the verdicts rather than recomposed
+    #: from the suite file, so what is published is what actually ran. `None`
+    #: when nothing has been judged, or when the verdicts predate the field.
+    judge_prompt: str | None = None
+    #: The suite's answer format, for renderers deciding how to show an answer.
+    answer_language: str | None = None
 
 
 def resolved_outcomes(judge_rows: Sequence[Comparison]) -> list[PairOutcome]:
@@ -135,6 +145,30 @@ def resolved_outcomes(judge_rows: Sequence[Comparison]) -> list[PairOutcome]:
         winner = None if verdict == "tie" else (first.model_a if verdict == "a" else first.model_b)
         outcomes.append(PairOutcome(model_a=first.model_a, model_b=first.model_b, winner=winner))
     return outcomes
+
+
+def published_prompt(judge_rows: Sequence[Comparison]) -> str | None:
+    """The one prompt every verdict here was produced under.
+
+    Returns `None` when there is nothing to publish: no verdicts, or verdicts
+    written before they carried their prompt. Publishing the suite file's
+    current rubric instead would show a reader a prompt that may never have run,
+    which is the exact failure the published-prompt page exists to prevent.
+
+    Raises:
+        ReportError: if the verdicts were produced under more than one prompt.
+    """
+    distinct = {row.judge_prompt for row in judge_rows}
+    if not distinct or distinct == {None}:
+        return None
+    prompts = sorted(p for p in distinct if p is not None)
+    if len(distinct) > 1:
+        raise ReportError(
+            f"these verdicts were produced under {len(distinct)} different judge prompts. "
+            f"A rating fitted across them means neither standard. Re-judge the suite from "
+            f"scratch so every verdict shares one rubric."
+        )
+    return prompts[0]
 
 
 def flip_rate(judge_rows: Sequence[Comparison]) -> float:
@@ -218,7 +252,11 @@ def build(
     resamples: int = 1000,
     seed: int = 0,
 ) -> Report:
-    """Aggregate everything into one report."""
+    """Aggregate everything into one report.
+
+    Raises:
+        ReportError: if the verdicts do not share a single judge prompt.
+    """
     outcomes = resolved_outcomes(judge_rows)
     ratings = bradley_terry(outcomes)
     rates = win_rates(outcomes)
@@ -280,6 +318,8 @@ def build(
         tasks=tuple(per_task(suite, generations, judge_rows)),
         bootstrap_resamples=resamples,
         bootstrap_seed=seed,
+        judge_prompt=published_prompt(judge_rows),
+        answer_language=suite.answer_language,
     )
 
 

@@ -8,9 +8,12 @@ from konkord.suites import SuiteError, load_suite
 
 REPO_SUITE = Path(__file__).resolve().parents[1] / "suites" / "python_codegen.yaml"
 
+RUBRIC = "rubric: Prefer the answer that is correct.\n"
+
 VALID = """
 name: demo
 context: Suite-level context.
+rubric: Prefer the answer that is correct.
 checks_default: [compiles, ruff_clean]
 tasks:
   - id: alpha-01
@@ -24,7 +27,15 @@ tasks:
 
 
 def write(tmp_path: Path, text: str) -> Path:
+    """Write a suite file, supplying a rubric unless the text is testing one.
+
+    `rubric` is the one required field with no default, so every fixture would
+    otherwise have to carry boilerplate that has nothing to do with what it is
+    checking.
+    """
     path = tmp_path / "suite.yaml"
+    if "rubric" not in text and text.strip().startswith("name:"):
+        text = text.replace("name: demo\n", "name: demo\n" + RUBRIC, 1)
     path.write_text(text, encoding="utf-8")
     return path
 
@@ -62,6 +73,7 @@ class TestDefaults:
             tmp_path,
             """
             name: demo
+            rubric: Prefer the answer that is correct.
             checks_default: [compiles, ruff_clean]
             tasks:
               - id: alpha-01

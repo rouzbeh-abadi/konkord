@@ -7,6 +7,7 @@ and look like judge disagreement rather than a bug.
 """
 
 from collections import Counter
+from pathlib import Path
 
 from konkord.labeling.sampling import (
     LabelItem,
@@ -148,3 +149,21 @@ class TestAppIsImportSafe:
         source = (Path(__file__).resolve().parents[1] / "src/konkord/cli.py").read_text()
         assert "from konkord.labeling import app" not in source
         assert "import konkord.labeling.app" not in source
+
+
+class TestLabellerIsDomainNeutral:
+    """The labeller shows answers the way its suite says they should be read."""
+
+    def source(self) -> str:
+        return (Path(__file__).resolve().parents[1] / "src/konkord/labeling/app.py").read_text(
+            encoding="utf-8"
+        )
+
+    def test_no_language_is_hard_coded(self) -> None:
+        """A suite of prose rendered as Python is punishing to label a hundred of."""
+        assert 'language="python"' not in self.source()
+        assert "suite.answer_language" in self.source()
+
+    def test_the_labeller_is_shown_the_same_rubric_as_the_judge(self) -> None:
+        """Otherwise agreement measures the gap between two unstated standards."""
+        assert "suite.rubric" in self.source()

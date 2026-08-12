@@ -2034,5 +2034,7 @@
     }
   ],
   "bootstrap_resamples": 1000,
-  "bootstrap_seed": 0
+  "bootstrap_seed": 0,
+  "judge_prompt": "You are grading two candidate answers to the same programming task.\n\nJudge in this order:\n1. Correctness. Does the answer actually do what the task asked, including the\n   edge cases the task names? A subtly wrong answer loses to a plainly correct\n   one, however well written.\n2. Idiomatic quality. Given equal correctness, prefer the answer a competent\n   reviewer would rather maintain.\n\nExplicitly ignore: answer length, formatting, and how many comments there are.\nA longer answer is not a better answer. Do not reward verbosity.\n\nRespond with at most three sentences of rationale, then a final line in exactly\nthis form and nothing after it:\n\nVERDICT: 1\nVERDICT: 2\nVERDICT: TIE\n\nUse TIE only when the answers are genuinely of equal merit.",
+  "answer_language": "python"
 }

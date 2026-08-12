@@ -14,16 +14,42 @@ those verdicts are right, so judging more pairs only tightens the interval aroun
 The current run, the judge prompt, every answer and every verdict:
 **[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)**.
 
-## Scope
+## Any domain, one standard at a time
 
-**1.0.0 judges programming tasks.** The suite format itself is domain-neutral, and the store,
-runner, labeller and calibration have no idea what a task is about, so a suite of SQL, shell or
-any other code works today. But the judge grades on correctness first and idiomatic quality
-second, and that rubric is a constant in the source rather than something a suite carries.
+A suite says what "better" means. Code, summarisation, translation, extraction: write the criteria
+into the file and every stage follows.
 
-Pointing it at summarisation, translation or extraction means editing `JUDGE_SYSTEM` in
-[judge.py](src/konkord/judge.py). Making the rubric part of the suite, so a domain brings its own,
-is the next release.
+```yaml
+name: support_replies
+rubric: |
+  1. Accuracy. Does the reply answer what was actually asked, without inventing
+     policy the ticket does not support?
+  2. Tone. Given equal accuracy, prefer the reply a frustrated customer would
+     rather receive.
+answer_language: null      # prose, so render it as prose rather than as code
+tasks:
+  - id: refund-window-01
+    prompt: |
+      A customer writes in 40 days after purchase asking for a refund ...
+```
+
+What a suite cannot change is how a verdict comes back. The response format, and the instruction to
+ignore length and never reward verbosity, live in the tool's own frame. A rubric that tried to
+redefine them would break verdict parsing and delete the bias controls in the same move, so one
+mentioning the verdict token is refused outright.
+
+**The rubric is the only field with no default.** Every number this tool produces means whatever the
+rubric said, and a suite that inherited one silently would be graded against a standard its author
+never read. So it has to be stated.
+
+Three things follow from that, and they are the reason this is more than a settings field:
+
+- **The judge and the human are shown the same criteria.** The labeller displays the rubric. Measuring
+  a stated standard against an unstated one reports the gap between two rubrics as a fault in the judge.
+- **Every verdict records the prompt that produced it.** Editing a rubric and re-judging half a suite
+  is refused rather than averaged, because one rating fitted across two standards means neither.
+- **The site publishes the prompt that ran**, read back out of the verdicts rather than recomposed from
+  the suite file. A published prompt that has drifted from the one actually sent is worse than none.
 
 ## Quickstart
 
@@ -172,11 +198,18 @@ drifts from the prompt the tool actually sends.
 ## What this does not do
 
 Nothing here is executed. There is no sandbox, so no answer is compiled, linted or run, and every
-judgement on a published page is a reading of the code rather than a test of it. Suites can declare
+judgement on a published page is a reading of the answer rather than a test of it. Suites can declare
 deterministic checks and the loader carries them through, but nothing yet checks that a check name
 means anything, and no runner consumes them.
 
-The judge's rubric is also fixed to code; see [Scope](#scope).
+Calibration is per suite and per judge, and it does not travel with the tool. The agreement rate
+published here describes this suite judged by this judge. Running your own suite means labelling your
+own sample; that cost is the reason the number means anything.
+
+One labeller also cannot tell you where the ceiling is. On code, "better" is close to objective. On
+softer domains two competent people may agree with each other only 70% of the time, and a judge at
+65% there is near ceiling rather than broken. Reading agreement against a human-versus-human baseline
+needs a second labeller, which this does not yet do.
 
 ## Development
 

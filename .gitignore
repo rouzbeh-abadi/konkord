@@ -26,6 +26,7 @@ wheels/
 .konkord_cache/
 *.duckdb
 *.duckdb.wal
+*.duckdb.*-backup
 /results.json
 
 # Site build

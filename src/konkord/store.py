@@ -55,6 +55,13 @@ CREATE TABLE IF NOT EXISTS comparisons (
     PRIMARY KEY (suite, task_id, model_a, model_b, "order", source)
 )
 """,
+    # Added after the first published run, so databases exist without it. Rows
+    # predating the column keep NULL, which reads as "produced before verdicts
+    # recorded their prompt" rather than as any particular prompt. Guessing one
+    # for them would be inventing provenance.
+    """
+ALTER TABLE comparisons ADD COLUMN IF NOT EXISTS judge_prompt VARCHAR
+""",
     """
 CREATE TABLE IF NOT EXISTS judge_failures (
     suite       VARCHAR NOT NULL,
@@ -144,8 +151,8 @@ class ResultStore:
             """
             INSERT OR REPLACE INTO comparisons
                 (suite, task_id, model_a, model_b, "order", winner,
-                 source, rationale, judge_model)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 source, rationale, judge_model, judge_prompt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             [
                 suite,
@@ -157,6 +164,7 @@ class ResultStore:
                 comparison.source,
                 comparison.rationale,
                 comparison.judge_model,
+                comparison.judge_prompt,
             ],
         )
 
@@ -167,7 +175,7 @@ class ResultStore:
         rows = self._connection.execute(
             f"""
             SELECT task_id, model_a, model_b, "order", winner, source,
-                   rationale, judge_model
+                   rationale, judge_model, judge_prompt
             FROM comparisons WHERE suite = ?{clause}
             ORDER BY task_id, model_a, model_b, "order"
             """,
@@ -183,9 +191,24 @@ class ResultStore:
                 source=cast("Source", str(row[5])),
                 rationale=None if row[6] is None else str(row[6]),
                 judge_model=None if row[7] is None else str(row[7]),
+                judge_prompt=None if row[8] is None else str(row[8]),
             )
             for row in rows
         ]
+
+    def judge_prompts(self, suite: str) -> list[str | None]:
+        """The distinct prompts this suite's judge verdicts were produced under.
+
+        More than one entry means the rubric changed partway through, and every
+        aggregate over those verdicts is fitting one rating across two different
+        standards. Callers are expected to refuse rather than average.
+        """
+        rows = self._connection.execute(
+            "SELECT DISTINCT judge_prompt FROM comparisons "
+            "WHERE suite = ? AND source = 'judge' ORDER BY judge_prompt",
+            [suite],
+        ).fetchall()
+        return [None if row[0] is None else str(row[0]) for row in rows]
 
     def compared(self, suite: str, source: Source) -> set[tuple[str, str, str, str]]:
         """The (task_id, model_a, model_b, order) tuples already recorded."""

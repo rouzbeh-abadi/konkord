@@ -133,6 +133,31 @@ function renderBoard(target, data) {
   }
 }
 
+/**
+ * The judge prompt, taken from the run rather than kept in step with it.
+ *
+ * `textContent` rather than innerHTML: the prompt is data from results.json,
+ * and a published prompt is exactly the wrong place to start interpreting
+ * markup. A run whose verdicts predate recorded prompts says so instead of
+ * showing a prompt that may never have been sent.
+ */
+function renderJudgePrompt(target, data) {
+  if (!target) return;
+  if (data && data.judge_prompt) {
+    target.textContent = data.judge_prompt;
+    return;
+  }
+  target.replaceChildren(
+    el(
+      "span",
+      "muted",
+      data
+        ? "These verdicts were recorded before the prompt was stored with them, so it cannot be published here."
+        : "The prompt appears once a run has been judged and reported."
+    )
+  );
+}
+
 function renderFooter() {
   const footer = el("footer", "bottom");
   const wrap = el("div", "wrap");

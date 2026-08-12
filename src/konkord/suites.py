@@ -42,6 +42,12 @@ class _SuiteFile(BaseModel):
 
     name: str
     context: str | None = None
+    #: Required, with no default, unlike everywhere else in this file. A rubric
+    #: is what every number downstream means, and a suite that inherited one
+    #: silently would be graded on a standard its author never read. The cost of
+    #: getting it wrong is invisible, so the cost of omitting it is not.
+    rubric: str = Field(min_length=1)
+    answer_language: str | None = None
     checks_default: tuple[str, ...] = ()
     tasks: tuple[_TaskEntry, ...] = Field(min_length=1)
 
@@ -101,7 +107,13 @@ def _resolve(spec: _SuiteFile, path: Path) -> Suite:
             # Locations are relative to the Task, so re-root them at the file.
             raise SuiteError(_describe(exc, path, prefix=f"tasks.{index}")) from exc
     try:
-        return Suite(name=spec.name, context=spec.context, tasks=tuple(tasks))
+        return Suite(
+            name=spec.name,
+            context=spec.context,
+            rubric=spec.rubric.strip(),
+            answer_language=spec.answer_language,
+            tasks=tuple(tasks),
+        )
     except ValidationError as exc:
         raise SuiteError(_describe(exc, path)) from exc
 

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from konkord.models import Generation, JudgeFailure
+from konkord.models import Comparison, Generation, JudgeFailure
 from konkord.store import ResultStore
 
 
@@ -114,3 +114,51 @@ class TestJudgeFailures:
         with ResultStore(tmp_path / "r.duckdb") as store:
             store.clear_judge_failure("suite", "nope", "a", "b", "ab")
             assert store.judge_failures("suite") == []
+
+
+class TestJudgePromptProvenance:
+    """The rubric a verdict was produced under travels with the verdict."""
+
+    def comparison(self, prompt: str | None, order: str = "ab") -> Comparison:
+        return Comparison(
+            task_id="t1",
+            model_a="alpha",
+            model_b="beta",
+            order=order,  # type: ignore[arg-type]
+            winner="a",
+            source="judge",
+            judge_model="referee",
+            judge_prompt=prompt,
+        )
+
+    def test_the_prompt_survives_the_round_trip(self, tmp_path: Path) -> None:
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.record_comparison("suite", self.comparison("be fair"))
+            assert store.comparisons("suite")[0].judge_prompt == "be fair"
+
+    def test_distinct_prompts_are_reported(self, tmp_path: Path) -> None:
+        """Two entries here mean one rating is being fitted across two standards."""
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.record_comparison("suite", self.comparison("be fair", order="ab"))
+            store.record_comparison("suite", self.comparison("be funny", order="ba"))
+            assert store.judge_prompts("suite") == ["be fair", "be funny"]
+
+    def test_rows_predating_the_column_read_back_as_unknown(self, tmp_path: Path) -> None:
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.record_comparison("suite", self.comparison(None))
+            assert store.judge_prompts("suite") == [None]
+
+    def test_human_labels_are_not_counted_as_judge_prompts(self, tmp_path: Path) -> None:
+        with ResultStore(tmp_path / "r.duckdb") as store:
+            store.record_comparison(
+                "suite",
+                Comparison(
+                    task_id="t1",
+                    model_a="alpha",
+                    model_b="beta",
+                    order="ab",
+                    winner="a",
+                    source="human",
+                ),
+            )
+            assert store.judge_prompts("suite") == []

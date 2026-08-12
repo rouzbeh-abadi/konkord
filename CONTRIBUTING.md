@@ -52,6 +52,23 @@ tasks:
 can add a check but never opt out of one: every model is compared on the same terms. Nothing
 executes them yet; see the note at the end of the README.
 
+## Writing a rubric for a new suite
+
+`rubric` is required and has no default, because it decides what every number downstream means. Write
+the criteria in priority order and stop: the response format and the instruction to ignore length are
+the tool's, not yours, and a rubric mentioning the verdict token is refused.
+
+Two things worth knowing before you write one:
+
+- **A human is going to read it too.** The labeller shows the rubric beside the answers, so it has to
+  be something a person can apply consistently at item seventy. "Prefer the better answer" is not.
+- **Changing it invalidates the verdicts under it.** Every verdict records the prompt that produced
+  it, and the tool refuses to add verdicts under a second one rather than fitting one rating across
+  two standards. Settle the rubric before spending money on a run.
+
+Set `answer_language` to a syntax name for code suites, or leave it out for prose so the labeller and
+the browse page render paragraphs as paragraphs.
+
 ## Reporting a judge failure
 
 If the judge produced something Konkord could not parse, the row is already in the `judge_failures`

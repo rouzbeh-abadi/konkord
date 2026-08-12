@@ -28,6 +28,42 @@ Order = Literal["ab", "ba"]
 Source = Literal["judge", "human"]
 """Who produced a verdict."""
 
+DEFAULT_RUBRIC = """\
+1. Correctness. Does the answer actually do what the task asked, including the
+   edge cases the task names? A subtly wrong answer loses to a plainly correct
+   one, however well written.
+2. Idiomatic quality. Given equal correctness, prefer the answer a competent
+   reviewer would rather maintain."""
+"""The criteria a suite gets if it does not state its own.
+
+Programming, because that is what the shipped suite grades. A suite in another
+domain that leaves this in place is grading prose on whether a reviewer would
+want to maintain it, which is why the file format demands the field explicitly
+even though this default exists for callers constructing a suite in code.
+"""
+
+
+def validate_rubric(rubric: str) -> str:
+    """Return the rubric stripped, or reject one that reaches beyond its remit.
+
+    A suite says what "better" means. It does not get to say how the verdict
+    comes back: a rubric mentioning the verdict token can end the response
+    early, invent a winner, or redefine the format the parser depends on. That
+    is not a style problem, it is a rubric deciding comparisons by itself.
+
+    Raises:
+        ValueError: naming what is wrong with the rubric.
+    """
+    cleaned = rubric.strip()
+    if not cleaned:
+        raise ValueError("a suite has to say what 'better' means")
+    if "VERDICT" in cleaned.upper():
+        raise ValueError(
+            "must not mention VERDICT: the response format belongs to the judge's frame, "
+            "and a rubric that redefines it can decide comparisons by itself"
+        )
+    return cleaned
+
 
 class Frozen(BaseModel):
     """Base for every contract in this module."""
@@ -50,7 +86,20 @@ class Suite(Frozen):
 
     name: str = Field(min_length=1)
     context: str | None = None
+    #: What "better" means for this suite, dropped into the judge's fixed frame.
+    #: The file format requires it; the default here is for constructing a suite
+    #: in code, where the caller is not a suite author who could get it wrong.
+    rubric: str = Field(default=DEFAULT_RUBRIC, min_length=1)
+
+    #: Syntax highlighting hint for the labeller and the browse page. `None`
+    #: means the answers are prose and should be rendered as such.
+    answer_language: str | None = None
     tasks: tuple[Task, ...] = Field(min_length=1)
+
+    @field_validator("rubric")
+    @classmethod
+    def _check_rubric(cls, rubric: str) -> str:
+        return validate_rubric(rubric)
 
     @field_validator("tasks")
     @classmethod
@@ -108,6 +157,14 @@ class Comparison(Frozen):
     source: Source
     rationale: str | None = None
     judge_model: str | None = None
+    #: The exact system prompt that produced this verdict.
+    #:
+    #: Stored per row rather than looked up from the suite, because the suite
+    #: file can change after a verdict is recorded. Without this, editing a
+    #: rubric and re-judging half a suite would fit one rating over two
+    #: different standards, and the site would publish a prompt that never ran.
+    #: `None` only for rows written before verdicts carried their prompt.
+    judge_prompt: str | None = None
 
     @model_validator(mode="after")
     def _check_invariants(self) -> "Comparison":
@@ -117,6 +174,8 @@ class Comparison(Frozen):
             raise ValueError("judge comparisons must record judge_model")
         if self.source == "human" and self.judge_model is not None:
             raise ValueError("human comparisons must not record judge_model")
+        if self.source == "human" and self.judge_prompt is not None:
+            raise ValueError("human comparisons must not record judge_prompt")
         return self
 
     @property

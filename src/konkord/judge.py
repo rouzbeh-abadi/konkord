@@ -14,6 +14,10 @@ number could come out wrong:
   outright.
 * **Strict parsing.** A response without a well-formed verdict token is retried
   once and then recorded as a failure. It is never coerced into a winner.
+* **Recorded criteria.** The suite says what "better" means and this module says
+  how a verdict comes back. The composed prompt is stored with every verdict, so
+  a rubric edited mid-suite is refused rather than averaged, and the site can
+  publish the prompt that ran rather than the one currently in the file.
 """
 
 import asyncio
@@ -24,6 +28,7 @@ from typing import Literal
 
 from konkord.cache import ResponseCache, cache_key
 from konkord.models import (
+    DEFAULT_RUBRIC,
     Comparison,
     Generation,
     JudgeFailure,
@@ -31,6 +36,7 @@ from konkord.models import (
     Suite,
     Task,
     Verdict,
+    validate_rubric,
 )
 from konkord.providers import (
     Completer,
@@ -47,17 +53,25 @@ _VERDICT_PATTERN = re.compile(r"^\s*VERDICT:\s*(1|2|TIE)\s*$", re.IGNORECASE | r
 #: Positional, not identity: "first" is whichever answer was shown first.
 Position = Literal["first", "second", "tie"]
 
-JUDGE_SYSTEM = """\
-You are grading two candidate answers to the same programming task.
+
+class JudgeError(Exception):
+    """The judging configuration is unusable."""
+
+
+#: What a suite may not touch.
+#:
+#: A suite says what "better" means; this says how the answer comes back and
+#: what must never count. Handing the whole prompt to the suite would let a
+#: domain break verdict parsing or quietly drop the anti-verbosity instruction,
+#: and every bias control in this module goes with it. So the frame is code and
+#: the criteria are data, rather than the whole thing being one or the other.
+JUDGE_FRAME = """\
+You are grading two candidate answers to the same task.
 
 Judge in this order:
-1. Correctness. Does the answer actually do what the task asked, including the
-   edge cases the task names? A subtly wrong answer loses to a plainly correct
-   one, however well written.
-2. Idiomatic quality. Given equal correctness, prefer the answer a competent
-   reviewer would rather maintain.
+{rubric}
 
-Explicitly ignore: answer length, formatting, and how many comments there are.
+Explicitly ignore: answer length, formatting, and presentation.
 A longer answer is not a better answer. Do not reward verbosity.
 
 Respond with at most three sentences of rationale, then a final line in exactly
@@ -68,6 +82,20 @@ VERDICT: 2
 VERDICT: TIE
 
 Use TIE only when the answers are genuinely of equal merit."""
+
+
+def judge_system(rubric: str = DEFAULT_RUBRIC) -> str:
+    """Compose the system prompt: the fixed frame around a suite's criteria.
+
+    Raises:
+        JudgeError: if the rubric would interfere with the verdict contract.
+    """
+    try:
+        criteria = validate_rubric(rubric)
+    except ValueError as exc:
+        raise JudgeError(f"judging rubric {exc}") from exc
+    return JUDGE_FRAME.format(rubric=criteria)
+
 
 _STRICT_REMINDER = """\
 
@@ -123,10 +151,6 @@ _FAMILY_ALIASES: dict[str, str] = {
 }
 
 
-class JudgeError(Exception):
-    """The judging configuration is unusable."""
-
-
 def provider_family(model: str) -> str:
     """Best-effort provider family for a litellm model string.
 
@@ -156,6 +180,36 @@ def provider_family(model: str) -> str:
         if name.startswith(prefix):
             return family
     return _FAMILY_ALIASES.get(name, name)
+
+
+def check_rubric_unchanged(system: str, recorded: Sequence[str | None]) -> None:
+    """Refuse to add verdicts to a suite judged under a different prompt.
+
+    Caught here rather than at report time because this is the moment the two
+    standards would first coexist. Ratings are fitted across every verdict in a
+    suite, so a rubric edited halfway through produces one number meaning two
+    different things, and nothing downstream could tell.
+
+    A `None` among the recorded prompts is a verdict from before prompts were
+    recorded. It cannot be shown to match, so it is treated as a mismatch.
+
+    Raises:
+        JudgeError: explaining how to get back to a single standard.
+    """
+    existing = [p for p in recorded if p != system]
+    if not existing:
+        return
+    unknown = sum(1 for p in existing if p is None)
+    detail = (
+        f"{unknown} of them recorded before verdicts carried their prompt"
+        if unknown
+        else "under a different rubric"
+    )
+    raise JudgeError(
+        f"this suite already has judge verdicts {detail}. Fitting one rating across two "
+        f"standards would produce a number that means neither. Re-judge the suite from "
+        f"scratch with the current rubric, or judge under a different suite name."
+    )
 
 
 def check_judge_independence(judge_model: str, ranked: Iterable[str]) -> None:
@@ -230,6 +284,7 @@ def to_comparison(
     position: Position,
     *,
     judge_model: str,
+    judge_prompt: str,
     rationale: str,
 ) -> Comparison:
     """Turn a positional verdict into one about model identity.
@@ -251,6 +306,7 @@ def to_comparison(
         source="judge",
         rationale=rationale,
         judge_model=judge_model,
+        judge_prompt=judge_prompt,
     )
 
 
@@ -377,6 +433,8 @@ async def judge_suite(
     """
     config = config or JudgeConfig()
     check_judge_independence(judge_model, models)
+    system = judge_system(suite.rubric)
+    check_rubric_unchanged(system, store.judge_prompts(suite.name))
 
     answers = judgeable(store.generations(suite.name))
     already = store.compared(suite.name, "judge")
@@ -397,6 +455,7 @@ async def judge_suite(
                 matchup=m,
                 answers=answers,
                 judge_model=judge_model,
+                system=system,
                 completer=completer,
                 cache=cache,
                 store=store,
@@ -430,6 +489,7 @@ async def _judge_one(
     matchup: Matchup,
     answers: dict[tuple[str, str], str],
     judge_model: str,
+    system: str,
     completer: Completer,
     cache: ResponseCache,
     store: ResultStore,
@@ -451,7 +511,7 @@ async def _judge_one(
         request = CompletionRequest(
             model=judge_model,
             prompt=build_prompt(matchup, text, strict=strict),
-            context=JUDGE_SYSTEM,
+            context=system,
             max_tokens=config.max_tokens,
         )
         try:
@@ -476,6 +536,7 @@ async def _judge_one(
                     matchup,
                     position,
                     judge_model=judge_model,
+                    judge_prompt=system,
                     rationale=raw.strip(),
                 ),
             )

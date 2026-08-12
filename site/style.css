@@ -268,6 +268,12 @@ section { padding-bottom: clamp(40px, 5vw, 64px); }
   color: var(--muted);
   max-height: 520px;
 }
+.answer pre.prose {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 400 14px/1.7 var(--sans);
+  color: var(--text);
+}
 .answer .failed { padding: 14px; color: var(--accent-soft); font: 400 12px/1.6 var(--mono); }
 
 .judgement { border: 1px solid var(--line); padding: clamp(14px, 2vw, 20px); margin-bottom: 14px; }

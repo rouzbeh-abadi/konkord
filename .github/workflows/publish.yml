@@ -1,13 +1,22 @@
 name: Publish
 
-# Runs when a GitHub release is published. The version comes from
+# Manual on purpose. Konkord is not on PyPI yet and will not be until a suite
+# can carry its own judging rubric, so a release must not drag an upload along
+# with it. Add
+#
+#   release:
+#     types: [published]
+#
+# back to the triggers once trusted publishing is configured and every release
+# should ship.
+#
+# Dispatch this against a tag rather than a branch. The version comes from
 # pyproject.toml, not from the tag: the tag names the commit, the file is the
 # source of truth, and a mismatch between them fails the job below rather than
 # uploading something mislabelled.
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -29,7 +38,8 @@ jobs:
           packaged="$(python3 -c \
             'import tomllib,pathlib;print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')"
           if [ "$tagged" != "$packaged" ]; then
-            echo "tag $GITHUB_REF_NAME does not match pyproject version $packaged" >&2
+            echo "ref $GITHUB_REF_NAME does not name version $packaged." >&2
+            echo "Run this workflow against the tag for the release, not a branch." >&2
             exit 1
           fi
 

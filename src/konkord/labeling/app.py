@@ -78,6 +78,20 @@ def record(store: ResultStore, suite: str, item: LabelItem, choice: Verdict) -> 
     )
 
 
+def _answer(suite: Suite, text: str) -> None:
+    """Show one answer the way its suite says answers should be read.
+
+    Code wants a monospace block with highlighting; prose read as code is
+    punishing to label a hundred of. `st.text` rather than `st.markdown` for the
+    prose case: model output is full of characters markdown would eat, and a
+    labeller has to see what the model actually wrote.
+    """
+    if suite.answer_language:
+        st.code(text, language=suite.answer_language)
+    else:
+        st.text(text)
+
+
 def _render(suite: Suite, store: ResultStore, total: int, seed: int) -> None:
     queue = queue_for(store, suite.name, total, seed)
     labelled = len(store.comparisons(suite.name, "human"))
@@ -93,16 +107,22 @@ def _render(suite: Suite, store: ResultStore, total: int, seed: int) -> None:
     with st.expander(f"Task: {item.task_id}", expanded=True):
         st.write(suite.task(item.task_id).prompt)
 
+    # The judge is told what "better" means for this suite, so the labeller is
+    # told the same thing. Measuring a stated standard against an unstated one
+    # would report the gap between two rubrics as a fault in the judge.
+    with st.expander("What counts as better here", expanded=False):
+        st.text(suite.rubric)
+
     answers = {
         (g.task_id, g.model): g.output for g in store.generations(suite.name) if g.error is None
     }
     left, right = st.columns(2)
     with left:
         st.subheader("Answer 1")
-        st.code(answers.get((item.task_id, item.first_model), ""), language="python")
+        _answer(suite, answers.get((item.task_id, item.first_model), ""))
     with right:
         st.subheader("Answer 2")
-        st.code(answers.get((item.task_id, item.second_model), ""), language="python")
+        _answer(suite, answers.get((item.task_id, item.second_model), ""))
 
     one, two, three = st.columns(3)
     choice: str | None = None

@@ -8,12 +8,32 @@ wins, and overlapping intervals are marked as tied.
 import json
 from pathlib import Path
 
+import pytest
+
 from konkord.calibrate import calibrate
 from konkord.models import Comparison, Generation, Suite, Task
-from konkord.report import Report, build, flip_rate, per_task, resolved_outcomes, write
+from konkord.report import (
+    Report,
+    ReportError,
+    build,
+    flip_rate,
+    per_task,
+    published_prompt,
+    resolved_outcomes,
+    write,
+)
+
+PROMPT = "the prompt these verdicts were produced under"
 
 
-def judge(task: str, winner: str, order: str, a: str = "alpha", b: str = "beta") -> Comparison:
+def judge(
+    task: str,
+    winner: str,
+    order: str,
+    a: str = "alpha",
+    b: str = "beta",
+    prompt: str | None = PROMPT,
+) -> Comparison:
     return Comparison(
         task_id=task,
         model_a=a,
@@ -23,6 +43,7 @@ def judge(task: str, winner: str, order: str, a: str = "alpha", b: str = "beta")
         source="judge",
         rationale="reasons",
         judge_model="referee",
+        judge_prompt=prompt,
     )
 
 
@@ -212,3 +233,34 @@ class TestPerTask:
 
     def test_report_includes_the_task_block(self) -> None:
         assert len(sample_report().tasks) == 3
+
+
+class TestPublishedPrompt:
+    """What the site shows has to be what actually ran, or it is worse than nothing."""
+
+    def test_the_report_carries_the_prompt_from_the_verdicts(self) -> None:
+        assert sample_report().judge_prompt == PROMPT
+
+    def test_the_prompt_is_not_recomposed_from_the_suite(self) -> None:
+        """A suite edited after judging must not change what gets published."""
+        rows = agreed("t1", "a")
+        assert published_prompt(rows) == PROMPT
+
+    def test_two_prompts_are_refused_rather_than_averaged(self) -> None:
+        rows = [judge("t1", "a", "ab"), judge("t1", "a", "ba", prompt="a different rubric")]
+        with pytest.raises(ReportError, match="different judge prompts"):
+            published_prompt(rows)
+
+    def test_verdicts_without_a_prompt_publish_nothing(self) -> None:
+        """Better an absent prompt than one that may never have been sent."""
+        rows = [judge("t1", "a", "ab", prompt=None), judge("t1", "a", "ba", prompt=None)]
+        assert published_prompt(rows) is None
+
+    def test_the_answer_language_reaches_the_renderer(self) -> None:
+        report = build(
+            suite=SUITE.model_copy(update={"answer_language": "python"}),
+            generations=[generation("t1", "alpha"), generation("t1", "beta")],
+            judge_rows=agreed("t1", "a"),
+            calibration=calibrate(agreed("t1", "a"), [], []),
+        )
+        assert report.answer_language == "python"

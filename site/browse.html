@@ -74,7 +74,9 @@
         if (answer.error) {
           card.append(el("div", "failed", `failed: ${answer.error}`));
         } else {
-          const pre = el("pre");
+          // A suite without an answer_language is not producing code, and a
+          // paragraph set in a monospace block is punishing to read.
+          const pre = el("pre", data.answer_language ? "" : "prose");
           pre.append(el("code", "", answer.output));
           card.append(pre);
         }

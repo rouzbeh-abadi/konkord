@@ -415,14 +415,18 @@ def report(
         )
         raise typer.Exit(code=1)
 
-    built = reporting.build(
-        suite=loaded,
-        generations=generations,
-        judge_rows=judge_rows,
-        calibration=run_calibration(judge_rows, human_rows, generations),
-        resamples=resamples,
-        seed=seed,
-    )
+    try:
+        built = reporting.build(
+            suite=loaded,
+            generations=generations,
+            judge_rows=judge_rows,
+            calibration=run_calibration(judge_rows, human_rows, generations),
+            resamples=resamples,
+            seed=seed,
+        )
+    except reporting.ReportError as exc:
+        typer.secho(str(exc), err=True, fg=typer.colors.RED)
+        raise typer.Exit(code=1) from exc
     reporting.write(built, out)
 
     typer.echo(f"wrote {out}")
@@ -444,6 +448,14 @@ def report(
         typer.secho(
             "\nwarning: no human labels, so this ranking ships uncalibrated "
             "and should not be published",
+            err=True,
+            fg=typer.colors.YELLOW,
+        )
+
+    if built.judge_prompt is None:
+        typer.secho(
+            "warning: these verdicts predate recorded judge prompts, so the report cannot "
+            "publish the criteria they were produced under. Re-judge to record them.",
             err=True,
             fg=typer.colors.YELLOW,
         )
