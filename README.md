@@ -229,5 +229,3 @@ uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pyt
 ## License
 
 MIT. Built by [Rouzbeh Abadi](https://github.com/rouzbeh-abadi).
-</content>
-</invoke>

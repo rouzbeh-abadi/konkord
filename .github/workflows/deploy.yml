@@ -27,11 +27,31 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # Until the two secrets exist this workflow has nothing it can do, and a
+      # red cross on every push is noise that trains you to ignore the next
+      # real failure. Say so in the log and stop instead. Reading the secret
+      # through env rather than interpolating it into the script keeps the
+      # value out of the command line.
+      - name: Check for Cloudflare credentials
+        id: creds
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$ACCOUNT" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping deploy: set CLOUDFLARE_API_TOKEN and \
+          CLOUDFLARE_ACCOUNT_ID in repository secrets to publish the site."
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.creds.outputs.present == 'true'
 
       - uses: cloudflare/wrangler-action@v3
+        if: steps.creds.outputs.present == 'true'
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-</content>

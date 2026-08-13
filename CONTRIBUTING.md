@@ -84,4 +84,3 @@ pull request that shells out to run untrusted model output without isolation wil
 
 By contributing you agree that your contribution is licensed under the MIT licence, as in
 [LICENSE](LICENSE).
-</content>

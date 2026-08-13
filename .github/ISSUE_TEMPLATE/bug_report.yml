@@ -48,4 +48,3 @@ body:
       options:
         - label: I have checked that the pasted output contains no API keys.
           required: true
-</content>
