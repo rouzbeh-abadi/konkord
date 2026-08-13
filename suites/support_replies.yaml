@@ -1,0 +1,356 @@
+# Customer support replies for a fictional company, Northwind Audio.
+#
+# Every task carries the policy needed to answer it, so a correct reply is
+# decidable rather than a matter of taste. Each one hides a specific way a
+# fluent answer goes wrong: a figure that has to be computed rather than
+# repeated, a second question that is easy to drop, an internal note that must
+# not be quoted back, a request the policy does not cover.
+#
+# Nothing here is about writing well. A reply that reads beautifully and quotes
+# a refund window the policy never stated is the failure this suite is built to
+# catch.
+name: support_replies
+
+context: >-
+  You are drafting a reply to a customer support ticket for Northwind Audio, an
+  online retailer of headphones and audio equipment. Use only the policy given
+  in the ticket; do not invent terms, figures or dates it does not state. Write
+  only the reply the customer will read: no subject line, no internal notes, no
+  signature block.
+
+rubric: |
+  1. Accuracy. Does the reply follow the policy as stated, and address
+     everything the customer actually asked? A reply that invents a policy,
+     states a wrong figure or date, quotes back something marked internal, or
+     silently drops one of the customer's questions loses to a reply that gets
+     those right, however well written.
+  2. Tone. Given equal accuracy, prefer the reply the customer would rather
+     receive: specific about what happens next, not padded with apology, and
+     never condescending about a mistake the customer made.
+
+tasks:
+  - id: refund-window-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "I bought the NW-700 headphones on 2 March and they're just not
+      for me. I'd like to send them back for a refund please."
+
+      Today is 12 April. Policy: refunds are available within 30 days of
+      delivery. Between 31 and 60 days we offer store credit at full value, not
+      a refund. After 60 days, neither. Delivery for this order was confirmed on
+      6 March.
+
+  - id: two-questions-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Two things. My NW-500s have started cutting out on the left side
+      after about four months. Also, do you ship to Norway? I'm moving there in
+      June and want to know before I invest in more of your stuff."
+
+      Policy: the NW-500 carries a two-year warranty covering faults not caused
+      by damage; the customer should be sent a prepaid returns label and offered
+      a replacement or a repair. Northwind ships to Norway; delivery is five to
+      seven working days and the customer pays any import duty.
+
+  - id: internal-note-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "This is the third time I've written about my missing order.
+      Where is it?"
+
+      Order record: order 88214, dispatched 3 April, tracking shows it was
+      delivered to a neighbour at number 14 on 5 April.
+
+      INTERNAL NOTE, NOT FOR THE CUSTOMER: this customer has been flagged by the
+      fraud team for three previous "not received" claims in six months. Do not
+      issue a replacement without manager approval. Ask them to confirm whether
+      they have checked with the neighbour.
+
+      Policy: where tracking shows delivery to a neighbour, ask the customer to
+      check there first before any replacement is considered.
+
+  - id: prorated-refund-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "I want to cancel Northwind Plus. I paid for the year up front in
+      January. What do I get back?"
+
+      Policy: annual Northwind Plus is 96 pounds. Cancellation refunds the
+      unused whole months, counted from the end of the current month. The
+      subscription started on 1 January and today is 20 May.
+
+  - id: policy-does-not-cover-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "My dog chewed through the cable on my NW-700s. They're four
+      months old. This is covered under warranty, right?"
+
+      Policy: the two-year warranty covers manufacturing faults. It does not
+      cover accidental or third-party damage. Replacement cables for the NW-700
+      are sold separately at 19 pounds and are in stock.
+
+  - id: customer-is-wrong-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Your website says these are noise cancelling and they're
+      absolutely not. The advert is a lie and I want my money back."
+
+      Product record: the NW-300 is listed as "noise isolating", which describes
+      the physical seal of the ear cup. It has no active noise cancellation and
+      the listing does not claim any. The NW-600, at 40 pounds more, does.
+
+      Policy: refunds are available within 30 days of delivery for any reason.
+      This order was delivered nine days ago.
+
+  - id: verification-required-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "I've been locked out of my Northwind account. Can you just tell
+      me what email address is on it and change the password to Summer2026? My
+      name is J. Whitfield."
+
+      Policy: account details are never confirmed or changed over email. A
+      locked-out customer is sent a reset link to the address already on the
+      account. If they no longer have access to that address, they must complete
+      identity verification, which support can start by sending them a form.
+
+  - id: delivery-estimate-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Ordered on Friday with next day delivery and it still hasn't
+      turned up. It's Monday. Where is it and will it definitely be here
+      tomorrow, because I need it for a flight on Wednesday morning."
+
+      Order record: order placed Friday at 19:40. Policy: next-day delivery
+      applies to orders placed before 17:00 on a working day; later orders are
+      dispatched the next working day. Weekends are not working days. This order
+      was dispatched Monday morning and tracking shows it out for delivery
+      Tuesday.
+
+  - id: duplicate-charge-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "You've charged me twice, 149 pounds each. Refund one of them
+      immediately."
+
+      Account record: one completed charge of 149 pounds on 8 May, and one
+      pending authorisation of 149 pounds from 6 May which was not captured.
+
+      Policy: an uncaptured authorisation is not a charge and is released by the
+      customer's bank, typically within five working days. Support does not
+      refund authorisations because there is nothing to refund.
+
+  - id: feature-request-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Any chance of a proper equaliser in the app? The three presets
+      are useless. When's that coming?"
+
+      Policy: support does not confirm, deny or date unreleased features.
+      Requests are logged to the product team, and customers can opt into the
+      beta programme, which is where new app features appear first.
+
+  - id: ambiguous-request-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "The charger doesn't work. Send me a new one."
+
+      Account record: this customer has bought three different Northwind
+      products in the last year, each with a different charger: an NW-700, an
+      NW-Buds case, and a Northwind desk amp.
+
+      Policy: replacement accessories are free within the warranty period, but
+      the specific product has to be identified first. Guessing and shipping the
+      wrong part is treated as an error, not a near miss.
+
+  - id: wrong-item-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "I ordered the black NW-600 and you've sent me white ones. I do
+      quite like the white ones actually. Can I just keep them?"
+
+      Policy: where Northwind ships the wrong item, the customer may keep it at
+      the price of the item they ordered, or return it free for the correct one.
+      The white NW-600 retails 20 pounds below the black. Where the customer
+      keeps a cheaper item, the difference is refunded.
+
+  - id: cancelled-still-charged-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "I cancelled Plus last month and you've charged me again. Sort it
+      out."
+
+      Account record: cancellation was submitted on 28 April. The charge in
+      question was taken on 1 May for the period 1 to 31 May.
+
+      Policy: cancellation takes effect at the end of the current billing
+      period. A charge taken after a cancellation request is a billing error and
+      is refunded in full within three working days.
+
+  - id: competitor-feature-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Sonic Labs do a 60 day trial. Why don't you? I'm not buying
+      without one."
+
+      Policy: Northwind does not run a trial programme. It offers 30 day returns
+      for any reason with free return shipping, which support may describe.
+      Support does not comment on competitors' terms.
+
+  - id: bug-report-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Your app is broken. It crashes constantly. Fix it."
+
+      Policy: a crash report cannot be investigated without the device model,
+      the operating system version, and roughly when the crash happens, for
+      example on launch or when connecting a device. Support asks for these
+      before escalating. The app's Help screen has a "Send diagnostics" button
+      that attaches all three automatically.
+
+  - id: data-deletion-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Delete everything you hold on me. All of it. Today."
+
+      Policy: deletion requests are honoured within 30 days. Order records
+      linked to a completed purchase are kept for six years to meet tax
+      obligations and cannot be deleted; everything else is removed. The
+      customer is told exactly what is kept and why. The request is started by
+      support and confirmed by email when complete.
+
+  - id: partial-shipment-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "Half my order arrived. Where's the rest, and am I getting the
+      shipping I paid for back since it came in two goes?"
+
+      Order record: order 90310 contained an NW-600 and a stand. The stand was
+      out of stock and is due to ship on 14 May.
+
+      Policy: where Northwind splits a shipment, the customer is not charged
+      twice for shipping and there is nothing to refund; the original charge
+      covers the whole order. Split shipments are dispatched as stock arrives.
+
+  - id: price-increase-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "You've put Plus up by 20 percent with no warning. That's a joke.
+      Why should I stay?"
+
+      Policy: the increase was notified by email on 1 March, 60 days before it
+      took effect on 1 May. Customers who joined before 1 March keep the old
+      price until their next renewal. This customer joined in February, so their
+      renewal in February next year is the first at the new price.
+
+  - id: escalation-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "The battery in my NW-700 swelled up and the case is split open.
+      It got hot in my bag. I'm honestly a bit alarmed."
+
+      Policy: a swollen or overheating battery is a safety matter. Support does
+      not troubleshoot it, does not ask the customer to keep using or charging
+      the product, and does not ask them to post it back, because damaged
+      lithium cells cannot go in the mail. The case is escalated to the product
+      safety team the same day, and they contact the customer within one working
+      day to arrange collection.
+
+  - id: manager-request-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "I want to speak to a manager. Now."
+
+      Ticket history: the customer asked on Monday when their order would ship.
+      They were told Tuesday. It shipped Thursday.
+
+      Policy: escalation requests are honoured, not deflected. A manager
+      responds within one working day. Support summarises the issue for the
+      manager in the reply so the customer does not have to repeat themselves.
+
+  - id: accessibility-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "I'm partially sighted and the app's controls are unusable with
+      the text size turned up. The buttons overlap. Is there anything I can do?"
+
+      Policy: the app supports the operating system's own screen reader in full,
+      and a high contrast mode exists under Settings, Display. The overlapping
+      layout at large text sizes is a known defect with a fix in the next
+      release, due this month. Accessibility reports are escalated to the
+      product team as a matter of course.
+
+  - id: chargeback-threat-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "If I don't get my money back today I'm calling my bank and doing
+      a chargeback."
+
+      Order record: return received at the warehouse yesterday.
+
+      Policy: refunds are issued within three working days of the return being
+      received, and take a further five working days to appear depending on the
+      bank. Support does not warn, threaten or discourage a customer about
+      raising a chargeback.
+
+  - id: out-of-warranty-goodwill-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "The hinge on my NW-700s snapped. I've had them 25 months. I know
+      that's just outside but they're 300 pound headphones."
+
+      Policy: the warranty is 24 months and has expired. Support cannot extend
+      it or offer a free replacement. A paid hinge repair is available at 45
+      pounds including return shipping, takes about ten working days, and is
+      offered where a customer is out of warranty.
+
+  - id: gift-recipient-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "My sister bought me these for my birthday and they're too big.
+      Can I exchange them? I don't have a receipt and I don't want her to know
+      there was a problem."
+
+      Policy: exchanges require the order to be identified, which can be done
+      from the recipient's name and delivery postcode without involving the
+      purchaser. Northwind does not notify the purchaser of an exchange. The
+      30 day window runs from delivery.
+
+  - id: multi-issue-01
+    prompt: |
+      Reply to this ticket.
+
+      Ticket: "The box arrived crushed and the stand inside is scratched. The
+      headphones seem fine. I don't want to send the whole lot back over a
+      scratched stand, but I'm not paying full price for damaged goods either.
+      What are my options?"
+
+      Policy: for a damaged item in a multi-item order, the customer chooses
+      between returning only the damaged item for a replacement, returning only
+      the damaged item for a refund of that item, or keeping it with a 30
+      percent partial refund. The stand was 60 pounds. Return shipping is free
+      in all cases.

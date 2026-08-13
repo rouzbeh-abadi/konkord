@@ -6,7 +6,8 @@ import pytest
 
 from konkord.suites import SuiteError, load_suite
 
-REPO_SUITE = Path(__file__).resolve().parents[1] / "suites" / "python_codegen.yaml"
+SUITES = Path(__file__).resolve().parents[1] / "suites"
+REPO_SUITE = SUITES / "python_codegen.yaml"
 
 RUBRIC = "rubric: Prefer the answer that is correct.\n"
 
@@ -51,6 +52,13 @@ class TestLoading:
         suite = load_suite(REPO_SUITE)
         assert suite.name == "python_codegen"
         assert len(suite.tasks) == 25
+
+    @pytest.mark.parametrize("path", sorted(SUITES.glob("*.yaml")), ids=lambda p: p.stem)
+    def test_every_shipped_suite_parses(self, path: Path) -> None:
+        """Every suite in the repo, not just the one that happens to be named above."""
+        suite = load_suite(path)
+        assert suite.tasks
+        assert suite.rubric.strip()
 
 
 class TestDefaults:
