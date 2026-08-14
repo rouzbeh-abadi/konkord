@@ -36,6 +36,7 @@
   </div>
 
   <section class="wrap">
+    <div id="runs"></div>
     <div id="calibration"></div>
     <h2>Ranking</h2>
     <div id="board"></div>
@@ -45,8 +46,9 @@
 <script src="app.js"></script>
 <script>
 (async () => {
-  const data = await loadResults();
+  const { runs, run, data } = await loadCurrentRun();
   const board = document.getElementById("board");
+  renderRunPicker(document.getElementById("runs"), runs, run || {});
   if (!data) {
     noData(board, "The ranking");
   } else {

@@ -35,6 +35,7 @@
   </div>
 
   <section class="wrap">
+    <div id="runs"></div>
     <div id="calibration"></div>
 
     <div class="prose">
@@ -141,7 +142,8 @@
 <script src="app.js"></script>
 <script>
 (async () => {
-  const data = await loadResults();
+  const { runs, run, data } = await loadCurrentRun();
+  renderRunPicker(document.getElementById("runs"), runs, run || {});
   if (data) renderCalibration(document.getElementById("calibration"), data);
   renderJudgePrompt(document.getElementById("judge-prompt"), data);
   renderFooter();

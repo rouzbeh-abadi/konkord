@@ -268,6 +268,30 @@ section { padding-bottom: clamp(40px, 5vw, 64px); }
   color: var(--muted);
   max-height: 520px;
 }
+/* Run picker ------------------------------------------------------------- */
+
+.runs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.runs a {
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-decoration: none;
+  font: 500 11px/1.4 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.runs a:hover { color: var(--text); border-color: var(--accent-soft); }
+.runs a[aria-current="page"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(255, 124, 10, 0.06);
+}
+
 .answer pre.prose {
   white-space: pre-wrap;
   overflow-wrap: anywhere;

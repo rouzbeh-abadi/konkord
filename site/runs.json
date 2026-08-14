@@ -1,0 +1,17 @@
+{
+  "_comment": "Published runs, newest first. A static host cannot list a directory, so this index is maintained by hand and a test fails if it drifts from the files actually in site/.",
+  "runs": [
+    {
+      "suite": "support_replies",
+      "title": "Customer support replies",
+      "blurb": "25 tickets, each carrying the policy needed to answer it.",
+      "file": "results.support_replies.json"
+    },
+    {
+      "suite": "python_codegen",
+      "title": "Python code generation",
+      "blurb": "25 tasks, each targeting a specific way a plausible answer goes wrong.",
+      "file": "results.python_codegen.json"
+    }
+  ]
+}

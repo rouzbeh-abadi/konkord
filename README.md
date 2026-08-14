@@ -6,12 +6,24 @@ The usual pipeline (run models, have an LLM grade the outputs, publish a leaderb
 Konkord adds one step: the operator hand-labels a sample of comparisons **blind**, and every
 published ranking ships with the judge-versus-human agreement rate attached.
 
-Why it is worth the extra step: on the first published run the judge separated a strong model from
-a weak one, and was at chance between the two strong ones. A leaderboard shows none of that. Its
-confidence intervals measure how much the judge's verdicts wobble under resampling, not whether
-those verdicts are right, so judging more pairs only tightens the interval around the same error.
+Why it is worth the extra step: a leaderboard's confidence intervals measure how much the judge's
+verdicts wobble under resampling, not whether those verdicts are right. Judging more pairs only
+tightens the interval around the same error. Two published runs, same three models and the same
+judge, show what that hides:
 
-The current run, the judge prompt, every answer and every verdict:
+| | Support replies | Python codegen |
+|---|---|---|
+| Agreement with a human | 46.7% | 61.3% |
+| ...on pairs the judge answered consistently | **81.4%** | **76.7%** |
+| Order-flip rate | 42.7% | 20.0% |
+
+Read the headline alone and the judge looks worse at prose. It isn't. When it commits to a winner it
+agrees slightly *more* on prose; the gap is entirely that it contradicts itself twice as often, and a
+pair it contradicts itself on is recorded as no winner at all. A harness that judged each pair once
+would never see this. It would take whichever verdict arrived first on those flipped pairs and
+publish a confident ranking built on coin flips.
+
+Both runs, the judge prompt each was produced under, every answer and every verdict:
 **[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)**.
 
 ## Any domain, one standard at a time
@@ -85,13 +97,14 @@ that is not being ranked:
 
 ```bash
 SUITE=suites/python_codegen.yaml
+NAME=python_codegen
 MODELS=gpt-5,claude-opus-5,gemini-2.5-pro
 
 uv run konkord run       --suite $SUITE --models $MODELS
 uv run konkord judge     --suite $SUITE --models $MODELS --judge mistral/mistral-large-latest
 uv run konkord label     --suite $SUITE --n 100
 uv run konkord calibrate --suite $SUITE
-uv run konkord report    --suite $SUITE --out results.json
+uv run konkord report    --suite $SUITE --out site/results.$NAME.json
 ```
 
 `run` and `judge` cost money and take a few minutes. The run above came to well under a dollar for
@@ -107,7 +120,7 @@ them is free. `label` opens a local app and is the part that needs you: budget a
 | `konkord judge` | Pairwise LLM-as-judge, both orderings |
 | `konkord label` | Local blind labeller |
 | `konkord calibrate` | Judge-versus-human agreement and kappa |
-| `konkord report` | Aggregate into `results.json` |
+| `konkord report` | Aggregate into one results file |
 
 ## Running a suite
 
@@ -161,7 +174,7 @@ yours.
 
 ```bash
 konkord calibrate --suite suites/python_codegen.yaml
-konkord report --suite suites/python_codegen.yaml --out results.json
+konkord report --suite suites/python_codegen.yaml --out site/results.python_codegen.json
 ```
 
 `calibrate` joins the human labels to the judge verdicts on the same comparisons and reports raw
@@ -169,7 +182,7 @@ agreement, Cohen's kappa, breakdowns by task, by model pair and by answer-length
 failure gallery of every disagreement with the judge's own rationale beside it. The length-quartile
 breakdown is what surfaces verbosity bias.
 
-`report` writes `results.json`: Bradley-Terry ratings fitted over all pairwise comparisons rather
+`report` writes a results file: Bradley-Terry ratings fitted over all pairwise comparisons rather
 than raw win counts, win rates with bootstrap 95% confidence intervals, per-model cost and median
 latency, and the calibration block. Models whose intervals overlap share a `rank_group` and must be
 rendered as tied; presenting an order within a group asserts a difference the data does not support.
@@ -179,21 +192,27 @@ A report produced before any labelling still runs, and says plainly that it is u
 ## Site
 
 `site/` is a static page set: a leaderboard, a methodology page, and a per-task browser, published
-at [konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io). It reads `results.json` from
-its own directory and computes nothing at load time, so there is no build step and no server.
-`wrangler.jsonc` holds the deployment config, and `.github/workflows/deploy.yml` uploads the
-directory whenever a push to `main` touches it. Regenerating `results.json` is therefore the whole
-publishing step; there is nothing to rebuild.
+at [konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io). It computes nothing at load
+time, so there is no build step and no server. `wrangler.jsonc` holds the deployment config, and
+`.github/workflows/deploy.yml` uploads the directory whenever a push to `main` touches it.
+Regenerating a report is therefore the whole publishing step.
+
+One results file per suite, indexed by `runs.json`, which a static host cannot generate for itself:
 
 ```bash
-konkord report --suite suites/python_codegen.yaml --out site/results.json
+konkord report --suite suites/python_codegen.yaml --out site/results.python_codegen.json
 python3 -m http.server 8787 --directory site
 ```
 
-Without that file the pages render an empty state rather than a broken one. With a report that has
-no human labels, the leaderboard states plainly that it is uncalibrated instead of quietly showing a
-ranking. The methodology page publishes the judge prompt verbatim, and a test fails if that copy
-drifts from the prompt the tool actually sends.
+Adding a run means adding a line to `runs.json`; a test fails if the index and the files on disk
+disagree in either direction. Every page shows one run at a time, selected with `?suite=`, because
+an agreement rate describes the suite and the judge that produced it and means nothing averaged
+across two of them.
+
+Without a results file the pages render an empty state rather than a broken one. With a report that
+has no human labels, the leaderboard states plainly that it is uncalibrated instead of quietly
+showing a ranking. The methodology page publishes the judge prompt read out of the run itself, so it
+cannot show a prompt that never ran.
 
 ## What this does not do
 

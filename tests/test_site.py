@@ -6,6 +6,7 @@ page therefore holds no copy of its own: it renders whatever the run recorded.
 These tests fail if a copy reappears.
 """
 
+import json
 from pathlib import Path
 
 import pytest
@@ -77,3 +78,45 @@ class TestHonesty:
         app = (SITE / "app.js").read_text(encoding="utf-8")
         assert "rank_group" in app
         assert "tied" in app.lower()
+
+
+class TestPublishedRuns:
+    """runs.json is the index a static host cannot generate, so it can drift."""
+
+    def runs(self) -> list[dict[str, str]]:
+        index = json.loads((SITE / "runs.json").read_text(encoding="utf-8"))
+        runs = index["runs"]
+        assert isinstance(runs, list)
+        return runs
+
+    def test_every_listed_run_has_its_file(self) -> None:
+        for run in self.runs():
+            assert (SITE / run["file"]).is_file(), f"{run['file']} is listed but missing"
+
+    def test_every_results_file_is_listed(self) -> None:
+        """A published file nothing links to is a run nobody can reach."""
+        listed = {run["file"] for run in self.runs()}
+        on_disk = {p.name for p in SITE.glob("results*.json")}
+        assert on_disk == listed, f"unlisted: {on_disk - listed}, missing: {listed - on_disk}"
+
+    def test_each_run_names_the_suite_its_file_contains(self) -> None:
+        """Mislabelling which suite a run describes would misattribute its calibration."""
+        for run in self.runs():
+            report = json.loads((SITE / run["file"]).read_text(encoding="utf-8"))
+            assert report["suite"] == run["suite"]
+
+    def test_each_run_carries_a_title(self) -> None:
+        for run in self.runs():
+            assert run.get("title", "").strip()
+
+    @pytest.mark.parametrize("page", PAGES)
+    def test_every_page_offers_the_run_picker(self, page: str) -> None:
+        html = (SITE / page).read_text(encoding="utf-8")
+        assert 'id="runs"' in html
+        assert "renderRunPicker" in html
+
+    def test_the_picker_selects_by_query_parameter(self) -> None:
+        """Real links, so a particular run can be shared or opened in a new tab."""
+        app = (SITE / "app.js").read_text(encoding="utf-8")
+        assert "URLSearchParams" in app
+        assert "?suite=" in app

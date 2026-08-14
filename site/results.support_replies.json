@@ -1,0 +1,2129 @@
+{
+  "suite": "support_replies",
+  "models": [
+    {
+      "model": "openrouter/openai/gpt-5.4",
+      "rating": 1.675036805405348,
+      "win_rate": 0.69,
+      "ci_low": 0.5980272596843615,
+      "ci_high": 0.7755373425966131,
+      "rank_group": 0,
+      "comparisons": 50,
+      "generations": 25,
+      "failed_generations": 0,
+      "cost_usd": 0.0457975,
+      "median_latency_ms": 2084
+    },
+    {
+      "model": "openrouter/anthropic/claude-haiku-4.5",
+      "rating": 0.9470254131216411,
+      "win_rate": 0.48,
+      "ci_low": 0.3804239130434783,
+      "ci_high": 0.5909322820037106,
+      "rank_group": 1,
+      "comparisons": 50,
+      "generations": 25,
+      "failed_generations": 0,
+      "cost_usd": 0.019408,
+      "median_latency_ms": 2293
+    },
+    {
+      "model": "openrouter/google/gemini-2.5-flash-lite",
+      "rating": 0.6303968182436451,
+      "win_rate": 0.33,
+      "ci_low": 0.22914402173913045,
+      "ci_high": 0.43137254901960786,
+      "rank_group": 1,
+      "comparisons": 50,
+      "generations": 25,
+      "failed_generations": 0,
+      "cost_usd": 0.0011941,
+      "median_latency_ms": 685
+    }
+  ],
+  "calibration": {
+    "judge_models": [
+      "openrouter/mistralai/mistral-small-3.2-24b-instruct"
+    ],
+    "human_labels": 75,
+    "agreement": 0.4666666666666667,
+    "kappa": 0.3084370677731673,
+    "order_flip_rate": 0.4266666666666667,
+    "by_task": [
+      {
+        "key": "accessibility-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "ambiguous-request-01",
+        "labelled": 3,
+        "agreed": 0,
+        "rate": 0.0
+      },
+      {
+        "key": "bug-report-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "cancelled-still-charged-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "chargeback-threat-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "competitor-feature-01",
+        "labelled": 3,
+        "agreed": 0,
+        "rate": 0.0
+      },
+      {
+        "key": "customer-is-wrong-01",
+        "labelled": 3,
+        "agreed": 0,
+        "rate": 0.0
+      },
+      {
+        "key": "data-deletion-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "delivery-estimate-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "duplicate-charge-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "escalation-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "feature-request-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "gift-recipient-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "internal-note-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "manager-request-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "multi-issue-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "out-of-warranty-goodwill-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "partial-shipment-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "policy-does-not-cover-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "price-increase-01",
+        "labelled": 3,
+        "agreed": 0,
+        "rate": 0.0
+      },
+      {
+        "key": "prorated-refund-01",
+        "labelled": 3,
+        "agreed": 2,
+        "rate": 0.6666666666666666
+      },
+      {
+        "key": "refund-window-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "two-questions-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "verification-required-01",
+        "labelled": 3,
+        "agreed": 1,
+        "rate": 0.3333333333333333
+      },
+      {
+        "key": "wrong-item-01",
+        "labelled": 3,
+        "agreed": 3,
+        "rate": 1.0
+      }
+    ],
+    "by_model_pair": [
+      {
+        "key": "openrouter/anthropic/claude-haiku-4.5 vs openrouter/google/gemini-2.5-flash-lite",
+        "labelled": 25,
+        "agreed": 11,
+        "rate": 0.44
+      },
+      {
+        "key": "openrouter/anthropic/claude-haiku-4.5 vs openrouter/openai/gpt-5.4",
+        "labelled": 25,
+        "agreed": 9,
+        "rate": 0.36
+      },
+      {
+        "key": "openrouter/google/gemini-2.5-flash-lite vs openrouter/openai/gpt-5.4",
+        "labelled": 25,
+        "agreed": 15,
+        "rate": 0.6
+      }
+    ],
+    "by_length_quartile": [
+      {
+        "key": "Q1 (252-344 chars)",
+        "labelled": 18,
+        "agreed": 9,
+        "rate": 0.5
+      },
+      {
+        "key": "Q2 (348-412 chars)",
+        "labelled": 19,
+        "agreed": 11,
+        "rate": 0.5789473684210527
+      },
+      {
+        "key": "Q3 (413-493 chars)",
+        "labelled": 19,
+        "agreed": 7,
+        "rate": 0.3684210526315789
+      },
+      {
+        "key": "Q4 (495-616 chars)",
+        "labelled": 19,
+        "agreed": 8,
+        "rate": 0.42105263157894735
+      }
+    ],
+    "failure_gallery": [
+      {
+        "task_id": "accessibility-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and does not pad the reply with apologies. Answer 2 is more concise and specific in its language, but does not provide as clear a next step.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "ambiguous-request-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and it explicitly mentions that the replacement is free. Answer 2 is more concise but lacks these details.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "ambiguous-request-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is accurate and follows the policy, asking the customer to specify which product the charger is for. It also mentions that the replacement is free within the warranty period. Answer 2 is also accurate but includes an unnecessary apology and a slightly more condescending tone with the list format. Both answers are specific about what happens next, but Answer 1 is more straightforward.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "ambiguous-request-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is accurate and concise, directly addressing the customer's request by asking for the specific product to identify the correct charger. Answer 2, while also accurate, includes unnecessary apologies and padding, and lists the products the customer already knows they own. Therefore, Answer 1 is the better reply.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "bug-report-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is more specific about what happens next, while Answer 2 is more concise. Both answers are equally accurate and follow the policy. However, Answer 1 provides a clearer next step by listing the specific information needed and mentioning escalation to the technical team.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "cancelled-still-charged-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 correctly identifies the billing error and states the refund policy, but it does not explicitly state that the refund has been processed. Answer 2 not only identifies the billing error and states the refund policy but also explicitly mentions that the refund has been processed and when the customer can expect to see it. Therefore, Answer 2 is more accurate and specific about what happens next.\n\nVERDICT: 2"
+      },
+      {
+        "task_id": "chargeback-threat-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is accurate and follows the policy, providing the customer with the necessary information about the refund process. Answer 2, while also accurate, includes an unnecessary apology and a less direct tone. Therefore, Answer 1 is preferred.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "chargeback-threat-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is accurate and concise, directly addressing the customer's concern by stating the policy and timeline for the refund. Answer 2, while also accurate, includes an unnecessary apology and additional padding, which does not improve the response but makes it longer. Therefore, Answer 1 is the better response.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "competitor-feature-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 accurately reflects the policy and addresses the customer's question, but it is padded with unnecessary apologies and filler. Answer 2 is more concise and specific, directly addressing the customer's concern without any extraneous information.\n\nVERDICT: 2"
+      },
+      {
+        "task_id": "competitor-feature-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more accurate, as it correctly states the policy without inventing additional terms (such as product recommendations). Both answers are polite and professional, but Answer 1 is more direct and specific about what happens next, which is preferred.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "competitor-feature-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is accurate and concise, directly addressing the customer's question about the trial period and clearly stating Northwind's return policy. Answer 2, while also accurate, is slightly less direct and includes an unnecessary offer of product recommendations that wasn't asked for. Both answers have a polite tone, but Answer 1 is more straightforward.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "customer-is-wrong-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 is accurate and addresses the customer's concern directly, explaining the difference between \"noise isolating\" and \"noise cancelling\" and offering a refund within the policy's timeframe. It is straightforward and specific about the next steps, which is preferable.\n\nAnswer 2 is also accurate but is slightly more verbose and less direct in its instructions for the next steps. It does not offer a clear advantage over Answer 1.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "customer-is-wrong-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more accurate because it directly addresses the customer's concern about the product description and clearly states the refund policy. Answer 2 is less specific about what happens next and includes an unnecessary apology. Answer 1 is more straightforward and informative.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "customer-is-wrong-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is accurate and addresses the customer's concern directly, providing clear information about the product and the refund policy. Answer 2 is also accurate but uses an unnecessary apology and is less specific about the next steps. Answer 1 is more straightforward and customer-friendly.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "data-deletion-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is accurate, but it does not specify what happens next, which is to confirm the deletion by email. Answer 2 is accurate and specifies what happens next, but it does not tell the customer exactly what is kept and why. Answer 2 is therefore more aligned with the customer's preference for specificity.\n\nVERDICT: 2"
+      },
+      {
+        "task_id": "delivery-estimate-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": "openrouter/openai/gpt-5.4",
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 accurately explains the delivery policy and the current status of the order, addressing all the customer's concerns. It provides a clear timeline and mentions the tracking information, which is helpful for the customer. However, it does not explicitly confirm whether the package will arrive by the next day, which is a key concern of the customer.\n\nAnswer 2 also accurately explains the delivery policy and the current status of the order. It is more direct in addressing the customer's concern about the delivery time, stating that the package is due tomorrow based on the tracking information. This provides a clearer answer to the customer's question about whether the package will arrive in time for their flight.\n\nVERDICT: 2"
+      },
+      {
+        "task_id": "duplicate-charge-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more accurate as it directly addresses the customer's request for a refund and explains why it's not possible. It also provides a clear timeline for when the pending authorisation will be released. Answer 2, while also accurate, is less direct in addressing the refund request and includes an unnecessary apology.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "escalation-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 is more concise and directly addresses the customer's concerns without unnecessary apologies. Both answers accurately follow the policy, but Answer 1 is more straightforward and specific about the next steps.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "feature-request-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 provides a more specific and actionable response by directly inviting the customer to join the beta program through the app settings, while Answer 2 is more vague and less specific. Both answers accurately follow the policy and address the customer's feedback and request.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "feature-request-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and avoids unnecessary apologies or padding. It also does not state a policy that is not in the given policy. Answer 2 is more accurate, but less specific about what happens next.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "gift-recipient-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and it is not padded with unnecessary information. Answer 2 is more verbose and less specific about the next steps.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "gift-recipient-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 provides a more detailed and customer-friendly explanation of the exchange process, including what information is needed and what happens next. It also reassures the customer that their sister won't be involved or notified. Answer 2 is more concise but lacks some of the reassuring details and specific steps outlined in Answer 1.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "internal-note-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more specific about what happens next, while Answer 2 apologizes for the customer's mistake. Answer 1 also uses more concise and direct language.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "manager-request-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is accurate and concise, but Answer 2 provides a more specific summary of the issue and acknowledges the customer's frustration, which may be more reassuring. However, Answer 2 also includes an unnecessary apology, which the policy advises against.\n\nVERDICT: 2"
+      },
+      {
+        "task_id": "manager-request-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is accurate, but it is less specific about what happens next and includes an unnecessary apology. Answer 2 is more specific about the next steps and does not include an unnecessary apology.\n\nVERDICT: 2"
+      },
+      {
+        "task_id": "multi-issue-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 is more accurate, as it explicitly states the amount of the partial refund (\u00a318) and clearly outlines the free return shipping for all options. Answer 2, while generally accurate, is less specific about the partial refund amount and the free return shipping, which could lead to customer confusion. Answer 1 also provides a clearer and more specific explanation of the options, making it easier for the customer to understand and choose the best option for them.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "out-of-warranty-goodwill-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and does not pad with apology. Answer 2 is more verbose, but does not lose on accuracy.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "out-of-warranty-goodwill-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more accurate as it directly addresses the customer's mention of the headphones being 300 pound headphones, while Answer 2 does not. Both answers are equally polite and specific about what happens next, but Answer 1 is slightly more concise.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "partial-shipment-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more accurate as it explicitly mentions both items in the order and provides a clear explanation of the shipping policy. Answer 2 is slightly less accurate as it does not mention the NW-600 headphones explicitly, although it is implied. Both answers have a similar tone, but Answer 1 is more specific about what happens next and does not include unnecessary apologies.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "policy-does-not-cover-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and it does not pad the reply with an unnecessary apology. Answer 2 is more concise, but it does not provide any additional information or assistance beyond what is stated in the policy.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "price-increase-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and does not include an unnecessary apology. Answer 2 is accurate, but less specific and includes an unnecessary apology.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "price-increase-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more accurate as it explicitly states the customer's current membership remains at the original price until their next renewal, while Answer 2 only implies this. Answer 1 also avoids unnecessary apologies and gets straight to the point, making it the better response.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "price-increase-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is accurate and addresses the customer's concerns directly. Answer 2 is also accurate but includes unnecessary apologies and padding, which makes it less direct and slightly condescending. Answer 1 is more straightforward and specific about what happens next.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "prorated-refund-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is more accurate as it correctly states the refund amount is proportional to the unused months, while Answer 2 implies a full refund for the unused months. Answer 1 also provides a clearer next step by stating the refund will be processed right away. Answer 2 is more concise and to the point, but less accurate.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "refund-window-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 correctly states the refund policy and accurately calculates the 30-day window, while Answer 2 incorrectly states that the purchase falls outside the 30-day window. Answer 1 also provides clear instructions on what happens next, while Answer 2 does not.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "refund-window-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 correctly states that the customer is eligible for a refund, as the request was made within 30 days of delivery. Answer 2 incorrectly states that the customer is not eligible for a refund, which is against the policy. Answer 1 also provides clear instructions on what happens next, which is preferred.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "two-questions-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": null,
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and it's not padded with unnecessary apologies. Answer 2 is more concise and to the point.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "two-questions-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more accurate as it addresses both of the customer's questions directly and completely. Answer 2, while polite, does not explicitly state that the customer can choose between a replacement or a repair until after the item is returned, which could be seen as less clear. Both answers have a similar tone, but Answer 1 is slightly more concise and to the point.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "verification-required-01",
+        "model_a": "openrouter/anthropic/claude-haiku-4.5",
+        "model_b": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_winner": "openrouter/anthropic/claude-haiku-4.5",
+        "human_winner": "openrouter/google/gemini-2.5-flash-lite",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and does not pad with apology. Answer 2 is more generic and uses passive voice.\n\nVERDICT: 1"
+      },
+      {
+        "task_id": "verification-required-01",
+        "model_a": "openrouter/google/gemini-2.5-flash-lite",
+        "model_b": "openrouter/openai/gpt-5.4",
+        "judge_winner": null,
+        "human_winner": "openrouter/openai/gpt-5.4",
+        "judge_rationale": "Answer 1 is more specific about what happens next, and does not pad with an apology. Answer 2 is more concise, but less specific about the process.\n\nVERDICT: 1"
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "refund-window-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"I bought the NW-700 headphones on 2 March and they're just not\nfor me. I'd like to send them back for a refund please.\"\n\nToday is 12 April. Policy: refunds are available within 30 days of\ndelivery. Between 31 and 60 days we offer store credit at full value, not\na refund. After 60 days, neither. Delivery for this order was confirmed on\n6 March.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us about your NW-700 headphones.\n\nI've checked your order, and your headphones were delivered on 6 March. Since your return request is being made on 12 April, this falls within 30 days of delivery, so you're eligible for a full refund.\n\nPlease reply to this ticket with your preferred method for returning the headphones, and we'll provide you with a return shipping label and instructions to complete the process.",
+          "error": null,
+          "tokens_out": 104,
+          "cost_usd": 0.000713,
+          "latency_ms": 2184
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "Thank you for contacting Northwind Audio.\n\nWe have received your request to return the NW-700 headphones. As delivery was confirmed on 6 March, your purchase falls outside the 30-day window for a refund.\n\nHowever, you are within the 31-60 day period, so we can offer you store credit at full value for the headphones. Please let us know if you would like to proceed with this option.",
+          "error": null,
+          "tokens_out": 92,
+          "cost_usd": 5.43e-05,
+          "latency_ms": 984
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "Thanks for getting in touch. I\u2019ve checked your order, and delivery was confirmed on 6 March.\n\nUnder our policy, refunds are available within 30 days of delivery. Since it\u2019s now 12 April, your order is outside the refund window but still within 31 to 60 days from delivery.\n\nThat means we can offer you store credit at the full value of the NW-700 headphones, but not a refund. If you\u2019d like to go ahead with the return for store credit, please let us know.",
+          "error": null,
+          "tokens_out": 109,
+          "cost_usd": 0.002065,
+          "latency_ms": 2152
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 correctly states the refund policy and accurately calculates the 30-day window, while Answer 2 incorrectly states that the purchase falls outside the 30-day window. Answer 1 also provides clear instructions on what happens next, while Answer 2 does not.\n\nVERDICT: 1",
+            "Answer 1 correctly identifies that the customer is outside the 30-day refund window but offers the correct alternative of store credit within the 31-60 day period. Answer 2 incorrectly states that the customer is within the 30-day refund window, which is inaccurate based on the given policy and delivery date. Therefore, Answer 1 is more accurate.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 correctly states that the customer is eligible for a refund, as the request was made within 30 days of delivery. Answer 2 incorrectly states that the customer is not eligible for a refund, which is against the policy. Answer 1 also provides clear instructions on what happens next, which is preferred.\n\nVERDICT: 1",
+            "Answer 1 correctly identifies that the customer is outside the refund window but within the store credit window, and offers the appropriate solution. Answer 2 incorrectly states that the customer is within the 30-day refund window, which is not the case as the delivery was confirmed on 6 March and the request was made on 12 April, which is 37 days later. Therefore, Answer 1 is more accurate.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate and follows the policy, but it does not specify what happens next or provide clear instructions. Answer 2 is also accurate and follows the policy, but it is more specific about what happens next and provides a clear path forward for the customer.\n\nVERDICT: 2",
+            "Answer 1 is more specific about what happens next, stating clearly that the customer can proceed with a return for store credit. Answer 2 is more vague and does not explicitly state the next steps. Therefore, Answer 1 is preferred.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "two-questions-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Two things. My NW-500s have started cutting out on the left side\nafter about four months. Also, do you ship to Norway? I'm moving there in\nJune and want to know before I invest in more of your stuff.\"\n\nPolicy: the NW-500 carries a two-year warranty covering faults not caused\nby damage; the customer should be sent a prepaid returns label and offered\na replacement or a repair. Northwind ships to Norway; delivery is five to\nseven working days and the customer pays any import duty.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us.\n\nI'm sorry to hear your NW-500s are experiencing issues. The good news is that your headphones are covered under our two-year warranty for faults not caused by damage. We'd be happy to help get this resolved for you. I'll send you a prepaid returns label, and once we receive your headphones, we can either repair them or send you a replacement\u2014whichever you prefer.\n\nRegarding your move to Norway: yes, we do ship there! Delivery typically takes five to seven working days. Please note that you would be responsible for any import duty charges.\n\nPlease let me know if you have any other questions.",
+          "error": null,
+          "tokens_out": 147,
+          "cost_usd": 0.000941,
+          "latency_ms": 3362
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We are sorry to hear about the issue with your NW-500 headphones. The NW-500 model carries a two-year warranty covering faults not caused by damage. We will send you a prepaid returns label and offer you either a replacement or a repair for your headphones.\n\nYes, Northwind does ship to Norway. Delivery typically takes five to seven working days. Please note that you will be responsible for any import duty.",
+          "error": null,
+          "tokens_out": 89,
+          "cost_usd": 5.48e-05,
+          "latency_ms": 532
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry to hear your NW-500s are cutting out on the left side.\n\nThe NW-500 is covered by a two-year warranty for faults not caused by damage, so we can help with this. We\u2019ll send you a prepaid returns label, and once the item is returned, you can choose either a replacement or a repair.\n\nAnd yes, we do ship to Norway. Delivery usually takes five to seven working days, and any import duty would be your responsibility.\n\nIf you\u2019d like, I can help arrange the return for your current pair.",
+          "error": null,
+          "tokens_out": 116,
+          "cost_usd": 0.0022225,
+          "latency_ms": 5578
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and it's not padded with unnecessary apologies. Answer 2 is more concise and to the point.\n\nVERDICT: 1",
+            "Answer 1 accurately addresses both the warranty issue and the shipping question, providing all necessary details. Answer 2 is also accurate but includes unnecessary apologies and padding, such as \"I'm sorry to hear\" and \"Please let me know if you have any other questions.\" This makes it less concise and slightly less professional.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more verbose and includes unnecessary apologies, while Answer 2 is more concise and specific about the next steps. Both answers are accurate and address all the customer's questions, but Answer 2 is preferred for its tone and brevity.\n\nVERDICT: 2",
+            "Answer 1 is more accurate as it directly addresses both of the customer's questions without any unnecessary apologies or padding. It provides clear information about the warranty and the shipping policy. Answer 2, while also accurate, includes unnecessary apologies and is slightly more verbose.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more accurate as it addresses both of the customer's questions directly and completely. Answer 2, while polite, does not explicitly state that the customer can choose between a replacement or a repair until after the item is returned, which could be seen as less clear. Both answers have a similar tone, but Answer 1 is slightly more concise and to the point.\n\nVERDICT: 1",
+            "Answer 1 is more specific about the next steps, mentioning that the customer can choose between a replacement or a repair once the item is returned, and it offers to help arrange the return. It also avoids unnecessary apologies and is more concise. Answer 2, while accurate, is less specific about the next steps and includes an unnecessary apology.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "internal-note-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"This is the third time I've written about my missing order.\nWhere is it?\"\n\nOrder record: order 88214, dispatched 3 April, tracking shows it was\ndelivered to a neighbour at number 14 on 5 April.\n\nINTERNAL NOTE, NOT FOR THE CUSTOMER: this customer has been flagged by the\nfraud team for three previous \"not received\" claims in six months. Do not\nissue a replacement without manager approval. Ask them to confirm whether\nthey have checked with the neighbour.\n\nPolicy: where tracking shows delivery to a neighbour, ask the customer to\ncheck there first before any replacement is considered.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for your patience, and I apologize for the delay in responding to your previous messages.\n\nI've reviewed your order 88214, and our tracking information shows that it was delivered on 5 April to a neighbour at number 14. Before we proceed with any further steps, could you please check with your neighbour to see if they have your package?\n\nOnce you've done that, please let me know what you find, and we'll be happy to help resolve this for you.",
+          "error": null,
+          "tokens_out": 107,
+          "cost_usd": 0.000763,
+          "latency_ms": 2191
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We understand your frustration regarding order 88214. Our records indicate the order was dispatched on 3 April and the tracking information shows it was delivered to a neighbour at number 14 on 5 April.\n\nCould you please confirm if you have had a chance to check with your neighbour at number 14?",
+          "error": null,
+          "tokens_out": 67,
+          "cost_usd": 4.79e-05,
+          "latency_ms": 607
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry for the frustration and for the delay in getting back to you.\n\nI\u2019ve checked order 88214, and the tracking shows it was delivered to a neighbour at number 14 on 5 April.\n\nPlease could you check with your neighbour at number 14 first? Where tracking shows delivery to a neighbour, we need to ask customers to check there before any replacement can be considered.",
+          "error": null,
+          "tokens_out": 83,
+          "cost_usd": 0.001775,
+          "latency_ms": 2193
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/google/gemini-2.5-flash-lite",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more accurate as it directly addresses the customer's concern about the missing order and provides a clear next step. However, Answer 2 is more concise and specific about what the customer should do next, which is preferred in terms of tone.\n\nVERDICT: 2",
+            "Answer 1 is more accurate and concise, directly addressing the customer's concern and asking for confirmation about the neighbour without unnecessary apologies or padding. Answer 2, while polite, includes an unnecessary apology and is slightly more verbose without adding value.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, while Answer 2 apologizes for the customer's mistake. Answer 1 also uses more concise and direct language.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it directly quotes the policy and does not imply further action will be taken. Answer 2 is more verbose, and while it does not contradict the policy, it does not directly state that a replacement will not be considered without checking with the neighbour.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/google/gemini-2.5-flash-lite",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more concise and directly addresses the customer's question without unnecessary apologies. Both answers correctly follow the policy and provide the necessary information, but Answer 1 is more straightforward and specific about what the customer should do next.\n\nVERDICT: 1",
+            "Answer 1 follows the policy by asking the customer to check with the neighbour, but it apologizes for the delay in response, which is not the customer's fault and not relevant to the issue. Answer 2 also follows the policy and provides a more straightforward and specific response, acknowledging the customer's frustration and directly asking if they have checked with the neighbour.\n\nVERDICT: 2"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "prorated-refund-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"I want to cancel Northwind Plus. I paid for the year up front in\nJanuary. What do I get back?\"\n\nPolicy: annual Northwind Plus is 96 pounds. Cancellation refunds the\nunused whole months, counted from the end of the current month. The\nsubscription started on 1 January and today is 20 May.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us about canceling your Northwind Plus subscription.\n\nSince you paid for a full year in January and are canceling on 20 May, you're entitled to a refund for the unused whole months remaining in your subscription, counted from the end of the current month (May).\n\nYour subscription will be refunded for the following whole months: June, July, August, September, October, November, and December \u2014 that's 7 months.\n\nBased on your annual payment of 96 pounds, your refund will be calculated proportionally for these 7 unused months.\n\nWe'll process your cancellation and refund right away. Is there anything else I can help you with?",
+          "error": null,
+          "tokens_out": 153,
+          "cost_usd": 0.000931,
+          "latency_ms": 3066
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We can process your cancellation for Northwind Plus. As you paid for the year upfront in January, and today is 20 May, we will be refunding the unused whole months from the end of May. This means we will refund the months of June, July, August, September, October, November, and December.",
+          "error": null,
+          "tokens_out": 66,
+          "cost_usd": 4.11e-05,
+          "latency_ms": 491
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "You can cancel Northwind Plus now.\n\nBecause annual Northwind Plus is \u00a396 and refunds are for unused whole months counted from the end of the current month, the refund would cover June through December, which is 7 whole unused months.\n\n\u00a396 for 12 months = \u00a38 per month, so your refund would be 7 \u00d7 \u00a38 = \u00a356.\n\nSo if you cancel on 20 May, you would get back \u00a356.",
+          "error": null,
+          "tokens_out": 94,
+          "cost_usd": 0.0017925,
+          "latency_ms": 2908
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more accurate as it correctly states the refund amount is proportional to the unused months, while Answer 2 implies a full refund for the unused months. Answer 1 also provides a clearer next step by stating the refund will be processed right away. Answer 2 is more concise and to the point, but less accurate.\n\nVERDICT: 1",
+            "Answer 1 accurately states the refund policy and correctly calculates the refund period. Answer 2 also accurately states the policy and refund period, but goes further by specifying the amount of the refund and offering additional assistance, which is more helpful to the customer.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate and follows the policy, but it does not provide the specific refund amount, which is crucial information the customer asked for. Answer 2 is also accurate and provides the specific refund amount, which directly addresses the customer's question. However, Answer 2's tone is more straightforward and specific about the refund calculation, which the customer would likely prefer.\n\nVERDICT: 2",
+            "Answer 1 accurately calculates the refund amount based on the given policy and provides a clear, straightforward response. Answer 2 also accurately follows the policy but includes unnecessary padding and a question that isn't relevant to the task. Answer 1 is more concise and directly addresses the customer's query.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate, but it does not specify the amount of the refund. Answer 2 is accurate and provides the exact amount of the refund, which is more helpful to the customer.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it correctly states the refund amount (\u00a356) based on the policy. Answer 2 does not provide a specific refund amount, only the months that will be refunded. Both answers are polite and to the point, but Answer 1 is more specific about what happens next.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "policy-does-not-cover-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"My dog chewed through the cable on my NW-700s. They're four\nmonths old. This is covered under warranty, right?\"\n\nPolicy: the two-year warranty covers manufacturing faults. It does not\ncover accidental or third-party damage. Replacement cables for the NW-700\nare sold separately at 19 pounds and are in stock.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "I'm sorry to hear about the damage to your NW-700s. Unfortunately, damage caused by your dog would be considered third-party damage, which is not covered under our two-year warranty. The warranty covers manufacturing faults only.\n\nHowever, we do have good news\u2014replacement cables for the NW-700 are available for purchase separately at 19 pounds, and they're currently in stock. If you'd like to order a replacement cable, please let me know and I can help you with that.",
+          "error": null,
+          "tokens_out": 111,
+          "cost_usd": 0.000723,
+          "latency_ms": 2467
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We are sorry to hear about the damage to your NW-700s. Our two-year warranty covers manufacturing faults. It does not cover accidental or third-party damage. Replacement cables for the NW-700 are sold separately at 19 pounds and are in stock.",
+          "error": null,
+          "tokens_out": 59,
+          "cost_usd": 3.9e-05,
+          "latency_ms": 399
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "Thanks for getting in touch. I\u2019m sorry to hear the cable was damaged.\n\nThe two-year warranty covers manufacturing faults, but it does not cover accidental or third-party damage. Because the cable was chewed through, this would not be covered under warranty.\n\nReplacement cables for the NW-700 are sold separately for 19 pounds, and they are currently in stock.",
+          "error": null,
+          "tokens_out": 77,
+          "cost_usd": 0.00154,
+          "latency_ms": 2076
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and it does not pad the reply with an unnecessary apology. Answer 2 is more concise, but it does not provide any additional information or assistance beyond what is stated in the policy.\n\nVERDICT: 1",
+            "Answer 1 accurately reflects the policy and addresses the customer's question about the warranty. Answer 2 also accurately reflects the policy but provides more specific information about the nature of the damage not being covered. However, it is slightly more verbose and includes an unnecessary offer to help with the purchase, which the customer did not ask for. Both answers are polite and professional, but Answer 1 is more concise and directly addresses the customer's question.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more verbose and apologetic, but both answers are accurate and address the customer's question. Answer 2 is more concise and specific about what happens next, which is preferred.\n\nVERDICT: 2",
+            "Answer 1 is more accurate and concise, directly addressing the customer's question about the warranty and providing the necessary information about the replacement cable. Answer 2, while also accurate, is less concise and includes unnecessary apologies and offers of help that were not requested.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate and follows the policy, but it does not specify that the damage is not covered under the warranty. Answer 2 is more specific about what happens next and why the damage is not covered, making it more informative and helpful to the customer.\n\nVERDICT: 2",
+            "Answer 1 provides a more specific and helpful response by explicitly stating that the damage is not covered under the warranty and providing the price and availability of the replacement cable. It also avoids unnecessary apologies and gets straight to the point.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "customer-is-wrong-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Your website says these are noise cancelling and they're\nabsolutely not. The advert is a lie and I want my money back.\"\n\nProduct record: the NW-300 is listed as \"noise isolating\", which describes\nthe physical seal of the ear cup. It has no active noise cancellation and\nthe listing does not claim any. The NW-600, at 40 pounds more, does.\n\nPolicy: refunds are available within 30 days of delivery for any reason.\nThis order was delivered nine days ago.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us. I understand your frustration with the NW-300.\n\nOur listing describes these headphones as \"noise isolating,\" which refers to the physical seal created by the ear cups. They do not feature active noise cancellation. If you're looking for active noise cancellation, our NW-600 model offers this feature.\n\nSince your order was delivered nine days ago, you're within our 30-day refund window and are eligible for a refund for any reason. Please let us know if you'd like to proceed with a return.",
+          "error": null,
+          "tokens_out": 123,
+          "cost_usd": 0.000819,
+          "latency_ms": 2009
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "Thank you for reaching out to Northwind Audio.\n\nWe understand your concern regarding the NW-300 headphones. Our website lists these headphones as \"noise isolating,\" which refers to the physical seal created by the earcups. This model does not feature active noise cancellation. The NW-600 model, at a different price point, does include active noise cancellation.\n\nAs your order was delivered nine days ago, you are within our 30-day return window. You are welcome to return the NW-300 headphones for a refund. Please visit the \"My Orders\" section of your account to initiate a return.",
+          "error": null,
+          "tokens_out": 129,
+          "cost_usd": 7.04e-05,
+          "latency_ms": 1062
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry for the frustration.\n\nI\u2019ve checked the product listing for the NW-300, and it is described as \u201cnoise isolating,\u201d which refers to the physical seal of the ear cup. It does not have active noise cancellation, and the listing does not claim that it does.\n\nThat said, your order was delivered nine days ago, and our policy allows refunds within 30 days of delivery for any reason. We can therefore accept a return for a refund.\n\nIf you\u2019d like to proceed, please reply and we\u2019ll help with the return process.",
+          "error": null,
+          "tokens_out": 116,
+          "cost_usd": 0.00221,
+          "latency_ms": 2462
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and addresses the customer's concern directly, explaining the difference between \"noise isolating\" and \"noise cancelling\" and offering a refund within the policy's timeframe. It is straightforward and specific about the next steps, which is preferable.\n\nAnswer 2 is also accurate but is slightly more verbose and less direct in its instructions for the next steps. It does not offer a clear advantage over Answer 1.\n\nVERDICT: 1",
+            "Answer 1 is accurate and provides a clear, direct response to the customer's concern, explaining the difference between the NW-300 and NW-600 models and outlining the refund process. It also specifies the next steps the customer should take to initiate a return.\n\nAnswer 2 is also accurate but is slightly less specific about the next steps the customer should take, and it includes an unnecessary apology.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more accurate because it directly addresses the customer's concern about the product description and clearly states the refund policy. Answer 2 is less specific about what happens next and includes an unnecessary apology. Answer 1 is more straightforward and informative.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it explicitly states the customer is eligible for a refund and offers to help with the return process. Answer 2 is more concise and specific about what happens next, but does not explicitly state the customer is eligible for a refund. Answer 1 also provides a clearer call to action for the customer to proceed with the return.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and addresses the customer's concern directly, providing clear information about the product and the refund policy. Answer 2 is also accurate but uses an unnecessary apology and is less specific about the next steps. Answer 1 is more straightforward and customer-friendly.\n\nVERDICT: 1",
+            "Answer 1 is more concise and specific about what happens next, while Answer 2 provides more detail but is slightly more verbose. Both answers are accurate and follow the policy, but Answer 1 is more direct and to the point.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "verification-required-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"I've been locked out of my Northwind account. Can you just tell\nme what email address is on it and change the password to Summer2026? My\nname is J. Whitfield.\"\n\nPolicy: account details are never confirmed or changed over email. A\nlocked-out customer is sent a reset link to the address already on the\naccount. If they no longer have access to that address, they must complete\nidentity verification, which support can start by sending them a form.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us.\n\nFor security reasons, we cannot confirm account details or change passwords over email. Instead, we've sent a password reset link to the email address associated with your account. Please check that inbox (including spam folders) for instructions.\n\nIf you no longer have access to that email address, we can help you verify your identity so we can assist further. I can send you a form to get started with that process.\n\nLet me know how you'd like to proceed.",
+          "error": null,
+          "tokens_out": 105,
+          "cost_usd": 0.000717,
+          "latency_ms": 2293
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We understand you're having trouble accessing your Northwind account. For security reasons, we cannot confirm account details or change passwords via email.\n\nTo regain access, we will send a password reset link to the email address currently associated with your account. If you no longer have access to this email address, we can begin an identity verification process. Please let us know if you would like to proceed with identity verification, and we will send you the necessary form.",
+          "error": null,
+          "tokens_out": 92,
+          "cost_usd": 5.48e-05,
+          "latency_ms": 1404
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry, but we can\u2019t confirm the email address on an account or change account details over email, including setting a new password.\n\nIf you\u2019re locked out, we can send a password reset link to the email address already on the account. If you no longer have access to that email address, we can start identity verification by sending you a form.\n\nPlease let us know which option you\u2019d like to proceed with.",
+          "error": null,
+          "tokens_out": 89,
+          "cost_usd": 0.0017925,
+          "latency_ms": 1581
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and does not pad with apology. Answer 2 is more generic and uses passive voice.\n\nVERDICT: 1",
+            "Answer 1 accurately follows the policy and addresses the customer's request without confirming account details or changing the password. It provides clear next steps for the customer, including the option for identity verification.\n\nAnswer 2 also follows the policy and addresses the customer's request accurately. It provides specific information about the password reset link and offers the identity verification process if needed.\n\nBoth answers are accurate and follow the policy, but Answer 2 is more specific about what happens next (mentioning the reset link and spam folders) and avoids unnecessary padding.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and does not include an unnecessary apology. Answer 2 is slightly better because it does not use the phrase \"Let me know how you'd like to proceed\" which is not specific.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it does not assume the customer has access to the email address on the account, while Answer 2 does. Answer 1 also specifies that the customer must complete identity verification, which is the correct policy. Answer 2 is slightly more specific about what happens next, but this is not enough to outweigh the accuracy difference.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and does not pad with an apology. Answer 2 is more concise, but less specific about the process.\n\nVERDICT: 1",
+            "Answer 1 is accurate and concise, while Answer 2 is also accurate but slightly more verbose without adding significant value. Both answers adhere to the policy and address the customer's request appropriately. However, Answer 1 is more direct and to the point, which aligns better with the preference for not padding the reply with unnecessary information.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "delivery-estimate-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Ordered on Friday with next day delivery and it still hasn't\nturned up. It's Monday. Where is it and will it definitely be here\ntomorrow, because I need it for a flight on Wednesday morning.\"\n\nOrder record: order placed Friday at 19:40. Policy: next-day delivery\napplies to orders placed before 17:00 on a working day; later orders are\ndispatched the next working day. Weekends are not working days. This order\nwas dispatched Monday morning and tracking shows it out for delivery\nTuesday.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us about your order.\n\nI've reviewed your account and can see that your order was placed on Friday at 19:40. Our next-day delivery service applies to orders placed before 17:00 on a working day. Since your order was placed after 17:00, it was processed under our standard policy and dispatched the next working day, which was Monday morning.\n\nYour package is currently out for delivery on Tuesday. However, I'm unable to guarantee delivery by any specific time, as delivery times can vary. I'd recommend checking your tracking information for the most up-to-date details on your delivery status.\n\nIf you have any concerns about whether the package will arrive in time for your Wednesday morning flight, please let me know and I'll do what I can to help.",
+          "error": null,
+          "tokens_out": 172,
+          "cost_usd": 0.001065,
+          "latency_ms": 2953
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We understand your order has not yet arrived, and we apologize for any inconvenience this may cause.\n\nNext-day delivery applies to orders placed before 5:00 PM on a working day. As your order was placed on Friday at 19:40, after this cut-off time, it was dispatched on Monday morning.\n\nTracking shows your order is out for delivery today, Tuesday.",
+          "error": null,
+          "tokens_out": 82,
+          "cost_usd": 5.23e-05,
+          "latency_ms": 685
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry for the confusion and delay.\n\nYour order was placed on Friday at 19:40. Under our delivery policy, next-day delivery applies only to orders placed before 17:00 on a working day. Orders placed after that are dispatched on the next working day, and weekends are not working days.\n\nBecause of this, your order was dispatched on Monday morning. The latest tracking shows it is out for delivery on Tuesday.\n\nBased on that tracking, it is due tomorrow.",
+          "error": null,
+          "tokens_out": 101,
+          "cost_usd": 0.0020025,
+          "latency_ms": 4238
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 correctly states the policy and the delivery timeline, while Answer 2 incorrectly states the cut-off time as 5:00 PM instead of 17:00. Answer 1 also provides a more specific response about the delivery status and what the customer can do next, while Answer 2 is more vague and apologetic.\n\nVERDICT: 1",
+            "Answer 1 is accurate and to the point, but it doesn't address the customer's concern about whether the package will arrive in time for their flight. Answer 2 is also accurate and provides more detail about the delivery process, but it's wordier and doesn't provide a definitive answer about the delivery time. However, Answer 2 does address the customer's concern about the flight and offers to help, which is a positive aspect.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 accurately explains the delivery policy and the current status of the order, addressing all the customer's concerns. It provides a clear timeline and mentions the tracking information, which is helpful for the customer. However, it does not explicitly confirm whether the package will arrive by the next day, which is a key concern of the customer.\n\nAnswer 2 also accurately explains the delivery policy and the current status of the order. It is more direct in addressing the customer's concern about the delivery time, stating that the package is due tomorrow based on the tracking information. This provides a clearer answer to the customer's question about whether the package will arrive in time for their flight.\n\nVERDICT: 2",
+            "Answer 1 is more accurate as it directly addresses the customer's concern about the delivery time and provides a clear timeline. It also avoids unnecessary apologies and speculation about delivery times, which could cause further anxiety. Answer 2, while polite, introduces uncertainty about the delivery time and does not provide a definitive answer to the customer's question.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate, but it doesn't address the customer's question about whether the order will definitely arrive tomorrow. Answer 2 is more accurate as it addresses all points raised by the customer, including the delivery date. Both answers have a polite tone, but Answer 2 is more specific about what happens next.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it correctly states the cut-off time as 17:00, not 17:00. It also directly addresses the customer's concern about the delivery date, while Answer 2 does not explicitly confirm if the order will arrive by the customer's flight on Wednesday morning. Answer 1 is also more specific about what happens next, stating that the order is due tomorrow, while Answer 2 only mentions that it is out for delivery today.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "duplicate-charge-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"You've charged me twice, 149 pounds each. Refund one of them\nimmediately.\"\n\nAccount record: one completed charge of 149 pounds on 8 May, and one\npending authorisation of 149 pounds from 6 May which was not captured.\n\nPolicy: an uncaptured authorisation is not a charge and is released by the\ncustomer's bank, typically within five working days. Support does not\nrefund authorisations because there is nothing to refund.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us. I've reviewed your account and can see that you have one completed charge of 149 pounds from 8 May. The other transaction from 6 May is a pending authorisation that was not captured, which means it is not an actual charge.\n\nAccording to our policy, uncaptured authorisations are not charges and will be released by your bank automatically, typically within five working days. Since nothing was actually deducted for this authorisation, there is nothing for us to refund.\n\nYou should see the pending authorisation disappear from your account shortly. If you have any further concerns, please let us know.",
+          "error": null,
+          "tokens_out": 140,
+          "cost_usd": 0.000895,
+          "latency_ms": 2879
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We have reviewed your account and see one completed charge of 149 pounds on 8 May. There is also a pending authorisation of 149 pounds from 6 May, which was not captured.\n\nAn uncaptured authorisation is not a charge and will be released by your bank, typically within five working days. We do not refund authorisations because there is nothing to refund.",
+          "error": null,
+          "tokens_out": 79,
+          "cost_usd": 4.93e-05,
+          "latency_ms": 663
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry for the confusion.\n\nI\u2019ve checked your account and can see one completed charge of 149 pounds on 8 May, and one pending authorisation of 149 pounds from 6 May that was not captured.\n\nThe pending authorisation is not a completed charge, so there is nothing for us to refund. It will be released by your bank, typically within five working days.\n\nIf the pending authorisation is still showing after that time, please contact your bank for an update on the release.",
+          "error": null,
+          "tokens_out": 105,
+          "cost_usd": 0.00202,
+          "latency_ms": 2149
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/google/gemini-2.5-flash-lite",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more verbose and includes an unnecessary apology and a promise of further assistance which is not guaranteed. Answer 2 is more concise and to the point, and it provides the necessary information without any unnecessary additions.\n\nVERDICT: 2",
+            "Answer 1 is accurate and concise, directly addressing the customer's concern about the double charge and explaining the policy regarding the uncaptured authorisation. Answer 2 is also accurate but includes unnecessary padding and a somewhat condescending tone with the phrase \"You should see the pending authorisation disappear from your account shortly,\" which is not helpful or specific about what happens next.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more accurate as it directly addresses the customer's request for a refund and explains why it's not possible. It also provides a clear timeline for when the pending authorisation will be released. Answer 2, while also accurate, is less direct in addressing the refund request and includes an unnecessary apology.\n\nVERDICT: 1",
+            "Answer 1 apologizes for the confusion and does not specify what happens next. Answer 2 is more specific about the next steps and does not include an apology. Answer 2 is more accurate and specific.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/google/gemini-2.5-flash-lite",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more accurate as it directly addresses the customer's request for a refund and explains the policy without unnecessary details. Answer 2, while polite, includes an apology that is not necessary and adds information about contacting the bank, which is not part of the policy.\n\nVERDICT: 1",
+            "Answer 1 apologizes for the confusion, which is unnecessary and pads the response. Answer 2 is more direct and specific about what happens next, making it the better response.\n\nVERDICT: 2"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "feature-request-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Any chance of a proper equaliser in the app? The three presets\nare useless. When's that coming?\"\n\nPolicy: support does not confirm, deny or date unreleased features.\nRequests are logged to the product team, and customers can opt into the\nbeta programme, which is where new app features appear first.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for your feedback about the equalizer presets. We've logged your feature request with our product team.\n\nIf you're interested in trying new app features as they're developed, we invite you to join our beta programme. This is where new features become available first, ahead of general release. You can opt in through the app settings if you'd like to participate.\n\nWe appreciate your input as we continue to improve our app.",
+          "error": null,
+          "tokens_out": 92,
+          "cost_usd": 0.000619,
+          "latency_ms": 2143
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We appreciate your feedback regarding the equalizer functionality in our app. We have logged your request with our product team.\n\nIf you are interested in trying out new app features as they become available, we encourage you to opt into our beta program.",
+          "error": null,
+          "tokens_out": 48,
+          "cost_usd": 3.34e-05,
+          "latency_ms": 690
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "Thanks for the feedback. We can\u2019t confirm, deny, or provide timing for unreleased app features.\n\nWe have logged your request with the product team. If you\u2019d like, you can also opt into the beta programme, which is where new app features appear first.",
+          "error": null,
+          "tokens_out": 58,
+          "cost_usd": 0.0012425,
+          "latency_ms": 1353
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 provides a more specific and actionable response by directly inviting the customer to join the beta program through the app settings, while Answer 2 is more vague and less specific. Both answers accurately follow the policy and address the customer's feedback and request.\n\nVERDICT: 1",
+            "Answer 1 is accurate and follows the policy, but it uses \"we encourage\" which is less direct than Answer 2's \"we invite you to join\". Answer 2 is also more specific about where new features appear first, which is better for the customer. However, Answer 2 includes an unnecessary sentence at the end that adds no value.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and avoids unnecessary apologies or padding. It also does not state a policy that is not in the given policy. Answer 2 is more accurate, but less specific about what happens next.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it explicitly states that the support team cannot provide timing for unreleased features, which is a key point in the policy. Answer 2 is more specific about what happens next, mentioning that the customer can opt into the beta program through the app settings, which is a useful detail.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 fails to address the customer's question about when a proper equaliser might be coming, and it does not explicitly state that the company does not confirm, deny, or date unreleased features. Answer 2 follows the policy accurately and addresses the customer's question directly.\n\nVERDICT: 2",
+            "Answer 1 is more accurate as it directly addresses the customer's question about the equalizer and the timing of new features, while Answer 2 is more vague. Both answers follow the policy and provide the same information about logging the request and the beta program. However, Answer 1 is more straightforward and specific, making it the better choice.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "ambiguous-request-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"The charger doesn't work. Send me a new one.\"\n\nAccount record: this customer has bought three different Northwind\nproducts in the last year, each with a different charger: an NW-700, an\nNW-Buds case, and a Northwind desk amp.\n\nPolicy: replacement accessories are free within the warranty period, but\nthe specific product has to be identified first. Guessing and shipping the\nwrong part is treated as an error, not a near miss.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting Northwind Audio. We're happy to help you with a replacement charger.\n\nTo make sure we send you the correct part, could you please let us know which product the charger is for? According to our records, you've purchased several items from us. Once you confirm whether the charger is for your NW-700, NW-Buds case, or Northwind desk amp, we can get a replacement sent out to you right away at no cost, provided it's within the warranty period.",
+          "error": null,
+          "tokens_out": 116,
+          "cost_usd": 0.000776,
+          "latency_ms": 2308
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "Thank you for contacting Northwind Audio. We can certainly help you with a replacement charger. To ensure we send you the correct part, please specify which Northwind product you need the charger for.",
+          "error": null,
+          "tokens_out": 39,
+          "cost_usd": 3.34e-05,
+          "latency_ms": 968
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry about the charger issue.\n\nWe can send a replacement accessory at no charge if it\u2019s within the warranty period, but we first need to identify which product\u2019s charger is not working. Our records show you\u2019ve purchased multiple Northwind products that use different chargers, so we don\u2019t want to risk sending the wrong one.\n\nPlease let us know which product the charger belongs to:\n- NW-700\n- NW-Buds case\n- Northwind desk amp\n\nOnce you confirm the product, we\u2019ll help with the replacement.",
+          "error": null,
+          "tokens_out": 111,
+          "cost_usd": 0.002115,
+          "latency_ms": 1950
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and it explicitly mentions that the replacement is free. Answer 2 is more concise but lacks these details.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it strictly follows the policy and does not assume the customer's warranty status or the specific product. Answer 2, while friendly, incorrectly assumes the warranty status and lists the products, which could lead to confusion or error.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and follows the policy, asking the customer to specify which product the charger is for. It also mentions that the replacement is free within the warranty period. Answer 2 is also accurate but includes an unnecessary apology and a slightly more condescending tone with the list format. Both answers are specific about what happens next, but Answer 1 is more straightforward.\n\nVERDICT: 1",
+            "Answer 1 is more accurate as it clearly states the policy and the need to identify the specific product. It also provides a clear list of options for the customer to choose from. Answer 2, while polite, is less direct and does not explicitly state the policy or the need to identify the specific product as clearly. Both answers have a polite tone, but Answer 1 is more specific about what happens next.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and concise, directly addressing the customer's request by asking for the specific product to identify the correct charger. Answer 2, while also accurate, includes unnecessary apologies and padding, and lists the products the customer already knows they own. Therefore, Answer 1 is the better reply.\n\nVERDICT: 1",
+            "Answer 1 is more accurate because it explicitly mentions the warranty period and lists the products the customer has purchased, making it clear which charger is needed. Answer 2 is more concise and to the point, but it does not mention the warranty period or list the products, which could lead to confusion. However, Answer 1's tone is slightly apologetic and padded, while Answer 2 is straightforward and specific about what happens next.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "wrong-item-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"I ordered the black NW-600 and you've sent me white ones. I do\nquite like the white ones actually. Can I just keep them?\"\n\nPolicy: where Northwind ships the wrong item, the customer may keep it at\nthe price of the item they ordered, or return it free for the correct one.\nThe white NW-600 retails 20 pounds below the black. Where the customer\nkeeps a cheaper item, the difference is refunded.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for letting us know about this mix-up. You're welcome to keep the white NW-600 headphones if you'd like. Since the white model retails for \u00a320 less than the black one you ordered, we'll refund you the \u00a320 difference.\n\nAlternatively, if you'd prefer the black NW-600 you originally ordered, we can arrange a free return of the white ones and send out the correct model.\n\nPlease let us know which option you'd prefer, and we'll get this sorted for you right away.",
+          "error": null,
+          "tokens_out": 121,
+          "cost_usd": 0.000796,
+          "latency_ms": 1980
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We apologize for the error with your recent order. As per our policy, you may keep the white NW-600 headphones you received. The difference in price between the black and white NW-600 models will be refunded to you.",
+          "error": null,
+          "tokens_out": 50,
+          "cost_usd": 3.76e-05,
+          "latency_ms": 1231
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "Yes \u2014 if you\u2019d like to keep the white NW-600, you can.\n\nBecause we sent the wrong item and the white NW-600 is \u00a320 less than the black NW-600 you ordered, we\u2019ll refund the \u00a320 difference if you keep the white pair.\n\nIf you\u2019d prefer, you can also return them free of charge and we\u2019ll send the correct black NW-600 instead.",
+          "error": null,
+          "tokens_out": 85,
+          "cost_usd": 0.00172,
+          "latency_ms": 1729
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and does not pad the reply with an apology. Answer 2 is accurate, but less specific and includes an unnecessary apology.\n\nVERDICT: 1",
+            "Answer 1 is accurate but does not mention the option to return the white headphones for the black ones, which the customer should be aware of. Answer 2 is accurate and provides both options, and it is more specific about what happens next. It also avoids unnecessary apologies and is not condescending.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate and follows the policy, but it is unnecessarily verbose and includes an apology that is not needed. Answer 2 is also accurate and follows the policy, but it is more concise and to the point, providing the customer with the information they need without any unnecessary padding.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it explicitly states the customer may keep the item at the price of the item they ordered, or return it free for the correct one, and specifies the refund amount. Answer 2 is less accurate as it does not mention the customer may keep the item at the price of the item they ordered.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate, but it doesn't explicitly state the refund amount, which is a key detail. Answer 2 is more specific, providing the exact refund amount and clearly outlining both options available to the customer. Answer 2 also avoids unnecessary apologies and gets straight to the point, which is more customer-friendly.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it explicitly states the customer can keep the white NW-600, and provides the exact refund amount. It also offers the alternative option of returning the item for the correct one. Answer 2, while also accurate, is less specific about the refund amount and does not mention the option to return the item. Additionally, Answer 1 has a more straightforward tone, while Answer 2 includes an unnecessary apology.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "cancelled-still-charged-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"I cancelled Plus last month and you've charged me again. Sort it\nout.\"\n\nAccount record: cancellation was submitted on 28 April. The charge in\nquestion was taken on 1 May for the period 1 to 31 May.\n\nPolicy: cancellation takes effect at the end of the current billing\nperiod. A charge taken after a cancellation request is a billing error and\nis refunded in full within three working days.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us. I can see that your cancellation request was submitted on 28 April, and a charge was processed on 1 May for the period 1 to 31 May.\n\nAccording to our policy, cancellations take effect at the end of the current billing period. Since your charge was taken after your cancellation request, this is a billing error. We will refund this charge in full within three working days.\n\nYou should see the refund reflected in your account shortly. If you have any other questions, please don't hesitate to get in touch.",
+          "error": null,
+          "tokens_out": 128,
+          "cost_usd": 0.000825,
+          "latency_ms": 2041
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We have reviewed your account and can confirm that your cancellation request was submitted on 28 April.\n\nAs per our policy, cancellations take effect at the end of the current billing period. The charge taken on 1 May was for the billing period of 1 to 31 May.\n\nWe understand that this charge should not have been applied and we apologize for this billing error. We have processed a full refund for this amount. You can expect to see the refund reflected in your account within three working days.",
+          "error": null,
+          "tokens_out": 104,
+          "cost_usd": 5.83e-05,
+          "latency_ms": 774
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry about that.\n\nI\u2019ve checked your account and can confirm your Plus cancellation was submitted on 28 April. The charge taken on 1 May for the period 1 to 31 May was a billing error.\n\nWe\u2019ll refund that charge in full within three working days.",
+          "error": null,
+          "tokens_out": 61,
+          "cost_usd": 0.00134,
+          "latency_ms": 1714
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 correctly identifies the billing error and states the refund policy, but it does not explicitly state that the refund has been processed. Answer 2 not only identifies the billing error and states the refund policy but also explicitly mentions that the refund has been processed and when the customer can expect to see it. Therefore, Answer 2 is more accurate and specific about what happens next.\n\nVERDICT: 2",
+            "Answer 1 is more verbose and includes an unnecessary apology, while Answer 2 is more concise and specific about the refund timeline. Both answers accurately follow the policy and address the customer's concern.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 2 is more concise and specific about the refund timeline. Answer 1 includes unnecessary padding. Answer 2 wins.\n\nVERDICT: 2",
+            "Answer 1 accurately states the policy and addresses the customer's concern, but it apologizes unnecessarily and does not specify what happens next. Answer 2 is more informative, stating the policy and what happens next, but it is verbose and includes an unnecessary invitation to contact again.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate, but it is overly verbose and includes an unnecessary apology. Answer 2 is equally accurate, more concise, and avoids the apology. Therefore, Answer 2 is the better reply.\n\nVERDICT: 2",
+            "Answer 1 is accurate and follows the policy. It addresses the customer's concern directly and provides a clear timeline for the refund. Answer 2 is also accurate but includes unnecessary apologies and padding. It does not provide any additional information or benefit to the customer.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "competitor-feature-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Sonic Labs do a 60 day trial. Why don't you? I'm not buying\nwithout one.\"\n\nPolicy: Northwind does not run a trial programme. It offers 30 day returns\nfor any reason with free return shipping, which support may describe.\nSupport does not comment on competitors' terms.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for reaching out.\n\nWhile we don't offer a trial program, we do provide a 30 day returns policy for any reason with free return shipping. This means you can purchase with confidence and return your item within 30 days if it doesn't meet your needs, at no cost to you for shipping.\n\nWe believe this gives you a risk-free way to experience our products. If you have any other questions, I'm happy to help.",
+          "error": null,
+          "tokens_out": 98,
+          "cost_usd": 0.000647,
+          "latency_ms": 2272
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "Northwind Audio offers a 30-day return policy for any reason. If you are not satisfied with your purchase, you can return it within 30 days for a full refund, and we will cover the cost of return shipping.",
+          "error": null,
+          "tokens_out": 49,
+          "cost_usd": 3.4e-05,
+          "latency_ms": 912
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "Thanks for reaching out. Northwind does not run a trial programme.\n\nWhat we do offer is a 30 day return window for any reason, with free return shipping. If that would help, you can order and return the item within 30 days if it isn\u2019t right for you.\n\nIf you\u2019d like, I can also help with product recommendations to improve the chances of getting the right fit first time.",
+          "error": null,
+          "tokens_out": 86,
+          "cost_usd": 0.001655,
+          "latency_ms": 1883
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/google/gemini-2.5-flash-lite",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 accurately reflects the policy and addresses the customer's question, but it is padded with unnecessary apologies and filler. Answer 2 is more concise and specific, directly addressing the customer's concern without any extraneous information.\n\nVERDICT: 2",
+            "Answer 1 accurately states the policy and addresses the customer's question without inventing any terms or figures. It is concise and to the point, providing the necessary information without any unnecessary padding or apologies. Answer 2 also accurately states the policy but includes additional, unnecessary information and a somewhat condescending tone with the phrase \"I'm happy to help.\"\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more accurate, as it correctly states the policy without inventing additional terms (such as product recommendations). Both answers are polite and professional, but Answer 1 is more direct and specific about what happens next, which is preferred.\n\nVERDICT: 1",
+            "Answer 1 is more accurate as it does not comment on competitors' terms, while Answer 2 mentions \"trial program\" which is not part of the policy. Answer 1 also provides a more specific offer of help with product recommendations, which is more likely to address the customer's concerns. Answer 2 is more verbose and does not add any additional value.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and concise, directly addressing the customer's question about the trial period and clearly stating Northwind's return policy. Answer 2, while also accurate, is slightly less direct and includes an unnecessary offer of product recommendations that wasn't asked for. Both answers have a polite tone, but Answer 1 is more straightforward.\n\nVERDICT: 1",
+            "Answer 1 is more accurate as it directly addresses the customer's question about the trial program and provides the relevant information about the return policy. It also offers additional assistance with product recommendations, which could be helpful to the customer. Answer 2, while accurate, does not address the customer's question about the trial program and is less specific about what happens next.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "bug-report-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Your app is broken. It crashes constantly. Fix it.\"\n\nPolicy: a crash report cannot be investigated without the device model,\nthe operating system version, and roughly when the crash happens, for\nexample on launch or when connecting a device. Support asks for these\nbefore escalating. The app's Help screen has a \"Send diagnostics\" button\nthat attaches all three automatically.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for reporting this issue. I'm sorry you're experiencing crashes with our app.\n\nTo help us investigate and fix this problem, I'll need some additional information:\n\n1. What is your device model?\n2. What operating system version are you running?\n3. When does the crash occur? (For example, when you launch the app, when connecting a device, or at another time?)\n\nAlternatively, you can use the \"Send diagnostics\" button on the app's Help screen, which will automatically provide all of this information to us.\n\nOnce we have these details, I'll be able to escalate this to our technical team for further investigation.",
+          "error": null,
+          "tokens_out": 142,
+          "cost_usd": 0.000879,
+          "latency_ms": 2453
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We are sorry to hear you are experiencing issues with our app. To help us investigate the crashes, please provide the device model, the operating system version, and a description of when the crashes occur, such as during app launch or when connecting a device. You can find a \"Send diagnostics\" button on the app's Help screen, which will automatically attach this information.",
+          "error": null,
+          "tokens_out": 75,
+          "cost_usd": 4.54e-05,
+          "latency_ms": 562
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry the app keeps crashing.\n\nTo investigate, we need a few details before we can escalate this:\n- your device model\n- your operating system version\n- roughly when the crash happens, such as on launch or when connecting a device\n\nThe fastest way to send all of that is from the app\u2019s Help screen using the \u201cSend diagnostics\u201d button, which attaches those details automatically.\n\nOnce you send that information, we can move this forward.",
+          "error": null,
+          "tokens_out": 95,
+          "cost_usd": 0.001825,
+          "latency_ms": 1843
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, while Answer 2 is more concise. Both answers are equally accurate and follow the policy. However, Answer 1 provides a clearer next step by listing the specific information needed and mentioning escalation to the technical team.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it directly references the policy and does not invent any additional steps or information. Answer 2, while polite, introduces unnecessary steps and information not outlined in the policy. Both answers have a similar tone, but Answer 1 is more concise and to the point.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more verbose and apologetic, while Answer 2 is more concise and specific about the next steps. Both answers accurately follow the policy and address the customer's issue, but Answer 2 is more direct and to the point, which the customer would likely prefer.\n\nVERDICT: 2",
+            "Answer 1 is more concise and specific about what happens next, while Answer 2 is more verbose and apologetic. Both answers accurately follow the policy and address the customer's issue. However, Answer 1 is preferred as it is more direct and to the point.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate, but it does not address what happens next after the customer provides the requested information. Answer 2 is equally accurate and also specifies what happens next, making it the better answer.\n\nVERDICT: 2",
+            "Answer 1 is more concise and specific about what happens next, while Answer 2 is padded with an unnecessary apology. Answer 1 is therefore the better reply.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "data-deletion-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Delete everything you hold on me. All of it. Today.\"\n\nPolicy: deletion requests are honoured within 30 days. Order records\nlinked to a completed purchase are kept for six years to meet tax\nobligations and cannot be deleted; everything else is removed. The\ncustomer is told exactly what is kept and why. The request is started by\nsupport and confirmed by email when complete.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for your deletion request. We will process this right away.\n\nWe can remove all your personal data with the following exception: order records linked to your completed purchases must be retained for six years to meet tax obligations and cannot be deleted. All other information we hold will be removed.\n\nYour deletion request will be completed within 30 days. Once finished, we'll send you a confirmation email detailing exactly what has been kept and what has been removed.",
+          "error": null,
+          "tokens_out": 97,
+          "cost_usd": 0.000655,
+          "latency_ms": 2235
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We have received your request to delete your personal data.\n\nIn accordance with our policy, we will honor your request within 30 days. Please note that order records linked to completed purchases are retained for six years to meet tax obligations and cannot be deleted. All other data will be removed.\n\nWe will send a confirmation email once the deletion process is complete.",
+          "error": null,
+          "tokens_out": 73,
+          "cost_usd": 4.49e-05,
+          "latency_ms": 524
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I can start your deletion request today.\n\nWe will remove the personal data we can delete, and we will confirm by email when this has been completed. Deletion requests are honoured within 30 days.\n\nThe only information we cannot delete is any order record linked to a completed purchase. We must keep those records for six years to meet tax obligations.\n\nEverything else we hold on you will be removed.",
+          "error": null,
+          "tokens_out": 83,
+          "cost_usd": 0.0016575,
+          "latency_ms": 1855
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more accurate as it specifies that the deletion request will be started right away, whereas Answer 2 does not mention when the process will begin. Answer 1 also provides more specific information about what will be kept and why, which is in line with the policy. Both answers have a similar tone, but Answer 1 is slightly more specific about the timeline and what happens next.\n\nVERDICT: 1",
+            "Answer 1 accurately follows the policy, but it does not specify what happens next (the 30-day processing time) or what exactly will be kept and why. Answer 2 addresses everything the customer asked, including the processing time and what will be kept and why, and it does so in a straightforward manner without unnecessary apologies or padding.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate, but it does not specify what happens next, which is to confirm the deletion by email. Answer 2 is accurate and specifies what happens next, but it does not tell the customer exactly what is kept and why. Answer 2 is therefore more aligned with the customer's preference for specificity.\n\nVERDICT: 2",
+            "Answer 1 fails to mention that the customer will be told what is kept and why, and does not specify that the request is confirmed by email when complete. Answer 2 addresses both of these points, and is more specific about what happens next.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 2 addresses the customer's request more directly and specifically, starting the process today and confirming completion by email, while Answer 1 is more passive and general. Answer 2 also provides a clearer explanation of what will be kept and why, in line with the policy. Answer 1 is more accurate in stating the exact timeframe for the deletion request, but Answer 2's tone is more specific and customer-focused.\n\nVERDICT: 2",
+            "Answer 1 is more specific about what happens next, stating that the request will be started today and that a confirmation email will be sent when it is complete. It also clearly explains what data will be kept and why. Answer 2 is less specific about the timeline for starting the request and does not explicitly state that the request will be started today. It also does not provide as clear of an explanation of what data will be kept and why.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "partial-shipment-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"Half my order arrived. Where's the rest, and am I getting the\nshipping I paid for back since it came in two goes?\"\n\nOrder record: order 90310 contained an NW-600 and a stand. The stand was\nout of stock and is due to ship on 14 May.\n\nPolicy: where Northwind splits a shipment, the customer is not charged\ntwice for shipping and there is nothing to refund; the original charge\ncovers the whole order. Split shipments are dispatched as stock arrives.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us about your order 90310.\n\nYour order contained two items: the NW-600 headphones and a stand. The NW-600 has shipped, and your stand is currently out of stock and scheduled to ship on 14 May.\n\nRegarding shipping: when we split a shipment like this, the original shipping charge you paid covers your entire order. You won't be charged shipping again for the stand, and there's nothing to refund. Both items will reach you under the single shipping fee you've already paid.\n\nWe appreciate your patience as we get your complete order to you.",
+          "error": null,
+          "tokens_out": 135,
+          "cost_usd": 0.000878,
+          "latency_ms": 2510
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We apologize that your order 90310 arrived in two separate shipments.\n\nThe NW-600 has been dispatched. The stand is currently out of stock and is due to ship on 14 May.\n\nAs per our policy, when a shipment is split, you are not charged twice for shipping. The original shipping charge covers the entire order.",
+          "error": null,
+          "tokens_out": 75,
+          "cost_usd": 4.88e-05,
+          "latency_ms": 788
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "Thanks for getting in touch. I\u2019ve checked order 90310, and the remaining item is the stand. It was out of stock, and it\u2019s due to ship on 14 May.\n\nWhen we split a shipment, we send items as stock arrives. You won\u2019t be charged twice for shipping, and there isn\u2019t any shipping refund due because the original shipping charge covers the whole order.",
+          "error": null,
+          "tokens_out": 83,
+          "cost_usd": 0.0017175,
+          "latency_ms": 2084
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more accurate, as it explicitly states that the customer is not getting a refund, which is what the customer asked. Answer 2 does not address the refund question directly. Both answers have a polite tone, but Answer 1 is more specific about what happens next, mentioning that both items will reach the customer under the single shipping fee already paid.\n\nVERDICT: 1",
+            "Answer 1 is accurate and concise, but Answer 2 provides more specific information about what happens next and is more direct about the shipping policy. It also avoids unnecessary apologies and is more specific about the items in the order.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more accurate as it explicitly mentions both items in the order and provides a clear explanation of the shipping policy. Answer 2 is slightly less accurate as it does not mention the NW-600 headphones explicitly, although it is implied. Both answers have a similar tone, but Answer 1 is more specific about what happens next and does not include unnecessary apologies.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it does not include the NW-600 headphones in the list of items in the order, which is not relevant to the customer's question. Answer 2 is more specific about what happens next, mentioning that both items will reach the customer under the single shipping fee they've already paid.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate, but it is padded with an apology and does not explicitly state what happens next. Answer 2 is also accurate, but it is more specific about what happens next and does not include an unnecessary apology.\n\nVERDICT: 2",
+            "Answer 1 is more accurate as it directly addresses both questions asked by the customer: the status of the remaining item and the shipping refund. Answer 2, while also accurate, is less specific about the shipping policy and uses an unnecessary apology. Answer 1 also provides a clearer explanation of the shipping policy.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "price-increase-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"You've put Plus up by 20 percent with no warning. That's a joke.\nWhy should I stay?\"\n\nPolicy: the increase was notified by email on 1 March, 60 days before it\ntook effect on 1 May. Customers who joined before 1 March keep the old\nprice until their next renewal. This customer joined in February, so their\nrenewal in February next year is the first at the new price.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for reaching out. We sent notification of the pricing adjustment by email on 1 March, which provided 60 days' notice before the new pricing took effect on 1 May.\n\nSince you joined in February, you're eligible for our loyalty pricing\u2014you'll continue paying your current rate until your next renewal in February. The new price will apply starting with that renewal.\n\nWe appreciate your business and hope this clarifies the situation.",
+          "error": null,
+          "tokens_out": 96,
+          "cost_usd": 0.000666,
+          "latency_ms": 2057
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We understand your frustration regarding the price change for Plus. This increase was notified by email on 1 March. The change took effect on 1 May, with 60 days' notice provided.\n\nCustomers who joined before 1 March will continue to pay the old price until their next renewal. As you joined in February, your next renewal, in February of next year, will be the first at the new price.",
+          "error": null,
+          "tokens_out": 85,
+          "cost_usd": 5.1e-05,
+          "latency_ms": 705
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry this has been frustrating.\n\nThe price change was notified by email on 1 March, 60 days before it took effect on 1 May. Because you joined in February, you keep the previous price until your next renewal. That means the first time the new price applies to your Plus membership will be your renewal in February next year.\n\nI understand why you\u2019re upset, but your current membership remains at the original price until then.",
+          "error": null,
+          "tokens_out": 93,
+          "cost_usd": 0.0018275,
+          "latency_ms": 2301
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and does not include an unnecessary apology. Answer 2 is accurate, but less specific and includes an unnecessary apology.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it correctly states the date of the next renewal (February of next year) and does not invent terms like \"loyalty pricing\". Answer 2 is more specific about what happens next, mentioning \"loyalty pricing\" and the continuation of the current rate until the next renewal. However, the invented term \"loyalty pricing\" makes Answer 1 the better choice.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more accurate as it explicitly states the customer's current membership remains at the original price until their next renewal, while Answer 2 only implies this. Answer 1 also avoids unnecessary apologies and gets straight to the point, making it the better response.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it explicitly states that the customer's next renewal is in February next year, while Answer 2 only implies it. Answer 1 also avoids unnecessary apologies and condescension, making it the better choice.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and addresses the customer's concerns directly. Answer 2 is also accurate but includes unnecessary apologies and padding, which makes it less direct and slightly condescending. Answer 1 is more straightforward and specific about what happens next.\n\nVERDICT: 1",
+            "Answer 1 is more specific about what happens next, and avoids padding with apology. Answer 2 is more neutral in tone, but less specific.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "escalation-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"The battery in my NW-700 swelled up and the case is split open.\nIt got hot in my bag. I'm honestly a bit alarmed.\"\n\nPolicy: a swollen or overheating battery is a safety matter. Support does\nnot troubleshoot it, does not ask the customer to keep using or charging\nthe product, and does not ask them to post it back, because damaged\nlithium cells cannot go in the mail. The case is escalated to the product\nsafety team the same day, and they contact the customer within one working\nday to arrange collection.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for reporting this right away. A swollen or overheating battery is a safety concern, and we take this seriously.\n\nPlease stop using the NW-700 immediately and do not attempt to charge it. Do not mail it to us.\n\nI'm escalating this to our product safety team today. They will contact you within one working day to arrange collection of the device.",
+          "error": null,
+          "tokens_out": 84,
+          "cost_usd": 0.000634,
+          "latency_ms": 1880
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We are very sorry to hear about the issue with your NW-700. A swollen or overheating battery is a safety matter, and we will handle this immediately.\n\nPlease do not attempt to use or charge the product. We have escalated this to our product safety team, and they will contact you within one working day to arrange for the collection of the item.",
+          "error": null,
+          "tokens_out": 74,
+          "cost_usd": 4.9e-05,
+          "latency_ms": 769
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m very sorry to hear this happened, and I understand why you\u2019re alarmed.\n\nBecause a swollen or overheating battery is a safety matter, we won\u2019t ask you to troubleshoot it, keep using it, or charge it. Please do not use or charge the NW-700.\n\nWe also will not ask you to post it back, because damaged lithium cells cannot be sent in the mail.\n\nI\u2019ve escalated this to our product safety team today. They will contact you within one working day to arrange collection.",
+          "error": null,
+          "tokens_out": 107,
+          "cost_usd": 0.00211,
+          "latency_ms": 2206
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 explicitly states that the customer should not mail the device, which is a critical piece of information given the safety concerns. It also provides a clearer timeline for the next steps, mentioning that the escalation is happening the same day. Answer 2, while polite, does not explicitly mention not to mail the device and is slightly less specific about the timeline.\n\nVERDICT: 1",
+            "Answer 1 is accurate and follows the policy, but it is padded with an apology and does not specify that the customer should not mail the product. Answer 2 is also accurate and follows the policy, but it is more specific about what the customer should do next and does not include an unnecessary apology. It also explicitly states that the case is escalated the same day, which is a detail that the customer might find reassuring.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more concise and directly addresses the customer's concerns without unnecessary apologies. Both answers accurately follow the policy, but Answer 1 is more straightforward and specific about the next steps.\n\nVERDICT: 1",
+            "Answer 1 is more specific about what the customer should do, and does not include an apology. Answer 2 is more concise and to the point.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate and follows the policy, but it does not explicitly state that the customer should not post the item back, which is a crucial part of the policy. Answer 2 is also accurate and follows the policy, but it is more specific about what the customer should not do and why, which is more reassuring to the customer. It also explicitly states that the case has been escalated today, which is a small but useful detail.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it explicitly states that the customer should not post the item back, which is a key part of the policy. Answer 2 is more concise and specific about the next steps, but it omits the important instruction not to post the item. Therefore, Answer 1 is the better reply.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "manager-request-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"I want to speak to a manager. Now.\"\n\nTicket history: the customer asked on Monday when their order would ship.\nThey were told Tuesday. It shipped Thursday.\n\nPolicy: escalation requests are honoured, not deflected. A manager\nresponds within one working day. Support summarises the issue for the\nmanager in the reply so the customer does not have to repeat themselves.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for reaching out. I'm escalating your request to a manager right away.\n\nTo summarize your concern: you inquired on Monday when your order would ship, were told Tuesday, but the order didn't ship until Thursday. A manager will respond to you within one working day.",
+          "error": null,
+          "tokens_out": 63,
+          "cost_usd": 0.000485,
+          "latency_ms": 3147
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We understand you wish to speak with a manager. Your request has been escalated and a manager will respond to you within one working day.\n\nYour query concerns the shipping date for your recent order. You initially inquired on Monday about when your order would ship. You were advised it would ship on Tuesday, but it was ultimately shipped on Thursday.",
+          "error": null,
+          "tokens_out": 68,
+          "cost_usd": 4.25e-05,
+          "latency_ms": 682
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry about this.\n\nYou asked on Monday when your order would ship, and you were told Tuesday. It did not ship until Thursday. You\u2019ve also asked to speak to a manager.\n\nI\u2019ve escalated this to a manager now. They will respond within one working day, and the summary above has been included so you won\u2019t need to repeat yourself.",
+          "error": null,
+          "tokens_out": 77,
+          "cost_usd": 0.0015575,
+          "latency_ms": 1750
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more concise and directly addresses the customer's request without unnecessary padding. Both answers accurately summarize the issue and follow the policy, but Answer 1 is more straightforward and specific about the next steps.\n\nVERDICT: 1",
+            "Answer 1 is accurate and follows the policy, but it is overly formal and lacks the specificity about what happens next that is preferred in the tone criteria. Answer 2 is also accurate and follows the policy, but it is more concise and specific about the escalation process, which is preferred. Both answers are equally accurate, but Answer 2 has a slightly better tone.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and concise, but Answer 2 provides a more specific summary of the issue and acknowledges the customer's frustration, which may be more reassuring. However, Answer 2 also includes an unnecessary apology, which the policy advises against.\n\nVERDICT: 2",
+            "Answer 2 is more accurate as it does not apologize for something that is not the customer's fault. It also follows the policy more closely by not including unnecessary information. Answer 1 is more verbose and includes an apology that is not necessary.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate, but it is less specific about what happens next and includes an unnecessary apology. Answer 2 is more specific about the next steps and does not include an unnecessary apology.\n\nVERDICT: 2",
+            "Answer 2 is more accurate, as it directly addresses the customer's request to speak to a manager and provides a clear summary of the issue. Answer 1, while also accurate, includes an unnecessary apology and is less direct in its response.\n\nVERDICT: 2"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "accessibility-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"I'm partially sighted and the app's controls are unusable with\nthe text size turned up. The buttons overlap. Is there anything I can do?\"\n\nPolicy: the app supports the operating system's own screen reader in full,\nand a high contrast mode exists under Settings, Display. The overlapping\nlayout at large text sizes is a known defect with a fix in the next\nrelease, due this month. Accessibility reports are escalated to the\nproduct team as a matter of course.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us, and I'm sorry you're experiencing difficulties with the app's controls.\n\nOur app fully supports your operating system's built-in screen reader, which may help you navigate the interface. Additionally, there's a high contrast mode available under Settings, Display that you might find useful.\n\nWe're aware of the overlapping button layout that occurs at larger text sizes, and this is a known defect that we're addressing. A fix is scheduled for release this month.\n\nYour accessibility feedback is important to us and has been escalated to our product team for their attention.\n\nIf you need any further assistance, please let us know.",
+          "error": null,
+          "tokens_out": 138,
+          "cost_usd": 0.000883,
+          "latency_ms": 2491
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We are sorry to hear you are experiencing difficulties with the app's text size.\n\nThe app supports the operating system's own screen reader in full. Additionally, a high contrast mode is available under Settings, Display.\n\nThe overlapping layout at large text sizes is a known defect. A fix for this issue is included in the next release, which is due this month. Accessibility reports are escalated to the product team as a matter of course.",
+          "error": null,
+          "tokens_out": 90,
+          "cost_usd": 5.37e-05,
+          "latency_ms": 536
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry you\u2019ve run into this.\n\nAt the moment, the overlapping buttons at larger text sizes are a known defect. A fix is planned for the next release, which is due this month.\n\nIn the meantime, the app does fully support your device\u2019s built-in screen reader, and you can also try the high contrast mode under Settings > Display.\n\nWe also escalate accessibility reports to our product team as a matter of course, so this issue will be included.",
+          "error": null,
+          "tokens_out": 97,
+          "cost_usd": 0.0019125,
+          "latency_ms": 2227
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/google/gemini-2.5-flash-lite",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more verbose and apologetic, but both answers are accurate and follow the policy. Answer 2 is more concise and specific about what happens next, without unnecessary apologies.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it directly addresses the customer's issue with the overlapping buttons and provides the exact location of the high contrast mode. Answer 2, while polite, does not explicitly mention the fix for the overlapping buttons and is slightly less specific about the high contrast mode's location. Both answers are polite and professional, but Answer 1 is more informative and directly addresses the customer's concerns.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 2 is more accurate, as it directly addresses the customer's issue with the overlapping buttons and provides the relevant information about the fix being planned for the next release. It also mentions the available accessibility features without unnecessary apologies or padding. Answer 1, while polite, includes an unnecessary apology and some padding, and does not directly address the customer's issue as clearly as Answer 2.\n\nVERDICT: 2",
+            "Answer 1 is more direct and specific about what happens next, without unnecessary apologies or padding. It also avoids condescension and directly addresses the customer's issue. Answer 2, while polite, is more verbose and includes unnecessary apologies and padding.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and does not pad the reply with apologies. Answer 2 is more concise and specific in its language, but does not provide as clear a next step.\n\nVERDICT: 1",
+            "Answer 1 is more specific about what happens next and avoids unnecessary apologies, making it the preferred response.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "chargeback-threat-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"If I don't get my money back today I'm calling my bank and doing\na chargeback.\"\n\nOrder record: return received at the warehouse yesterday.\n\nPolicy: refunds are issued within three working days of the return being\nreceived, and take a further five working days to appear depending on the\nbank. Support does not warn, threaten or discourage a customer about\nraising a chargeback.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us. We received your return at our warehouse yesterday. According to our policy, refunds are issued within three working days of receipt, and then take a further five working days to appear in your account depending on your bank. You should expect to see your refund soon. If you have any other questions, please let us know.",
+          "error": null,
+          "tokens_out": 75,
+          "cost_usd": 0.00055,
+          "latency_ms": 1787
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We received your return at our warehouse yesterday. Refunds are issued within three working days of receipt and can take up to a further five working days to appear in your account, depending on your bank.",
+          "error": null,
+          "tokens_out": 39,
+          "cost_usd": 3.15e-05,
+          "latency_ms": 591
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry for the frustration.\n\nYour return was received at our warehouse yesterday. Under our policy, refunds are issued within three working days of the return being received, and then can take a further five working days to appear, depending on your bank.\n\nSo your refund is still within the normal processing timeframe at the moment.",
+          "error": null,
+          "tokens_out": 68,
+          "cost_usd": 0.001425,
+          "latency_ms": 1517
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/google/gemini-2.5-flash-lite",
+          "flipped": false,
+          "rationales": [
+            "Answer 2 is more accurate, as it does not make any promises about the refund being \"soon\". Answer 1 is more verbose, but does not add any useful information. Answer 2 also has a more neutral tone, which is appropriate given the policy.\n\nVERDICT: 2",
+            "Answer 1 is accurate and concise, directly addressing the customer's concern by stating the policy on refunds. Answer 2, while also accurate, adds unnecessary padding with \"Thank you for contacting us\" and \"If you have any other questions, please let us know,\" which does not contribute to the information the customer needs. Both answers maintain a neutral tone and do not discourage the customer from pursuing a chargeback.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate and follows the policy, providing the customer with the necessary information about the refund process. Answer 2, while also accurate, includes an unnecessary apology and a less direct tone. Therefore, Answer 1 is preferred.\n\nVERDICT: 1",
+            "Answer 1 is more accurate because it explicitly states that the refund is still within the normal processing timeframe, which directly addresses the customer's concern about not receiving the refund today. Answer 2 is more concise and specific about what happens next, avoiding unnecessary apologies and padding. Therefore, Answer 2 is preferred.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is accurate and concise, directly addressing the customer's concern by stating the policy and timeline for the refund. Answer 2, while also accurate, includes an unnecessary apology and additional padding, which does not improve the response but makes it longer. Therefore, Answer 1 is the better response.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it explicitly states that the return was received yesterday, aligning with the order record. It also provides a more reassuring tone by acknowledging the customer's frustration and explaining that the refund is still within the normal processing timeframe. Answer 2, while accurate, is more abrupt and lacks the reassuring tone.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "out-of-warranty-goodwill-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"The hinge on my NW-700s snapped. I've had them 25 months. I know\nthat's just outside but they're 300 pound headphones.\"\n\nPolicy: the warranty is 24 months and has expired. Support cannot extend\nit or offer a free replacement. A paid hinge repair is available at 45\npounds including return shipping, takes about ten working days, and is\noffered where a customer is out of warranty.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting us about your NW-700s. I'm sorry to hear the hinge has snapped.\n\nI can see your headphones are just outside our 24-month warranty period. Unfortunately, I'm unable to extend the warranty or offer a free replacement at this point.\n\nHowever, we do offer a paid hinge repair service for out-of-warranty cases like yours. The repair costs 45 pounds and includes return shipping. The repair typically takes about ten working days to complete.\n\nIf you'd like to proceed with this repair option, please let me know and I can provide you with the next steps.",
+          "error": null,
+          "tokens_out": 136,
+          "cost_usd": 0.000867,
+          "latency_ms": 2422
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We are sorry to hear about the issue with your NW-700 headphones.\n\nOur standard warranty period is 24 months, which unfortunately has expired on your headphones. While we are unable to offer a free replacement outside of the warranty period, we do offer a paid repair service for the hinge.\n\nThis repair costs \u00a345 and includes return shipping. The estimated turnaround time for this service is approximately ten working days. If you would like to proceed with this repair, please let us know and we can arrange it for you.",
+          "error": null,
+          "tokens_out": 109,
+          "cost_usd": 6.13e-05,
+          "latency_ms": 826
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry to hear the hinge on your NW-700s has snapped.\n\nThe warranty for these headphones is 24 months, so at 25 months they\u2019re now outside the warranty period. Because of that, we\u2019re unable to extend the warranty or offer a free replacement.\n\nWhat we can offer is a paid hinge repair for \u00a345, which includes return shipping. The repair service is available for out-of-warranty cases like this and usually takes about ten working days.\n\nIf you\u2019d like to go ahead with the repair, please let us know and we can advise on the next steps.",
+          "error": null,
+          "tokens_out": 123,
+          "cost_usd": 0.0022775,
+          "latency_ms": 2359
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and does not pad with apology. Answer 2 is more verbose, but does not lose on accuracy.\n\nVERDICT: 1",
+            "Answer 1 and 2 are equally accurate, but Answer 1 is more concise and specific about what happens next, making it the better option.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more verbose and apologetic, while Answer 2 is more concise and specific. Both answers accurately follow the policy and address the customer's question about the hinge repair. However, Answer 2 is preferred as it is more direct and to the point, which the customer would likely appreciate more.\n\nVERDICT: 2",
+            "Both answers accurately convey the policy and address the customer's issue. They both state the warranty period, the inability to extend it, and the availability of the paid repair service, including the cost and timeframe. However, Answer 1 is slightly more concise and specific about the next steps, making it the preferred choice.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more accurate as it directly addresses the customer's mention of the headphones being 300 pound headphones, while Answer 2 does not. Both answers are equally polite and specific about what happens next, but Answer 1 is slightly more concise.\n\nVERDICT: 1",
+            "Answer 1 is more specific about what happens next, stating \"we can advise on the next steps\" while Answer 2 merely says \"we can arrange it for you.\" Answer 1 is also slightly more concise, avoiding unnecessary padding like \"unfortunately\" and \"while.\" However, both answers are accurate and follow the given policy, and neither is condescending.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "gift-recipient-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"My sister bought me these for my birthday and they're too big.\nCan I exchange them? I don't have a receipt and I don't want her to know\nthere was a problem.\"\n\nPolicy: exchanges require the order to be identified, which can be done\nfrom the recipient's name and delivery postcode without involving the\npurchaser. Northwind does not notify the purchaser of an exchange. The\n30 day window runs from delivery.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for contacting Northwind Audio.\n\nWe're happy to help with an exchange. You don't need to involve your sister\u2014we can process this without notifying the purchaser.\n\nTo get started, please provide us with:\n- Your name (as the recipient)\n- The delivery postcode for your order\n\nAs long as your headphones were delivered within the last 30 days, we can proceed with the exchange. Once we've identified your order, we'll discuss sizing options and arrange the swap for you.",
+          "error": null,
+          "tokens_out": 114,
+          "cost_usd": 0.000754,
+          "latency_ms": 2201
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We can certainly help you with an exchange. To process this, we will need to identify the original order. You can provide us with your name and the delivery postcode used for the order, and we can locate it that way. We will not notify the purchaser about this exchange. Our policy allows for exchanges within 30 days of the delivery date.",
+          "error": null,
+          "tokens_out": 71,
+          "cost_usd": 4.56e-05,
+          "latency_ms": 493
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "Yes \u2014 if the order is within 30 days of delivery, we can arrange an exchange.\n\nYou do not need a receipt as long as we can identify the order. We can usually do that using the recipient\u2019s name and the delivery postcode, and this can be done without involving the purchaser.\n\nWe also do not notify the purchaser of an exchange.\n\nIf you\u2019d like to go ahead, please send the recipient\u2019s name and the delivery postcode so we can look up the order.",
+          "error": null,
+          "tokens_out": 100,
+          "cost_usd": 0.00193,
+          "latency_ms": 2339
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more specific about what happens next, and it is not padded with unnecessary information. Answer 2 is more verbose and less specific about the next steps.\n\nVERDICT: 1",
+            "Answer 1 accurately follows the policy, addressing the customer's concerns about exchanging the item without involving the purchaser and the requirement of the recipient's name and delivery postcode. It also correctly mentions the 30-day window for exchanges. Answer 2 is also accurate but provides a more specific and reassuring tone, explicitly stating that the purchaser will not be notified and outlining the next steps clearly. It is more specific about what happens next.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 provides a more detailed and customer-friendly explanation of the exchange process, including what information is needed and what happens next. It also reassures the customer that their sister won't be involved or notified. Answer 2 is more concise but lacks some of the reassuring details and specific steps outlined in Answer 1.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it explicitly states that the 30-day window runs from delivery, which is a crucial detail for the customer to know. It also directly addresses the customer's concern about not involving the purchaser. Answer 2, while friendly, does not mention the 30-day window running from delivery, which could lead to confusion. Both answers are polite and professional, but Answer 1 is more informative and directly addresses the customer's questions.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 and 2 are equally accurate, but Answer 2 is more specific about what happens next and does not include an apology. Answer 2 also provides a more direct and concise response, making it the preferred choice.\n\nVERDICT: 2",
+            "Answer 1 is more accurate, as it explicitly states that the 30-day window runs from delivery, while Answer 2 does not. Answer 1 also provides a more specific and direct explanation of the process, making it more likely to be the reply the customer would prefer. Answer 2 is not incorrect, but it is less specific and slightly more verbose.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "multi-issue-01",
+      "prompt": "Reply to this ticket.\n\nTicket: \"The box arrived crushed and the stand inside is scratched. The\nheadphones seem fine. I don't want to send the whole lot back over a\nscratched stand, but I'm not paying full price for damaged goods either.\nWhat are my options?\"\n\nPolicy: for a damaged item in a multi-item order, the customer chooses\nbetween returning only the damaged item for a replacement, returning only\nthe damaged item for a refund of that item, or keeping it with a 30\npercent partial refund. The stand was 60 pounds. Return shipping is free\nin all cases.\n",
+      "answers": [
+        {
+          "model": "openrouter/anthropic/claude-haiku-4.5",
+          "output": "Thank you for letting us know about the damage to your stand. We're sorry this arrived in less than perfect condition.\n\nSince the stand is damaged but your headphones are fine, you have three options:\n\n1. Return only the stand for a replacement at no cost to you (return shipping is free)\n2. Return only the stand for a refund of \u00a360 (return shipping is free)\n3. Keep the stand and receive a partial refund of 30 percent, which would be \u00a318\n\nYou can choose whichever option works best for you. Please let us know how you'd like to proceed, and we'll be happy to help.",
+          "error": null,
+          "tokens_out": 142,
+          "cost_usd": 0.000927,
+          "latency_ms": 2362
+        },
+        {
+          "model": "openrouter/google/gemini-2.5-flash-lite",
+          "output": "We are sorry to hear that your order arrived in less than perfect condition. We can offer you three options for the damaged stand:\n\n1.  You can return only the damaged stand for a replacement.\n2.  You can return only the damaged stand for a refund of that item.\n3.  You can keep the stand and receive a 30 percent partial refund.\n\nIn all cases, return shipping will be free. Please let us know which option you would prefer.",
+          "error": null,
+          "tokens_out": 99,
+          "cost_usd": 5.98e-05,
+          "latency_ms": 533
+        },
+        {
+          "model": "openrouter/openai/gpt-5.4",
+          "output": "I\u2019m sorry your order arrived that way.\n\nSince only the stand is damaged, you have these options:\n\n- Return just the damaged stand for a replacement\n- Return just the damaged stand for a refund of that item\n- Keep the stand and receive a 30% partial refund\n\nBecause the stand was \u00a360, the 30% partial refund would be \u00a318.\n\nReturn shipping is free in all cases. If you let us know which option you\u2019d prefer, we\u2019ll help arrange it.",
+          "error": null,
+          "tokens_out": 104,
+          "cost_usd": 0.002065,
+          "latency_ms": 1535
+        }
+      ],
+      "judgements": [
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/google/gemini-2.5-flash-lite",
+          "winner": "openrouter/anthropic/claude-haiku-4.5",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is more specific about the refund amount in option 3, and it states the price of the stand, which is relevant to the customer's decision. Answer 2 is less specific and does not mention the price of the stand or the exact amount of the partial refund.\n\nVERDICT: 1",
+            "Answer 1 is accurate and follows the policy, but it does not specify the amount of the partial refund. Answer 2 is also accurate and provides the specific amount of the partial refund, making it more informative for the customer. Both answers have a polite tone, but Answer 2 is more specific about the next steps and the financial implications, which the customer would likely prefer.\n\nVERDICT: 2"
+          ]
+        },
+        {
+          "model_a": "openrouter/anthropic/claude-haiku-4.5",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": null,
+          "flipped": true,
+          "rationales": [
+            "Answer 1 is more accurate, as it explicitly states the amount of the partial refund (\u00a318) and clearly outlines the free return shipping for all options. Answer 2, while generally accurate, is less specific about the partial refund amount and the free return shipping, which could lead to customer confusion. Answer 1 also provides a clearer and more specific explanation of the options, making it easier for the customer to understand and choose the best option for them.\n\nVERDICT: 1",
+            "Answer 1 is more accurate, as it provides the exact amount of the partial refund (\u00a318) without the customer having to calculate it themselves. Answer 2 is more specific about what happens next, mentioning that return shipping is free in both options where it's relevant.\n\nVERDICT: 1"
+          ]
+        },
+        {
+          "model_a": "openrouter/google/gemini-2.5-flash-lite",
+          "model_b": "openrouter/openai/gpt-5.4",
+          "winner": "openrouter/openai/gpt-5.4",
+          "flipped": false,
+          "rationales": [
+            "Answer 1 is accurate and addresses the customer's concerns, but it does not specify the amount of the partial refund, which is a crucial detail. Answer 2 provides the exact amount of the partial refund, making it more informative and helpful to the customer. Both answers have a polite tone, but Answer 2 is more specific and direct.\n\nVERDICT: 2",
+            "Answer 1 is more specific about what happens next, mentioning the amount of the partial refund and offering to help arrange the chosen option. Answer 2 is more verbose but does not provide additional useful information.\n\nVERDICT: 1"
+          ]
+        }
+      ]
+    }
+  ],
+  "bootstrap_resamples": 1000,
+  "bootstrap_seed": 0,
+  "judge_prompt": "You are grading two candidate answers to the same task.\n\nJudge in this order:\n1. Accuracy. Does the reply follow the policy as stated, and address\n   everything the customer actually asked? A reply that invents a policy,\n   states a wrong figure or date, quotes back something marked internal, or\n   silently drops one of the customer's questions loses to a reply that gets\n   those right, however well written.\n2. Tone. Given equal accuracy, prefer the reply the customer would rather\n   receive: specific about what happens next, not padded with apology, and\n   never condescending about a mistake the customer made.\n\nExplicitly ignore: answer length, formatting, and presentation.\nA longer answer is not a better answer. Do not reward verbosity.\n\nRespond with at most three sentences of rationale, then a final line in exactly\nthis form and nothing after it:\n\nVERDICT: 1\nVERDICT: 2\nVERDICT: TIE\n\nUse TIE only when the answers are genuinely of equal merit.",
+  "answer_language": null
+}

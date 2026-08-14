@@ -1,8 +1,8 @@
 /**
  * Shared rendering for the three pages.
  *
- * The site is a static file set: `konkord report` produces results.json and
- * nothing is computed here at load time. The one rule this file enforces is the
+ * The site is a static file set: `konkord report` produces one results file per
+ * suite and nothing is computed here at load time. The one rule this file enforces is the
  * one the data encodes: models sharing a rank_group are never ordered against
  * each other, because their confidence intervals overlap and any ordering would
  * assert a difference the evidence does not support.
@@ -10,14 +10,59 @@
 
 const PERCENT = (value) => `${(value * 100).toFixed(1)}%`;
 
-async function loadResults() {
+async function fetchJSON(file) {
   try {
-    const response = await fetch("results.json", { cache: "no-cache" });
+    const response = await fetch(file, { cache: "no-cache" });
     if (!response.ok) return null;
     return await response.json();
   } catch {
     return null;
   }
+}
+
+/**
+ * The published runs, newest first.
+ *
+ * A static host cannot list a directory, so runs.json is the index. Every page
+ * shows one run at a time, chosen by `?suite=`, because a calibration number
+ * describes the suite and the judge that produced it and means nothing averaged
+ * across two of them.
+ */
+async function loadRuns() {
+  const doc = await fetchJSON("runs.json");
+  const runs = doc && Array.isArray(doc.runs) ? doc.runs.filter((r) => r && r.file) : [];
+  return runs.length ? runs : null;
+}
+
+/** Load whichever run the URL asks for, falling back to the first listed. */
+async function loadCurrentRun() {
+  const runs = await loadRuns();
+  if (!runs) return { runs: [], run: null, data: null };
+  const wanted = new URLSearchParams(window.location.search).get("suite");
+  const run = runs.find((r) => r.suite === wanted) || runs[0];
+  return { runs, run, data: await fetchJSON(run.file) };
+}
+
+/**
+ * Tabs across the published runs.
+ *
+ * Real links rather than click handlers, so a particular run can be linked to
+ * and opened in a new tab. Hidden when there is only one run, since a picker
+ * with one option is furniture.
+ */
+function renderRunPicker(target, runs, current) {
+  if (!target || !runs || runs.length < 2) return;
+  const page = window.location.pathname.split("/").pop() || "index.html";
+  const wrap = el("nav", "runs");
+  wrap.setAttribute("aria-label", "Published runs");
+  for (const run of runs) {
+    const link = el("a", "", run.title || run.suite);
+    link.href = `${page}?suite=${encodeURIComponent(run.suite)}`;
+    if (run.suite === current.suite) link.setAttribute("aria-current", "page");
+    if (run.blurb) link.title = run.blurb;
+    wrap.append(link);
+  }
+  target.replaceChildren(wrap);
 }
 
 function el(tag, className, text) {
@@ -32,7 +77,7 @@ function noData(target, what) {
   const box = el("div", "empty");
   box.append(
     `No results yet. ${what} appears once a run has been judged and `,
-    Object.assign(el("code"), { textContent: "konkord report --out site/results.json" }),
+    Object.assign(el("code"), { textContent: "konkord report --out site/results.<suite>.json" }),
     " has written the file."
   );
   target.append(box);
@@ -136,7 +181,7 @@ function renderBoard(target, data) {
 /**
  * The judge prompt, taken from the run rather than kept in step with it.
  *
- * `textContent` rather than innerHTML: the prompt is data from results.json,
+ * `textContent` rather than innerHTML: the prompt is data from the results file,
  * and a published prompt is exactly the wrong place to start interpreting
  * markup. A run whose verdicts predate recorded prompts says so instead of
  * showing a prompt that may never have been sent.

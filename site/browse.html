@@ -36,6 +36,7 @@
   </div>
 
   <section class="wrap">
+    <div id="runs"></div>
     <div id="picker" class="task-picker"></div>
     <div id="detail"></div>
   </section>
@@ -44,9 +45,10 @@
 <script src="app.js"></script>
 <script>
 (async () => {
-  const data = await loadResults();
+  const { runs, run, data } = await loadCurrentRun();
   const detail = document.getElementById("detail");
   const picker = document.getElementById("picker");
+  renderRunPicker(document.getElementById("runs"), runs, run || {});
 
   if (!data || !data.tasks || data.tasks.length === 0) {
     noData(detail, "The per-task view");
@@ -92,14 +94,14 @@
         const verdict = el("div", "verdict");
         const pair = `${judgement.model_a} vs ${judgement.model_b}`;
         if (judgement.flipped) {
-          verdict.append(`${pair} — `);
+          verdict.append(`${pair}: `);
           verdict.append(
             Object.assign(el("span", "flag"), {
               textContent: "TIE, the judge reversed itself when the answers were swapped",
             })
           );
         } else {
-          verdict.append(`${pair} — ${judgement.winner ? `${judgement.winner} won` : "tie"}`);
+          verdict.append(`${pair}: ${judgement.winner ? `${judgement.winner} won` : "tie"}`);
         }
         box.append(verdict);
         judgement.rationales.forEach((text, index) => {
