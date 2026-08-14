@@ -1,32 +1,79 @@
 # Konkord
 
-Rank LLMs on a task suite, and measure whether the automated judge can be trusted.
+A pairwise LLM-as-judge evaluation harness that measures the reliability of its own judge.
 
-The usual pipeline (run models, have an LLM grade the outputs, publish a leaderboard) is commodity.
-Konkord adds one step: the operator hand-labels a sample of comparisons **blind**, and every
-published ranking ships with the judge-versus-human agreement rate attached.
+Ranking language models usually works like this: run every model over a set of tasks, ask a second
+model to decide which of two answers is better, count the wins, publish a leaderboard. The weak point
+is the middle step. That judge is itself a language model with its own preferences, and nothing in
+the pipeline establishes whether its verdicts match what a competent person would have said. The
+leaderboard inherits that uncertainty and reports none of it.
 
-Why it is worth the extra step: a leaderboard's confidence intervals measure how much the judge's
-verdicts wobble under resampling, not whether those verdicts are right. Judging more pairs only
-tightens the interval around the same error. Two published runs, same three models and the same
-judge, show what that hides:
+Konkord runs the same pipeline and adds one measurement. The operator hand-labels a sample of the
+same comparisons the judge scored, without seeing which model wrote which answer or what the judge
+concluded. How often the two agree, corrected for chance with Cohen's kappa, is computed and shipped
+in the same file as the ranking.
 
-| | Support replies | Python codegen |
+**That agreement rate is the product.** A high one means the ordering is worth reading. A low one
+does not invalidate the run: it is the result, and it is information the usual pipeline cannot
+produce at all, because a judge scored against nothing external has no way to be found wrong. Either
+way the reader is told what the ranking is worth rather than left to assume it.
+
+The same reasoning applies to the judge's other failure modes, so each one is measured rather than
+hoped away: whether it prefers whichever answer it sees first, whether it favours its own vendor,
+whether it was even asked the same question throughout. Those are the controls listed below, and what
+they produce is published with every run.
+
+## Pipeline
+
+| Stage | Command | Output |
 |---|---|---|
-| Agreement with a human | 46.7% | 61.3% |
-| ...on pairs the judge answered consistently | **81.4%** | **76.7%** |
-| Order-flip rate | 42.7% | 20.0% |
+| Generation | `konkord run` | one response per (task, model), cached and resumable |
+| Judging | `konkord judge` | a pairwise verdict per (task, model pair, presentation order) |
+| Labelling | `konkord label` | human verdicts on a stratified sample of the same pairs |
+| Calibration | `konkord calibrate` | judge-versus-human agreement and Cohen's kappa |
+| Reporting | `konkord report` | Bradley-Terry ratings, bootstrap intervals, calibration block |
 
-Read the headline alone and the judge looks worse at prose. It isn't. When it commits to a winner it
-agrees slightly *more* on prose; the gap is entirely that it contradicts itself twice as often, and a
-pair it contradicts itself on is recorded as no winner at all. A harness that judged each pair once
-would never see this. It would take whichever verdict arrived first on those flipped pairs and
-publish a confident ranking built on coin flips.
+Ratings are fitted with Bradley-Terry over all pairwise outcomes rather than counted as raw wins, so
+a model is not rewarded for an easy schedule. Win rates carry 95% percentile bootstrap intervals over
+a seeded resample. Models with overlapping intervals share a `rank_group` and are rendered as tied.
 
-Both runs, the judge prompt each was produced under, every answer and every verdict:
-**[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)**.
+## What it adds over a standard judge harness
 
-## Any domain, one standard at a time
+A bootstrap interval quantifies sampling variance in the judge's verdicts. It does not quantify
+whether those verdicts are correct. Nothing internal to the judge can establish that, so the judge is
+measured against an external reference and the result is published with the ranking:
+
+- **Human calibration.** The operator labels a sample of the same comparisons with model identity and
+  the judge's verdict both hidden. Reported as raw agreement and Cohen's kappa, which corrects for the
+  agreement two raters reach by chance. Seeing the judge's verdict first would measure suggestibility,
+  so it is never shown.
+- **Position-bias control.** Every pair is judged twice, once in each presentation order, as two
+  independent calls. Disagreement between the two orderings is position bias, not an opinion: the pair
+  resolves to a tie rather than to whichever call returned first, and the **order-flip rate** is
+  published. A harness that judges each pair once cannot detect this and will rank on it regardless.
+- **Provider-family independence.** A judge sharing a provider family with any ranked model is refused
+  rather than adjusted for. Routing prefixes are resolved first, so a model reached through an
+  aggregator is not mistaken for a different vendor.
+- **Recorded rubric.** The suite supplies the judging criteria; the tool owns the response format and
+  the instruction to ignore length. The composed prompt is stored with every verdict, so a rubric
+  changed mid-suite is refused instead of averaged, and the published prompt is the one that ran.
+- **No silent coercion.** A response with no parseable verdict is retried once, then recorded in a
+  `judge_failures` table with the raw text. It is never resolved into a winner.
+
+## Published runs
+
+Two calibrated runs at **[konkord.deadpixelstudio.io](https://konkord.deadpixelstudio.io)**: Python
+code generation and customer support replies, over the same three models with the same judge. Each
+carries its agreement rate, kappa, order-flip rate, the judge prompt it was produced under, and every
+answer and rationale behind it.
+
+Their headline agreement rates differ substantially, and the difference is accounted for entirely by
+the order-flip rate rather than by the judge choosing wrongly: restricted to pairs where the judge
+gave the same verdict in both orderings, agreement is comparable across the two domains and higher
+than either headline. The flip rate is the reliability signal; the headline conflates it with
+accuracy.
+
+## Suites and rubrics
 
 A suite says what "better" means. Code, summarisation, translation, extraction: write the criteria
 into the file and every stage follows.
@@ -111,16 +158,6 @@ uv run konkord report    --suite $SUITE --out site/results.$NAME.json
 75 answers and 150 judgements. Both stages are resumable and cache every response, so re-running
 them is free. `label` opens a local app and is the part that needs you: budget an hour or two for
 75 to 100 comparisons. `calibrate` has nothing to say until those labels exist.
-
-## Commands
-
-| Command | Does |
-|---|---|
-| `konkord run` | Generate one output per (task x model) |
-| `konkord judge` | Pairwise LLM-as-judge, both orderings |
-| `konkord label` | Local blind labeller |
-| `konkord calibrate` | Judge-versus-human agreement and kappa |
-| `konkord report` | Aggregate into one results file |
 
 ## Running a suite
 
