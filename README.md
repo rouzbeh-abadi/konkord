@@ -110,16 +110,18 @@ Three things follow from that, and they are the reason this is more than a setti
 - **The site publishes the prompt that ran**, read back out of the verdicts rather than recomposed from
   the suite file. A published prompt that has drifted from the one actually sent is worse than none.
 
-## Quickstart
+## Install
 
 ```bash
 pip install 'konkord[label]'
 ```
 
-The `label` extra pulls in Streamlit, which only the labeller needs. Requires Python 3.12 or newer.
+Python 3.12 or newer. The `label` extra pulls in Streamlit, which only the labeller needs; plain
+`pip install konkord` gives you everything except that one command.
 
-The package ships the tool, not the task suites. To run the worked examples, or to start from one,
-clone the repository instead:
+This installs the harness. Task suites are yours to write, and the two in this repository are worked
+examples rather than a bundled benchmark, so clone it if you would rather start from one than from a
+blank file:
 
 ```bash
 git clone https://github.com/rouzbeh-abadi/konkord
@@ -127,16 +129,18 @@ cd konkord
 uv sync --all-extras
 ```
 
-Set credentials for whichever providers you are ranking. Copy the template and fill in the keys
-you actually have:
+## Quickstart
+
+Set credentials for whichever providers you are ranking, as ordinary environment variables:
 
 ```bash
-cp .env.example .env
+export OPENROUTER_API_KEY=...
 ```
 
-`.env` is gitignored and read at startup. Anything already exported in your shell wins over it, so
-a one-off `OPENAI_API_KEY=... konkord run` still does what it looks like. Plain exports work too if
-you would rather not keep a file.
+A `.env` file in the working directory is read at startup if there is one, and
+[.env.example](https://github.com/rouzbeh-abadi/konkord/blob/main/.env.example) lists the names
+Konkord looks for. Anything already exported in your shell wins over the file, so a one-off
+`OPENAI_API_KEY=... konkord run` does what it looks like.
 
 **[OpenRouter](https://openrouter.ai) reaches many vendors with one key.** Set `OPENROUTER_API_KEY`
 and name models as `openrouter/anthropic/claude-opus-5`. Konkord resolves the vendor *behind* the
@@ -154,11 +158,11 @@ SUITE=suites/python_codegen.yaml
 NAME=python_codegen
 MODELS=gpt-5,claude-opus-5,gemini-2.5-pro
 
-uv run konkord run       --suite $SUITE --models $MODELS
-uv run konkord judge     --suite $SUITE --models $MODELS --judge mistral/mistral-large-latest
-uv run konkord label     --suite $SUITE --n 100
-uv run konkord calibrate --suite $SUITE
-uv run konkord report    --suite $SUITE --out site/results.$NAME.json
+konkord run       --suite $SUITE --models $MODELS
+konkord judge     --suite $SUITE --models $MODELS --judge mistral/mistral-large-latest
+konkord label     --suite $SUITE --n 100
+konkord calibrate --suite $SUITE
+konkord report    --suite $SUITE --out results.$NAME.json
 ```
 
 `run` and `judge` cost money and take a few minutes. The run above came to well under a dollar for
