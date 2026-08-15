@@ -222,7 +222,7 @@ yours.
 
 ```bash
 konkord calibrate --suite suites/python_codegen.yaml
-konkord report --suite suites/python_codegen.yaml --out site/results.python_codegen.json
+konkord report --suite suites/python_codegen.yaml --out results.python_codegen.json
 ```
 
 `calibrate` joins the human labels to the judge verdicts on the same comparisons and reports raw
