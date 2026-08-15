@@ -112,7 +112,14 @@ Three things follow from that, and they are the reason this is more than a setti
 
 ## Quickstart
 
-Not on PyPI yet, so clone it:
+```bash
+pip install 'konkord[label]'
+```
+
+The `label` extra pulls in Streamlit, which only the labeller needs. Requires Python 3.12 or newer.
+
+The package ships the tool, not the task suites. To run the worked examples, or to start from one,
+clone the repository instead:
 
 ```bash
 git clone https://github.com/rouzbeh-abadi/konkord
@@ -280,7 +287,7 @@ Lint, type-check and test, the same four commands CI runs:
 uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pytest
 ```
 
-[CONTRIBUTING.md](CONTRIBUTING.md) covers the bar for a change and how to add a task to a suite.
+[CONTRIBUTING.md](https://github.com/rouzbeh-abadi/konkord/blob/main/CONTRIBUTING.md) covers the bar for a change and how to add a task to a suite.
 
 ## License
 
